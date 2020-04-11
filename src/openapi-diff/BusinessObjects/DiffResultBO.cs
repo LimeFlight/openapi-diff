@@ -2,31 +2,38 @@
 
 namespace openapi_diff.BusinessObjects
 {
-    public static class DiffResultBO
+    public class DiffResultBO
     {
-        public static bool IsUnchanged(this DiffResultDTO diffResult)
+        public readonly DiffResultEnum DiffResult;
+
+        public DiffResultBO(DiffResultEnum diffResult)
         {
-            return diffResult.Weight == 0;
+            DiffResult = diffResult;
         }
 
-        public static bool IsDifferent(this DiffResultDTO diffResult)
+        public bool IsUnchanged()
         {
-            return diffResult.Weight > 0;
+            return DiffResult == 0;
         }
 
-        public static bool IsIncompatible(this DiffResultDTO diffResult)
+        public bool IsDifferent()
         {
-            return diffResult.Weight > 2;
+            return DiffResult > 0;
         }
 
-        public static bool IsCompatible(this DiffResultDTO diffResult)
+        public bool IsIncompatible()
         {
-            return diffResult.Weight <= 2;
+            return (int)DiffResult > 2;
         }
 
-        public static bool IsMetaChanged(this DiffResultDTO diffResult)
+        public bool IsCompatible()
         {
-            return diffResult.Weight == 1;
+            return (int)DiffResult <= 2;
+        }
+
+        public bool IsMetaChanged()
+        {
+            return (int)DiffResult == 1;
         }
     }
 }

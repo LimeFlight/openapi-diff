@@ -1,12 +1,18 @@
-﻿using openapi_diff.DTOs;
+﻿using Microsoft.OpenApi.Models;
 
 namespace openapi_diff.BusinessObjects
 {
-    public static class EndpointBO
+    public class EndpointBO
     {
-        public static string ToString(this EndpointDTO endpoint)
+        public string PathUrl { get; set; }
+        public OperationType Method { get; set; }
+        public string Summary { get; set; }
+        public OpenApiPathItem Path { get; set; }
+        public OpenApiOperation Operation { get; set; }
+
+        public override string ToString()
         {
-            return endpoint.Method + " " + endpoint.PathUrl;
+            return Method + " " + PathUrl;
         }
     }
 }

@@ -11,7 +11,7 @@ namespace openapi_diff.compare
         public SchemaDiff(OpenApiDiff openApiDiff)
         {
             _openApiDiff = openApiDiff;
-            leftComponents = openApiDiff.
+            leftComponents = openApiDiff
         }
     }
 }

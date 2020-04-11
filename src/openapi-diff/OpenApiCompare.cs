@@ -4,19 +4,20 @@ using openapi_diff.DTOs;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using openapi_diff.BusinessObjects;
 
 namespace openapi_diff
 {
     public class OpenAPICompare : IOpenAPICompare
     {
-        public ChangedOpenApiDTO FromLocations(string oldLocation, string newLocation)
+        public ChangedOpenApiBO FromLocations(string oldLocation, string newLocation)
         {
             return FromSpecifications(ReadLocation(oldLocation), ReadLocation(newLocation));
         }
 
-        public ChangedOpenApiDTO FromSpecifications(OpenApiDocument oldSpec, OpenApiDocument newSpec)
+        public ChangedOpenApiBO FromSpecifications(OpenApiDocument oldSpec, OpenApiDocument newSpec)
         {
-            return new ChangedOpenApiDTO();
+            return new ChangedOpenApiBO();
         }
 
         private static OpenApiDocument ReadLocation(string location, List<OpenApiOAuthFlow> auths = null)

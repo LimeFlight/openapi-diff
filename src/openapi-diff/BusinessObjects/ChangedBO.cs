@@ -2,30 +2,32 @@
 
 namespace openapi_diff.BusinessObjects
 {
-    public static class ChangedBO
+    public abstract class ChangedBO
     {
-        static DiffResultEnum Result(this ChangedDTO changed)
+        public abstract DiffResultBO IsChanged();
+
+        public DiffResultBO Result(ChangedBO changed)
         {
-            return changed?.IsChanged.Status ?? DiffResultEnum.NoChanges;
+            return changed.IsChanged() ?? new DiffResultBO(DiffResultEnum.NoChanges);
         }
-        static bool IsCompatible(this ChangedDTO changed)
+        public bool IsCompatible()
         {
-            return changed.IsChanged.IsCompatible();
+            return IsChanged().IsCompatible();
         }
 
-        static bool IsIncompatible(this ChangedDTO changed)
+        public bool IsIncompatible()
         {
-            return changed.IsChanged.IsIncompatible();
+            return IsChanged().IsIncompatible();
         }
 
-        static bool IsUnchanged(this ChangedDTO changed)
+        public bool IsUnchanged()
         {
-            return changed.IsChanged.IsUnchanged();
+            return IsChanged().IsUnchanged();
         }
 
-        static bool IsDifferent(this ChangedDTO changed)
+        public bool IsDifferent()
         {
-            return changed.IsChanged.IsDifferent();
+            return IsChanged().IsDifferent();
         }
     }
 }
