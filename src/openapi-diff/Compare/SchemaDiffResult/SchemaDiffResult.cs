@@ -58,7 +58,7 @@ namespace openapi_diff.Compare.SchemaDiffResult
 
             var leftProperties = left.Properties;
             var rightProperties = right.Properties;
-            var propertyDiff = MapKeyDiff.diff(leftProperties, rightProperties);
+            var propertyDiff = MapKeyDiff.Diff(leftProperties, rightProperties);
 
             for (string key : propertyDiff.getSharedKey())
             {
