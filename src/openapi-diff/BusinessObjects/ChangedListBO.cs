@@ -6,9 +6,9 @@ namespace openapi_diff.BusinessObjects
 {
     public abstract class ChangedListBO<T> : ChangedBO
     {
-        protected readonly DiffContextBO Context;
-        protected readonly List<T> OldValue;
-        protected readonly List<T> NewValue;
+        public readonly DiffContextBO Context;
+        public readonly List<T> OldValue;
+        public readonly List<T> NewValue;
 
         public List<T> Increased { get; set; }
         public List<T> Missing { get; set; }

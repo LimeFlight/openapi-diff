@@ -8,25 +8,25 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedSchemaBO : ComposedChangedBO
     {
-        protected DiffContextBO Context { get; set; }
-        protected OpenApiSchema OldSchema { get; set; }
-        protected OpenApiSchema NewSchema { get; set; }
-        protected string Type { get; set; }
+        public DiffContextBO Context { get; set; }
+        public OpenApiSchema OldSchema { get; set; }
+        public OpenApiSchema NewSchema { get; set; }
+        public string Type { get; set; }
         protected Dictionary<string, ChangedSchemaBO> ChangedProperties { get; set; }
         protected Dictionary<string, OpenApiSchema> IncreasedProperties { get; set; }
         protected Dictionary<string, OpenApiSchema> MissingProperties { get; set; }
-        protected bool ChangeDeprecated { get; set; }
+        public bool ChangeDeprecated { get; set; }
         protected ChangedMetadataBO Description { get; set; }
-        protected bool ChangeTitle { get; set; }
-        protected ChangedRequiredBO Required { get; set; }
-        protected bool ChangeDefault { get; set; }
-        protected ChangedEnumBO Enumeration { get; set; }
-        protected bool ChangeFormat { get; set; }
-        protected ChangedReadOnlyBO ReadOnly { get; set; }
-        protected ChangedWriteOnlyBO WriteOnly { get; set; }
+        public bool ChangeTitle { get; set; }
+        public ChangedRequiredBO Required { get; set; }
+        public bool ChangeDefault { get; set; }
+        public ChangedEnumBO Enumeration { get; set; }
+        public bool ChangeFormat { get; set; }
+        public ChangedReadOnlyBO ReadOnly { get; set; }
+        public ChangedWriteOnlyBO WriteOnly { get; set; }
         protected bool ChangedType { get; set; }
-        protected ChangedMaxLengthBO MaxLength { get; set; }
-        protected bool DiscriminatorPropertyChanged { get; set; }
+        public ChangedMaxLengthBO MaxLength { get; set; }
+        public bool DiscriminatorPropertyChanged { get; set; }
         protected ChangedSchemaBO Items { get; set; }
         protected ChangedOneOfSchemaBO OneOfSchema { get; set; }
         protected ChangedSchemaBO AddProp { get; set; }

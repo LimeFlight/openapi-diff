@@ -1,11 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
+using openapi_diff.BusinessObjects;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using SharpYaml.Serialization.Logging;
 
 namespace openapi_diff.compare
 {
@@ -15,11 +12,11 @@ namespace openapi_diff.compare
 
         private readonly ILogger<OpenApiDiff> _logger;
 
-        private PathsDiff pathsDiff;
-        private PathDiff pathDiff;
-        private SchemaDiff schemaDiff;
+        public PathsDiff PathsDiff { get; set; }
+        public PathDiff PathDiff { get; set; }
+        public SchemaDiff SchemaDiff { get; set; }
         private ContentDiff contentDiff;
-        private  parametersDiff;
+        private parametersDiff;
         private ParameterDiff parameterDiff;
         private RequestBodyDiff requestBodyDiff;
         private ResponseDiff responseDiff;
@@ -35,12 +32,12 @@ namespace openapi_diff.compare
         private ExtensionsDiff extensionsDiff;
         private MetadataDiff metadataDiff;
 
-        private OpenAPI oldSpecOpenApi;
-        private OpenAPI newSpecOpenApi;
-        private List<Endpoint> newEndpoints;
-        private List<Endpoint> missingEndpoints;
-        private List<ChangedOperation> changedOperations;
-        private ChangedExtensions changedExtensions;
+        public OpenApiDocument OldSpecOpenApi { get; set; }
+        public OpenApiDocument NewSpecOpenApi { get; set; }
+        public List<EndpointBO> NewEndpoints { get; set; }
+        public List<EndpointBO> MissingEndpoints { get; set; }
+        public List<ChangedOperationBO> ChangedOperations { get; set; }
+        public ChangedExtensionsBO ChangedExtensions { get; set; }
 
         public OpenApiDiff(ILogger<OpenApiDiff> logger)
         {

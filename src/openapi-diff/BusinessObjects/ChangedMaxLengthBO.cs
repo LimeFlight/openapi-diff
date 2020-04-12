@@ -8,7 +8,7 @@ namespace openapi_diff.BusinessObjects
         private readonly int? _newValue;
         private readonly DiffContextBO _context;
 
-        public ChangedMaxLengthBO(int oldValue, int newValue, DiffContextBO context)
+        public ChangedMaxLengthBO(int? oldValue, int? newValue, DiffContextBO context)
         {
             _oldValue = oldValue;
             _newValue = newValue;
