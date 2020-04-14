@@ -8,12 +8,22 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedParametersBO : ComposedChangedBO
     {
-        public List<OpenApiParameter> OldParameterList { get; set; }
-        public List<OpenApiParameter> NewParameterList { get; set; }
-        public DiffContextDTO Context { get; set; }
+        private readonly List<OpenApiParameter> _oldParameterList;
+        private readonly List<OpenApiParameter> _newParameterList;
+        private readonly DiffContextBO _context;
         public List<OpenApiParameter> Increased { get; set; }
         public List<OpenApiParameter> Missing { get; set; }
-        public List<ChangedParametersBO> Changed { get; set; }
+        public List<ChangedParameterBO> Changed { get; set; }
+
+        public ChangedParametersBO(List<OpenApiParameter> oldParameterList, List<OpenApiParameter> newParameterList, DiffContextBO context)
+        {
+            _oldParameterList = oldParameterList;
+            _newParameterList = newParameterList;
+            _context = context;
+            Increased = new List<OpenApiParameter>();
+            Missing = new List<OpenApiParameter>();
+            Changed = new List<ChangedParameterBO>();
+        }
 
         public override List<ChangedBO> GetChangedElements()
         {

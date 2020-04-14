@@ -6,10 +6,11 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedOperationBO : ComposedChangedBO
     {
-        public OpenApiOperation OldOperation { get; set; }
-        public OpenApiOperation NewOperation { get; set; }
-        public string PathUrl { get; set; }
-        public OperationType HttpMethod { get; set; }
+        private readonly OpenApiOperation _oldOperation;
+        private readonly OpenApiOperation _newOperation;
+        private readonly string _pathUrl;
+        private readonly OperationType _httpMethod;
+        
         public ChangedMetadataBO Summary { get; set; }
         public ChangedMetadataBO Description { get; set; }
         public bool IsDeprecated { get; set; }
@@ -19,14 +20,22 @@ namespace openapi_diff.BusinessObjects
         public ChangedSecurityRequirementsBO SecurityRequirements { get; set; }
         public ChangedExtensionsBO Extensions { get; set; }
 
+        public ChangedOperationBO(string pathUrl, OperationType httpMethod, OpenApiOperation oldOperation, OpenApiOperation newOperation)
+        {
+            _pathUrl = pathUrl;
+            _httpMethod = httpMethod;
+            _oldOperation = oldOperation;
+            _newOperation = newOperation;
+        }
+
         public EndpointBO ConvertToEndpoint()
         {
             var endpoint = new EndpointBO
             {
-                PathUrl = PathUrl,
-                Method = HttpMethod,
-                Summary = NewOperation.Summary,
-                Operation = NewOperation
+                PathUrl = _pathUrl,
+                Method = _httpMethod,
+                Summary = _newOperation.Summary,
+                Operation = _newOperation
             };
             return endpoint;
         }

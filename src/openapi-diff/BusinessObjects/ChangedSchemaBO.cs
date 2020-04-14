@@ -24,7 +24,7 @@ namespace openapi_diff.BusinessObjects
         public bool ChangeFormat { get; set; }
         public ChangedReadOnlyBO ReadOnly { get; set; }
         public ChangedWriteOnlyBO WriteOnly { get; set; }
-        protected bool ChangedType { get; set; }
+        public bool ChangedType { get; set; }
         public ChangedMaxLengthBO MaxLength { get; set; }
         public bool DiscriminatorPropertyChanged { get; set; }
         protected ChangedSchemaBO Items { get; set; }

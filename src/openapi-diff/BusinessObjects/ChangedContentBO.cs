@@ -7,15 +7,15 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedContentBO : ComposedChangedBO
     {
-        private readonly Content _oldContent;
-        private readonly Content _newContent;
+        private readonly Dictionary<string, OpenApiMediaType> _oldContent;
+        private readonly Dictionary<string, OpenApiMediaType> _newContent;
         private readonly DiffContextBO _context;
-
-        private Dictionary<string, OpenApiMediaType> Increased { get; set; }
-        private Dictionary<string, OpenApiMediaType> Missing { get; set; }
+        
+        public Dictionary<string, OpenApiMediaType> Increased { get; set; }
+        public Dictionary<string, OpenApiMediaType> Missing { get; set; }
         public Dictionary<string, ChangedMediaTypeBO> Changed { get; set; }
 
-        public ChangedContentBO(Content oldContent, Content newContent, DiffContextBO context)
+        public ChangedContentBO(Dictionary<string, OpenApiMediaType> oldContent, Dictionary<string, OpenApiMediaType> newContent, DiffContextBO context)
         {
             _oldContent = oldContent;
             _newContent = newContent;

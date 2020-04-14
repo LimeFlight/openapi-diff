@@ -15,22 +15,22 @@ namespace openapi_diff.compare
         public PathsDiff PathsDiff { get; set; }
         public PathDiff PathDiff { get; set; }
         public SchemaDiff SchemaDiff { get; set; }
-        private ContentDiff contentDiff;
-        private parametersDiff;
-        private ParameterDiff parameterDiff;
-        private RequestBodyDiff requestBodyDiff;
-        private ResponseDiff responseDiff;
-        private HeadersDiff headersDiff;
-        private HeaderDiff headerDiff;
-        private ApiResponseDiff apiResponseDiff;
-        private OperationDiff operationDiff;
-        private SecurityRequirementsDiff securityRequirementsDiff;
-        private SecurityRequirementDiff securityRequirementDiff;
-        private SecuritySchemeDiff securitySchemeDiff;
-        private OAuthFlowsDiff oAuthFlowsDiff;
-        private OAuthFlowDiff oAuthFlowDiff;
-        private ExtensionsDiff extensionsDiff;
-        private MetadataDiff metadataDiff;
+        public ContentDiff ContentDiff { get; set; }
+        public ParametersDiff ParametersDiff { get; set; }
+        public ParameterDiff ParameterDiff { get; set; }
+        public RequestBodyDiff RequestBodyDiff { get; set; }
+        public ResponseDiff ResponseDiff { get; set; }
+        public HeadersDiff HeadersDiff { get; set; }
+        public HeaderDiff HeaderDiff { get; set; }
+        public ApiResponseDiff APIResponseDiff { get; set; }
+        public OperationDiff OperationDiff { get; set; }
+        public SecurityRequirementsDiff SecurityRequirementsDiff { get; set; }
+        public SecurityRequirementDiff SecurityRequirementDiff { get; set; }
+        public SecuritySchemeDiff SecuritySchemeDiff { get; set; }
+        public OAuthFlowsDiff OAuthFlowsDiff { get; set; }
+        public OAuthFlowDiff OAuthFlowDiff { get; set; }
+        public ExtensionsDiff ExtensionsDiff { get; set; }
+        public MetadataDiff MetadataDiff { get; set; }
 
         public OpenApiDocument OldSpecOpenApi { get; set; }
         public OpenApiDocument NewSpecOpenApi { get; set; }

@@ -14,7 +14,7 @@ namespace openapi_diff.BusinessObjects
         
         public Dictionary<string, OpenApiResponse> Increased { get; set; }
         public Dictionary<string, OpenApiResponse> Missing { get; set; }
-        public Dictionary<string, ChangedAPIResponseBO> Changed { get; set; }
+        public Dictionary<string, ChangedResponseBO> Changed { get; set; }
         public ChangedExtensionsBO Extensions { get; set; }
 
         public ChangedAPIResponseBO(OpenApiResponses oldApiResponses, OpenApiResponses newApiResponses, DiffContextBO context)
@@ -24,7 +24,7 @@ namespace openapi_diff.BusinessObjects
             _context = context;
             Increased = new Dictionary<string, OpenApiResponse>();
             Missing = new Dictionary<string, OpenApiResponse>();
-            Changed = new Dictionary<string, ChangedAPIResponseBO>();
+            Changed = new Dictionary<string, ChangedResponseBO>();
         }
 
         public override List<ChangedBO> GetChangedElements()

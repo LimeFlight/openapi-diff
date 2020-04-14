@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace openapi_diff.Compare
 {
     public abstract class ReferenceDiffCache<TC, TD>
-        where TD : new()
+    where TD : class
     {
         public Dictionary<CacheKey, TD> RefDiffMap { get; set; }
 
@@ -38,7 +38,7 @@ namespace openapi_diff.Compare
                
                 var refKey = GetRefKey(leftRef, rightRef);
                 if (refSet.Contains(refKey))
-                    return new TD();
+                    return null;
                 
                 refSet.Add(refKey);
                 var changed = ComputeDiff(refSet, left, right, context);
