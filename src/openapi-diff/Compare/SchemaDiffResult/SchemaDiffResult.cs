@@ -8,8 +8,8 @@ namespace openapi_diff.Compare.SchemaDiffResult
 {
     public class SchemaDiffResult
     {
-        protected ChangedSchemaBO changedSchema;
-        protected OpenApiDiff openApiDiff;
+        public ChangedSchemaBO changedSchema { get; set; }
+        public OpenApiDiff openApiDiff { get; set; }
 
         public SchemaDiffResult(OpenApiDiff openApiDiff)
         {

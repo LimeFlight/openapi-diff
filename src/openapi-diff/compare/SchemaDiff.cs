@@ -1,4 +1,6 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Interfaces;
+using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
 using openapi_diff.Compare;
 using openapi_diff.Compare.SchemaDiffResult;
@@ -53,16 +55,16 @@ namespace openapi_diff.compare
         {
             if (schema is ComposedSchema) {
                 var composedSchema = (ComposedSchema)schema;
-                List<OpenApiSchema> allOfSchemaList = composedSchema.getAllOf();
+                List<OpenApiSchema> allOfSchemaList = composedSchema.AllOf();
                 if (allOfSchemaList != null)
                 {
                     foreach (var allOfSchema in allOfSchemaList)
                     {
-                        allOfSchema = refPointer.resolveRef(components, allOfSchema, allOfSchema.get$ref ());
+                        allOfSchema = refPointer.resolveRef(components, allOfSchema, allOfSchema.$ref ());
                         allOfSchema = resolveComposedSchema(components, allOfSchema);
                         schema = addSchema(schema, allOfSchema);
                     }
-                    composedSchema.setAllOf(null);
+                    composedSchema.AllOf(null);
                 }
             }
             return schema;
@@ -83,228 +85,234 @@ namespace openapi_diff.compare
                 }
             }
 
-            if (fromSchema.getRequired() != null)
+            if (fromSchema.Required != null)
             {
-                if (schema.getRequired() == null)
+                if (schema.Required == null)
                 {
-                    schema.setRequired(fromSchema.getRequired());
+                    schema.Required = fromSchema.Required;
                 }
                 else
                 {
-                    schema.getRequired().addAll(fromSchema.getRequired());
+                    foreach (var required in fromSchema.Required)
+                    {
+                        schema.Required.Add(required);
+                    }
                 }
             }
 
-            if (fromSchema.getReadOnly() != null)
+            schema.ReadOnly = fromSchema.ReadOnly;
+            schema.WriteOnly = fromSchema.WriteOnly;
+            schema.Deprecated = fromSchema.Deprecated;
+            schema.Nullable = fromSchema.Nullable;
+
+            if (fromSchema.ExclusiveMaximum != null)
             {
-                schema.setReadOnly(fromSchema.getReadOnly());
+                schema.ExclusiveMaximum = fromSchema.ExclusiveMaximum;
             }
-            if (fromSchema.getWriteOnly() != null)
+            if (fromSchema.ExclusiveMinimum != null)
             {
-                schema.setWriteOnly(fromSchema.getWriteOnly());
+                schema.ExclusiveMinimum = fromSchema.ExclusiveMinimum;
             }
-            if (fromSchema.getDeprecated() != null)
+            if (fromSchema.UniqueItems != null)
             {
-                schema.setDeprecated(fromSchema.getDeprecated());
+                schema.UniqueItems = fromSchema.UniqueItems;
             }
-            if (fromSchema.getExclusiveMaximum() != null)
+            if (fromSchema.Description != null)
             {
-                schema.setExclusiveMaximum(fromSchema.getExclusiveMaximum());
+                schema.Description = fromSchema.Description;
             }
-            if (fromSchema.getExclusiveMinimum() != null)
+            if (fromSchema.Format != null)
             {
-                schema.setExclusiveMinimum(fromSchema.getExclusiveMinimum());
+                schema.Format = fromSchema.Format;
             }
-            if (fromSchema.getNullable() != null)
+            if (fromSchema.Type != null)
             {
-                schema.setNullable(fromSchema.getNullable());
+                schema.Type = fromSchema.Type;
             }
-            if (fromSchema.getUniqueItems() != null)
+            if (fromSchema.Enum != null)
             {
-                schema.setUniqueItems(fromSchema.getUniqueItems());
-            }
-            if (fromSchema.getDescription() != null)
-            {
-                schema.setDescription(fromSchema.getDescription());
-            }
-            if (fromSchema.getFormat() != null)
-            {
-                schema.setFormat(fromSchema.getFormat());
-            }
-            if (fromSchema.getType() != null)
-            {
-                schema.setType(fromSchema.getType());
-            }
-            if (fromSchema.getEnum() != null)
-            {
-                if (schema.getEnum() == null)
+                if (schema.Enum == null)
                 {
-                    schema.setEnum(new ArrayList<>());
+                    schema.Enum = new List<IOpenApiAny>();
                 }
                 //noinspection unchecked
-                schema.getEnum().addAll((List)fromSchema.getEnum());
+                foreach (var element in fromSchema.Enum)
+                {
+                    schema.Enum.Add(element);
+                }
             }
-            if (fromSchema.getExtensions() != null)
+            if (fromSchema.Extensions != null)
             {
-                if (schema.getExtensions() == null)
+                if (schema.Extensions == null)
                 {
-                    schema.setExtensions(new LinkedHashMap<>());
+                    schema.Extensions = new Dictionary<string, IOpenApiExtension>();
                 }
-                schema.getExtensions().putAll(fromSchema.getExtensions());
+                foreach (var element in fromSchema.Extensions)
+                {
+                    schema.Extensions.Add(element);
+                }
             }
-            if (fromSchema.getDiscriminator() != null)
+            if (fromSchema.Discriminator != null)
             {
-                if (schema.getDiscriminator() == null)
+                if (schema.Discriminator == null)
                 {
-                    schema.setDiscriminator(new Discriminator());
+                    schema.Discriminator = new OpenApiDiscriminator();
                 }
-                final Discriminator discriminator = schema.getDiscriminator();
-                final Discriminator fromDiscriminator = fromSchema.getDiscriminator();
-                if (fromDiscriminator.getPropertyName() != null)
+                var discriminator = schema.Discriminator;
+                var fromDiscriminator = fromSchema.Discriminator;
+
+                if (fromDiscriminator.PropertyName != null)
                 {
-                    discriminator.setPropertyName(fromDiscriminator.getPropertyName());
+                    discriminator.PropertyName = fromDiscriminator.PropertyName;
                 }
-                if (fromDiscriminator.getMapping() != null)
+                if (fromDiscriminator.Mapping != null)
                 {
-                    if (discriminator.getMapping() == null)
+                    if (discriminator.Mapping == null)
                     {
-                        discriminator.setMapping(new LinkedHashMap<>());
+                        discriminator.Mapping  = new Dictionary<string, string>();
                     }
-                    discriminator.getMapping().putAll(fromDiscriminator.getMapping());
-                }
-            }
-            if (fromSchema.getTitle() != null)
-            {
-                schema.setTitle(fromSchema.getTitle());
-            }
-            if (fromSchema.getName() != null)
-            {
-                schema.setName(fromSchema.getName());
-            }
-            if (fromSchema.getAdditionalProperties() != null)
-            {
-                schema.setAdditionalProperties(fromSchema.getAdditionalProperties());
-            }
-            if (fromSchema.getDefault() != null)
-            {
-                schema.setDefault(fromSchema.getDefault());
-            }
-            if (fromSchema.getExample() != null)
-            {
-                schema.setExample(fromSchema.getExample());
-            }
-            if (fromSchema.getExternalDocs() != null)
-            {
-                if (schema.getExternalDocs() == null)
-                {
-                    schema.setExternalDocs(new ExternalDocumentation());
-                }
-                final ExternalDocumentation externalDocs = schema.getExternalDocs();
-                final ExternalDocumentation fromExternalDocs = fromSchema.getExternalDocs();
-                if (fromExternalDocs.getDescription() != null)
-                {
-                    externalDocs.setDescription(fromExternalDocs.getDescription());
-                }
-                if (fromExternalDocs.getExtensions() != null)
-                {
-                    if (externalDocs.getExtensions() == null)
+                    foreach (var element in fromDiscriminator.Mapping)
                     {
-                        externalDocs.setExtensions(new LinkedHashMap<>());
+                        discriminator.Mapping.Add(element);
                     }
-                    externalDocs.getExtensions().putAll(fromExternalDocs.getExtensions());
-                }
-                if (fromExternalDocs.getUrl() != null)
-                {
-                    externalDocs.setUrl(fromExternalDocs.getUrl());
                 }
             }
-            if (fromSchema.getMaximum() != null)
+            if (fromSchema.Title != null)
             {
-                schema.setMaximum(fromSchema.getMaximum());
+                schema.Title = fromSchema.Title;
             }
-            if (fromSchema.getMinimum() != null)
+            if (fromSchema.Name() != null)
             {
-                schema.setMinimum(fromSchema.getMinimum());
+                schema.Name(fromSchema.Name());
             }
-            if (fromSchema.getMaxItems() != null)
+            if (fromSchema.AdditionalProperties != null)
             {
-                schema.setMaxItems(fromSchema.getMaxItems());
+                schema.AdditionalProperties = fromSchema.AdditionalProperties;
             }
-            if (fromSchema.getMinItems() != null)
+            if (fromSchema.Default != null)
             {
-                schema.setMinItems(fromSchema.getMinItems());
+                schema.Default = fromSchema.Default;
             }
-            if (fromSchema.getMaxProperties() != null)
+            if (fromSchema.Example != null)
             {
-                schema.setMaxProperties(fromSchema.getMaxProperties());
+                schema.Example  = fromSchema.Example;
             }
-            if (fromSchema.getMinProperties() != null)
+            if (fromSchema.ExternalDocs != null)
             {
-                schema.setMinProperties(fromSchema.getMinProperties());
-            }
-            if (fromSchema.getMaxLength() != null)
-            {
-                schema.setMaxLength(fromSchema.getMaxLength());
-            }
-            if (fromSchema.getMinLength() != null)
-            {
-                schema.setMinLength(fromSchema.getMinLength());
-            }
-            if (fromSchema.getMultipleOf() != null)
-            {
-                schema.setMultipleOf(fromSchema.getMultipleOf());
-            }
-            if (fromSchema.getNot() != null)
-            {
-                if (schema.getNot() == null)
+                if (schema.ExternalDocs == null)
                 {
-                    schema.setNot(addSchema(new Schema(), fromSchema.getNot()));
+                    schema.ExternalDocs = new OpenApiExternalDocs();
+                }
+                var externalDocs = schema.ExternalDocs;
+                var fromExternalDocs = fromSchema.ExternalDocs;
+                if (fromExternalDocs.Description != null)
+                {
+                    externalDocs.Description = fromExternalDocs.Description;
+                }
+                if (fromExternalDocs.Extensions != null)
+                {
+                    if (externalDocs.Extensions == null)
+                    {
+                        externalDocs.Extensions = new Dictionary<string, IOpenApiExtension>();
+                    }
+
+                    foreach (var element in fromSchema.Extensions)
+                    {
+                        schema.Extensions.Add(element);
+                    }
+                }
+                if (fromExternalDocs.Url != null)
+                {
+                    externalDocs.Url = fromExternalDocs.Url;
+                }
+            }
+            if (fromSchema.Maximum != null)
+            {
+                schema.Maximum = fromSchema.Maximum;
+            }
+            if (fromSchema.Minimum != null)
+            {
+                schema.Minimum = fromSchema.Minimum;
+            }
+            if (fromSchema.MaxItems != null)
+            {
+                schema.MaxItems = fromSchema.MaxItems;
+            }
+            if (fromSchema.MinItems != null)
+            {
+                schema.MinItems = fromSchema.MinItems;
+            }
+            if (fromSchema.MaxProperties != null)
+            {
+                schema.MaxProperties = fromSchema.MaxProperties;
+            }
+            if (fromSchema.MinProperties != null)
+            {
+                schema.MinProperties = fromSchema.MinProperties;
+            }
+            if (fromSchema.MaxLength != null)
+            {
+                schema.MaxLength = fromSchema.MaxLength;
+            }
+            if (fromSchema.MinLength != null)
+            {
+                schema.MinLength = fromSchema.MinLength;
+            }
+            if (fromSchema.MultipleOf != null)
+            {
+                schema.MultipleOf = fromSchema.MultipleOf;
+            }
+            if (fromSchema.Not != null)
+            {
+                if (schema.Not == null)
+                {
+                    schema.Not = addSchema(new OpenApiSchema(), fromSchema.Not);
                 }
                 else
                 {
-                    addSchema(schema.getNot(), fromSchema.getNot());
+                    addSchema(schema.Not, fromSchema.Not);
                 }
             }
-            if (fromSchema.getPattern() != null)
+            if (fromSchema.Pattern != null)
             {
-                schema.setPattern(fromSchema.getPattern());
+                schema.Pattern = fromSchema.Pattern;
             }
-            if (fromSchema.getXml() != null)
+            if (fromSchema.Xml != null)
             {
-                if (schema.getXml() == null)
+                if (schema.Xml == null)
                 {
-                    schema.setXml(new XML());
+                    schema.Xml = new OpenApiXml();
                 }
-                final XML xml = schema.getXml();
-                final XML fromXml = fromSchema.getXml();
-                if (fromXml.getAttribute() != null)
+                var xml = schema.Xml;
+                var fromXml  = fromSchema.Xml;
+
+                xml.Attribute = fromXml.Attribute;
+
+                if (fromXml.Name != null)
                 {
-                    xml.setAttribute(fromXml.getAttribute());
+                    xml.Name = fromXml.Name;
                 }
-                if (fromXml.getName() != null)
+                if (fromXml.Namespace != null)
                 {
-                    xml.setName(fromXml.getName());
+                    xml.Namespace = fromXml.Namespace;
                 }
-                if (fromXml.getNamespace() != null)
+                if (fromXml.Extensions != null)
                 {
-                    xml.setNamespace(fromXml.getNamespace());
-                }
-                if (fromXml.getExtensions() != null)
-                {
-                    if (xml.getExtensions() == null)
+                    if (xml.Extensions == null)
                     {
-                        xml.setExtensions(new LinkedHashMap<>());
+                        xml.Extensions = new Dictionary<string, IOpenApiExtension>();
                     }
-                    xml.getExtensions().putAll(fromXml.getExtensions());
+                    foreach (var element in fromXml.Extensions)
+                    {
+                        xml.Extensions.Add(element);
+                    }
                 }
-                if (fromXml.getPrefix() != null)
+                if (fromXml.Prefix != null)
                 {
-                    xml.setPrefix(fromXml.getPrefix());
+                    xml.Prefix = fromXml.Prefix;
                 }
-                if (fromXml.getWrapped() != null)
-                {
-                    xml.setWrapped(fromXml.getWrapped());
-                }
+
+                xml.Wrapped = fromXml.Wrapped;
             }
             return schema;
         }
