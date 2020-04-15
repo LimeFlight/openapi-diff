@@ -22,7 +22,7 @@ namespace openapi_diff.compare
             _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
             _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
-        public OpenApiSecurityRequirement Contains(List<OpenApiSecurityRequirement> securityRequirements, OpenApiSecurityRequirement left)
+        public OpenApiSecurityRequirement Contains(IList<OpenApiSecurityRequirement> securityRequirements, OpenApiSecurityRequirement left)
         {
             return securityRequirements
                 .FirstOrDefault(x => Same(left, x));
@@ -43,7 +43,7 @@ namespace openapi_diff.compare
             foreach (var openApiSecurityScheme in securityRequirement.Keys.ToList())
             {
 
-                if (components.SecuritySchemes.TryGetValue(openApiSecurityScheme.Scheme, out var result))
+                if (components.SecuritySchemes.TryGetValue(openApiSecurityScheme.Reference.Id, out var result))
                 {
                     if (!tmpResult.ContainsKey(result.Type))
                         tmpResult.Add(result.Type, result.In);
@@ -56,8 +56,8 @@ namespace openapi_diff.compare
             return tmpResult.ToImmutableDictionary();
         }
 
-        protected ChangedSecurityRequirementsBO Diff(
-            List<OpenApiSecurityRequirement> left, List<OpenApiSecurityRequirement> right, DiffContextBO context)
+        public ChangedSecurityRequirementsBO Diff(
+            IList<OpenApiSecurityRequirement> left, IList<OpenApiSecurityRequirement> right, DiffContextBO context)
         {
             left ??= new List<OpenApiSecurityRequirement>();
             right = right != null ? GetCopy(right) : new List<OpenApiSecurityRequirement>();

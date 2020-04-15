@@ -44,7 +44,7 @@ namespace openapi_diff.compare
             if (changedSecurityScheme != null
                 && leftSecurityScheme.Type == SecuritySchemeType.OAuth2)
             {
-                var changed = ChangedUtils.IsChanged(ListDiff.diff<ChangedSecuritySchemeScopesBO, string>(
+                var changed = ChangedUtils.IsChanged(ListDiff.Diff<ChangedSecuritySchemeScopesBO, string>(
                     new ChangedSecuritySchemeScopesBO(leftScopes, rightScopes)
                 ));
 
@@ -84,7 +84,7 @@ namespace openapi_diff.compare
                 case SecuritySchemeType.OAuth2:
                     changedSecurityScheme.OAuthFlows = _openApiDiff
                         .OAuthFlowsDiff
-                        .diff(leftSecurityScheme.Flows, rightSecurityScheme.Flows);
+                        .Diff(leftSecurityScheme.Flows, rightSecurityScheme.Flows);
                     break;
                 case SecuritySchemeType.OpenIdConnect:
                     changedSecurityScheme.IsChangedOpenIdConnectUrl =
@@ -96,7 +96,7 @@ namespace openapi_diff.compare
 
             changedSecurityScheme.Extensions = _openApiDiff
                 .ExtensionsDiff
-                .diff(leftSecurityScheme.Extensions, rightSecurityScheme.Extensions, context);
+                .Diff(leftSecurityScheme.Extensions, rightSecurityScheme.Extensions, context);
 
             return changedSecurityScheme;
         }

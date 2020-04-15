@@ -23,13 +23,13 @@ namespace openapi_diff.compare
 
         public ChangedParameterBO Diff(OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
         {
-            return CachedDiff(new HashSet<string>(), left, right, left.Reference.ReferenceV3, right.Reference.ReferenceV3, context);
+            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3, right.Reference?.ReferenceV3, context);
         }
 
         protected override ChangedParameterBO ComputeDiff(HashSet<string> refSet, OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
         {
-            left = RefPointer.ResolveRef(_leftComponents, left, left.Reference.ReferenceV3);
-            right = RefPointer.ResolveRef(_rightComponents, right, right.Reference.ReferenceV3);
+            left = RefPointer.ResolveRef(_leftComponents, left, left.Reference?.ReferenceV3);
+            right = RefPointer.ResolveRef(_rightComponents, right, right.Reference?.ReferenceV3);
 
             var changedParameter =
                 new ChangedParameterBO(right.Name, right.In, context)
@@ -43,16 +43,16 @@ namespace openapi_diff.compare
                     ChangeExplode = GetBooleanDiff(left.Explode, right.Explode),
                     Schema = _openApiDiff
                         .SchemaDiff
-                        .diff(refSet, left.Schema, right.Schema, context.copyWithRequired(true)),
+                        .Diff(refSet, left.Schema, right.Schema, context.copyWithRequired(true)),
                     Description = _openApiDiff
                         .MetadataDiff
                         .Diff(left.Description, right.Description, context),
                     Content = _openApiDiff
                         .ContentDiff
-                        .diff(left.Content, right.Content, context),
+                        .Diff(left.Content, right.Content, context),
                     Extensions = _openApiDiff
                         .ExtensionsDiff
-                        .diff(left.Extensions, right.Extensions, context)
+                        .Diff(left.Extensions, right.Extensions, context)
                 };
 
             return ChangedUtils.IsChanged(changedParameter);

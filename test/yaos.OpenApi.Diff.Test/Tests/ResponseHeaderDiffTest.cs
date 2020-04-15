@@ -7,19 +7,13 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class ResponseHeaderDiffTest : BaseTest
     {
-        private readonly IOpenAPICompare _openAPICompare;
-        private const string OPENAPI_DOC1 = "header_1.yaml";
-        private const string OPENAPI_DOC2 = "header_2.yaml";
-
-        public ResponseHeaderDiffTest(IOpenAPICompare openAPICompare)
-        {
-            _openAPICompare = openAPICompare;
-        }
-
+        private const string OpenapiDoc1 = "header_1.yaml";
+        private const string OpenapiDoc2 = "header_2.yaml";
+        
         [Fact]
         public void TestDiffDifferent()
         {
-            var changedOpenAPI = _openAPICompare.FromLocations(OPENAPI_DOC1, OPENAPI_DOC2);
+            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenapiDoc1, OpenapiDoc2);
 
             Assert.Empty(changedOpenAPI.NewEndpoints);
             Assert.Empty(changedOpenAPI.MissingEndpoints);
@@ -29,13 +23,13 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 
             Assert.NotNull(changedResponses);
             Assert.NotEmpty(changedResponses);
-            Assert.Contains("200", changedResponses);
+            Assert.True(changedResponses.ContainsKey("200"));
             
             var changedHeaders = changedResponses["200"].Headers;
-            Assert.True(changedHeaders.isDifferent());
-            Assert.Equal(changedHeaders.getChanged(), 1);
-            Assert.Equal(changedHeaders.getIncreased(), 1);
-            Assert.Equal(changedHeaders.getMissing(), 1);
+            Assert.True(changedHeaders.IsDifferent());
+            Assert.Single(changedHeaders.Changed);
+            Assert.Single(changedHeaders.Increased);
+            Assert.Single(changedHeaders.Missing);
         }
     }
 }

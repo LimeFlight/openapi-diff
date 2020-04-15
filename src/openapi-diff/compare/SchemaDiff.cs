@@ -13,56 +13,58 @@ namespace openapi_diff.compare
 {
     public class SchemaDiff : ReferenceDiffCache<OpenApiSchema, ChangedSchemaBO>
     {
-        private static RefPointer<OpenApiSchema> refPointer = new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
-        private static Dictionary<Type, Type> schemaDiffResultClassMap = new Dictionary<Type, Type>();
-
-        private readonly OpenApiComponents leftComponents;
-        private readonly OpenApiComponents rightComponents;
+        private static readonly RefPointer<OpenApiSchema> RefPointer = new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
+        
+        private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiComponents _rightComponents;
         private readonly OpenApiDiff _openApiDiff;
 
         public SchemaDiff(OpenApiDiff openApiDiff) 
         {
-            schemaDiffResultClassMap.Add(typeof(OpenApiSchema), typeof(SchemaDiff));
-            //schemaDiffResultClassMap.Add(typeof(ArraySchema), typeof(ArraySchemaDiffResult));
-            //schemaDiffResultClassMap.Add(typeof(ComposedSchema), typeof(ComposedSchemaDiffResult));
-
             _openApiDiff = openApiDiff;
-            leftComponents = openApiDiff.OldSpecOpenApi?.Components;
-            rightComponents = openApiDiff.NewSpecOpenApi?.Components;
+            _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
+            _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
 
-        public static SchemaDiffResult getSchemaDiffResult(OpenApiDiff openApiDiff)
+        public static SchemaDiffResult GetSchemaDiffResult(OpenApiDiff openApiDiff)
         {
-            return getSchemaDiffResult(null, openApiDiff);
+            return GetSchemaDiffResult(null, openApiDiff);
         }
 
-        public static SchemaDiffResult getSchemaDiffResult(Type classType, OpenApiDiff openApiDiff)
+        public static SchemaDiffResult GetSchemaDiffResult(AnyType? classType, OpenApiDiff openApiDiff)
         {
             if (classType == null)
             {
-                classType = typeof(OpenApiSchema);
+                classType = AnyType.Primitive;
             }
 
-            if (schemaDiffResultClassMap.TryGetValue(classType, out var typeEntry))
+            switch (classType)
             {
-                if (typeof(SchemaDiffResult).IsAssignableFrom(typeEntry))
-                    return (SchemaDiffResult)Activator.CreateInstance(typeEntry, openApiDiff);
+                case AnyType.Primitive:
+                    return new SchemaDiffResult(openApiDiff);
+                case AnyType.Array:
+                    return new ArraySchemaDiffResult(openApiDiff);
+                case AnyType.Object:
+                    return new ComposedSchemaDiffResult(openApiDiff);
+                case AnyType.Null:
+                    throw new ArgumentException($"type {classType} is illegal");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(classType), classType, null);
             }
-            throw new ArgumentException("type " + classType + " is illegal");
         }
 
-        protected static OpenApiSchema resolveComposedSchema(OpenApiComponents components, OpenApiSchema schema)
+        protected static OpenApiSchema ResolveComposedSchema(OpenApiComponents components, OpenApiSchema schema)
         {
-            if (schema.Default.AnyType == AnyType.Object) {
+            if (schema.Default == null || schema.Default.AnyType == AnyType.Object) {
                 var allOfSchemaList = schema.AllOf;
                 if (allOfSchemaList != null)
                 {
                     foreach (var t in allOfSchemaList)
                     {
                         var allOfSchema = t;
-                        allOfSchema = refPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference.ReferenceV3);
-                        allOfSchema = resolveComposedSchema(components, allOfSchema);
-                        schema = addSchema(schema, allOfSchema);
+                        allOfSchema = RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference.ReferenceV3);
+                        allOfSchema = ResolveComposedSchema(components, allOfSchema);
+                        schema = AddSchema(schema, allOfSchema);
                     }
 
                     schema.AllOf = null;
@@ -71,7 +73,7 @@ namespace openapi_diff.compare
             return schema;
         }
 
-        protected static OpenApiSchema addSchema(OpenApiSchema schema, OpenApiSchema fromSchema)
+        protected static OpenApiSchema AddSchema(OpenApiSchema schema, OpenApiSchema fromSchema)
         {
             if (fromSchema.Properties != null)
             {
@@ -263,11 +265,11 @@ namespace openapi_diff.compare
             {
                 if (schema.Not == null)
                 {
-                    schema.Not = addSchema(new OpenApiSchema(), fromSchema.Not);
+                    schema.Not = AddSchema(new OpenApiSchema(), fromSchema.Not);
                 }
                 else
                 {
-                    addSchema(schema.Not, fromSchema.Not);
+                    AddSchema(schema.Not, fromSchema.Not);
                 }
             }
             if (fromSchema.Pattern != null)
@@ -314,40 +316,40 @@ namespace openapi_diff.compare
             return schema;
         }
 
-        private static string getSchemaRef(OpenApiSchema schema)
+        private static string GetSchemaRef(OpenApiSchema schema)
         {
-            return schema.Reference.ReferenceV3;
+            return schema.Reference?.ReferenceV3;
         }
 
-        public ChangedSchemaBO diff(HashSet<string> refSet, OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
+        public ChangedSchemaBO Diff(HashSet<string> refSet, OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
         {
             if (left == null && right == null)
             {
                 return null;
             }
-            return CachedDiff(refSet, left, right, getSchemaRef(left), getSchemaRef(right), context);
+            return CachedDiff(refSet, left, right, GetSchemaRef(left), GetSchemaRef(right), context);
         }
 
-        public ChangedSchemaBO getTypeChangedSchema(
+        public ChangedSchemaBO GetTypeChangedSchema(
             OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
         {
-            var schemaDiffResult = getSchemaDiffResult(_openApiDiff);
-            schemaDiffResult.changedSchema.OldSchema = left;
-            schemaDiffResult.changedSchema.NewSchema = right;
-            schemaDiffResult.changedSchema.ChangedType = true;
-            schemaDiffResult.changedSchema.Context = context;
+            var schemaDiffResult = GetSchemaDiffResult(_openApiDiff);
+            schemaDiffResult.ChangedSchema.OldSchema = left;
+            schemaDiffResult.ChangedSchema.NewSchema = right;
+            schemaDiffResult.ChangedSchema.IsChangedType = true;
+            schemaDiffResult.ChangedSchema.Context = context;
 
-            return schemaDiffResult.changedSchema;
+            return schemaDiffResult.ChangedSchema;
         }
 
         protected override ChangedSchemaBO ComputeDiff(
             HashSet<string> refSet, OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
         {
-            left = refPointer.ResolveRef(leftComponents, left, getSchemaRef(left));
-            right = refPointer.ResolveRef(rightComponents, right, getSchemaRef(right));
+            left = RefPointer.ResolveRef(_leftComponents, left, GetSchemaRef(left));
+            right = RefPointer.ResolveRef(_rightComponents, right, GetSchemaRef(right));
 
-            left = resolveComposedSchema(leftComponents, left);
-            right = resolveComposedSchema(rightComponents, right);
+            left = ResolveComposedSchema(_leftComponents, left);
+            right = ResolveComposedSchema(_rightComponents, right);
 
             // If type of schemas are different, just set old & new schema, set changedType to true in
             // SchemaDiffResult and
@@ -356,12 +358,12 @@ namespace openapi_diff.compare
                 || left.Type != right.Type
                 || left.Format != right.Format)
             {
-                return getTypeChangedSchema(left, right, context);
+                return GetTypeChangedSchema(left, right, context);
             }
 
             // If schema type is same then get specific SchemaDiffResult and compare the properties
-            var result = getSchemaDiffResult(right.GetType(), _openApiDiff);
-            return result.diff(refSet, leftComponents, rightComponents, left, right, context);
+            var result = GetSchemaDiffResult(right.Default?.AnyType, _openApiDiff);
+            return result.Diff(refSet, _leftComponents, _rightComponents, left, right, context);
         }
     }
 }

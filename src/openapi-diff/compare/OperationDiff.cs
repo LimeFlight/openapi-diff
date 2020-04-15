@@ -61,12 +61,12 @@ namespace openapi_diff.compare
                 changedOperation.SecurityRequirements =
                     _openApiDiff
                         .SecurityRequirementsDiff
-                        .diff(oldOperation.Security, newOperation.Security, context);
+                        .Diff(oldOperation.Security, newOperation.Security, context);
             }
             changedOperation.Extensions =
                 _openApiDiff
                     .ExtensionsDiff
-                    .diff(oldOperation.Extensions, newOperation.Extensions, context);
+                    .Diff(oldOperation.Extensions, newOperation.Extensions, context);
 
             return ChangedUtils.IsChanged(changedOperation);
         }

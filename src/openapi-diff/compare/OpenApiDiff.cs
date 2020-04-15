@@ -1,7 +1,9 @@
-﻿using System;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
+using openapi_diff.Extensions;
+using openapi_diff.utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,7 +13,7 @@ namespace openapi_diff.compare
     {
         public const string SwaggerVersionV2 = "2.0";
 
-        private readonly ILogger<OpenApiDiff> _logger;
+        private readonly ILogger _logger;
 
         public PathsDiff PathsDiff { get; set; }
         public PathDiff PathDiff { get; set; }
@@ -40,7 +42,7 @@ namespace openapi_diff.compare
         public List<ChangedOperationBO> ChangedOperations { get; set; }
         public ChangedExtensionsBO ChangedExtensions { get; set; }
 
-        public OpenApiDiff(OpenApiDocument oldSpecOpenApi, OpenApiDocument newSpecOpenApi, IEnumerable<IExtensionDiff> extensions, ILogger<OpenApiDiff> logger)
+        public OpenApiDiff(OpenApiDocument oldSpecOpenApi, OpenApiDocument newSpecOpenApi, IEnumerable<IExtensionDiff> extensions, ILogger logger)
         {
             _logger = logger;
             OldSpecOpenApi = oldSpecOpenApi;
@@ -52,7 +54,7 @@ namespace openapi_diff.compare
             InitializeFields(extensions);
         }
 
-        public static ChangedOpenApiBO Compare(OpenApiDocument oldSpecOpenApi, OpenApiDocument newSpecOpenApi, IEnumerable<IExtensionDiff> extensions, ILogger<OpenApiDiff> logger)
+        public static ChangedOpenApiBO Compare(OpenApiDocument oldSpecOpenApi, OpenApiDocument newSpecOpenApi, IEnumerable<IExtensionDiff> extensions, ILogger logger)
         {
             return new OpenApiDiff(oldSpecOpenApi, newSpecOpenApi, extensions, logger).Compare();
         }
@@ -82,94 +84,81 @@ namespace openapi_diff.compare
 
         private ChangedOpenApiBO Compare()
         {
-            preProcess(OldSpecOpenApi);
-            preProcess(NewSpecOpenApi);
+            PreProcess(OldSpecOpenApi);
+            PreProcess(NewSpecOpenApi);
             var paths =
-                PathsDiff.Diff(
-                    valOrEmpty(oldSpecOpenApi.getPaths()), valOrEmpty(newSpecOpenApi.getPaths()));
-            this.newEndpoints = new ArrayList<>();
-            this.missingEndpoints = new ArrayList<>();
-            this.changedOperations = new ArrayList<>();
-            paths.ifPresent(
-                changedPaths-> {
-                this.newEndpoints = EndpointUtils.convert2EndpointList(changedPaths.getIncreased());
-                this.missingEndpoints = EndpointUtils.convert2EndpointList(changedPaths.getMissing());
-                changedPaths
-                    .getChanged()
-                    .keySet()
-                    .forEach(
-                        path-> {
-                    ChangedPath changedPath = changedPaths.getChanged().get(path);
-                    this.newEndpoints.addAll(
-                        EndpointUtils.convert2Endpoints(path, changedPath.getIncreased()));
-                    this.missingEndpoints.addAll(
-                        EndpointUtils.convert2Endpoints(path, changedPath.getMissing()));
-                    changedOperations.addAll(changedPath.getChanged());
-                });
-            });
-            getExtensionsDiff()
-                .diff(oldSpecOpenApi.getExtensions(), newSpecOpenApi.getExtensions())
-                .ifPresent(this::setChangedExtension);
-            return getChangedOpenApi();
+                PathsDiff.Diff(PathsDiff.ValOrEmpty(OldSpecOpenApi.Paths), PathsDiff.ValOrEmpty(NewSpecOpenApi.Paths));
+            NewEndpoints = new List<EndpointBO>();
+            MissingEndpoints = new List<EndpointBO>();
+            ChangedOperations = new List<ChangedOperationBO>();
+
+            if (paths != null)
+            {
+                NewEndpoints = EndpointUtils.ConvertToEndpointList<EndpointBO>(paths.Increased);
+                MissingEndpoints = EndpointUtils.ConvertToEndpointList<EndpointBO>(paths.Missing);
+                foreach (var (key, value) in paths.Changed)
+                {
+                    NewEndpoints.AddRange(EndpointUtils.ConvertToEndpoints<EndpointBO>(key, value.Increased));
+                    MissingEndpoints.AddRange(EndpointUtils.ConvertToEndpoints<EndpointBO>(key, value.Missing));
+                    ChangedOperations.AddRange(value.Changed);
+                }
+            }
+
+            var diff = ExtensionsDiff
+                .Diff(OldSpecOpenApi.Extensions, NewSpecOpenApi.Extensions);
+
+            if (diff != null)
+                ChangedExtensions = diff;
+            return GetChangedOpenApi();
         }
 
-        private void setChangedExtension(ChangedExtensions changedExtension)
+        private static void PreProcess(OpenApiDocument openApi)
         {
-            this.changedExtensions = changedExtension;
-        }
-
-        private void preProcess(OpenAPI openApi)
-        {
-            List<SecurityRequirement> securityRequirements = openApi.getSecurity();
+            var securityRequirements = openApi.SecurityRequirements;
 
             if (securityRequirements != null)
             {
-                List<SecurityRequirement> distinctSecurityRequirements =
-                    securityRequirements.stream().distinct().collect(Collectors.toList());
-                Map<String, PathItem> paths = openApi.getPaths();
+                var distinctSecurityRequirements =
+                    securityRequirements.Distinct().ToList();
+                var paths = openApi.Paths;
                 if (paths != null)
                 {
-                    paths
-                        .values()
-                        .forEach(
-                            pathItem->
-                                pathItem
-                                    .readOperationsMap()
-                                    .values()
-                                    .stream()
-                                    .filter(operation->operation.getSecurity() != null)
-                                    .forEach(
-                                        operation->
-                                            operation.setSecurity(
-                                                operation
-                                                    .getSecurity()
-                                                    .stream()
-                                                    .distinct()
-                                                    .collect(Collectors.toList()))));
-                    paths
-                        .values()
-                        .forEach(
-                            pathItem->
-                                pathItem
-                                    .readOperationsMap()
-                                    .values()
-                                    .stream()
-                                    .filter(operation->operation.getSecurity() == null)
-                                    .forEach(operation->operation.setSecurity(distinctSecurityRequirements)));
+                    foreach (var openApiPathItem in paths.Values)
+                    {
+                        var operationsWithSecurity = openApiPathItem
+                            .Operations
+                            .Values
+                            .Where(x => !x.Security.IsNullOrEmpty());
+                        foreach (var openApiOperation in operationsWithSecurity)
+                        {
+                            openApiOperation.Security = openApiOperation.Security.Distinct().ToList();
+                        }
+                        var operationsWithoutSecurity = openApiPathItem
+                            .Operations
+                            .Values
+                            .Where(x => x.Security.IsNullOrEmpty());
+                        foreach (var openApiOperation in operationsWithoutSecurity)
+                        {
+                            openApiOperation.Security = distinctSecurityRequirements;
+                        }
+                    }
                 }
-                openApi.setSecurity(null);
+
+                openApi.SecurityRequirements = null;
             }
         }
 
-        private ChangedOpenApi getChangedOpenApi()
+        private ChangedOpenApiBO GetChangedOpenApi()
         {
-            return new ChangedOpenApi()
-                .setMissingEndpoints(missingEndpoints)
-                .setNewEndpoints(newEndpoints)
-                .setNewSpecOpenApi(newSpecOpenApi)
-                .setOldSpecOpenApi(oldSpecOpenApi)
-                .setChangedOperations(changedOperations)
-                .setChangedExtensions(changedExtensions);
+            return new ChangedOpenApiBO()
+            {
+                MissingEndpoints = MissingEndpoints,
+                NewEndpoints = NewEndpoints,
+                NewSpecOpenApi = NewSpecOpenApi,
+                OldSpecOpenApi = OldSpecOpenApi,
+                ChangedOperations = ChangedOperations,
+                ChangedExtensions = ChangedExtensions
+            };
         }
     }
 }

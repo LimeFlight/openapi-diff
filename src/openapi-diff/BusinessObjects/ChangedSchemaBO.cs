@@ -12,25 +12,25 @@ namespace openapi_diff.BusinessObjects
         public OpenApiSchema OldSchema { get; set; }
         public OpenApiSchema NewSchema { get; set; }
         public string Type { get; set; }
-        protected Dictionary<string, ChangedSchemaBO> ChangedProperties { get; set; }
-        protected Dictionary<string, OpenApiSchema> IncreasedProperties { get; set; }
-        protected Dictionary<string, OpenApiSchema> MissingProperties { get; set; }
-        public bool ChangeDeprecated { get; set; }
-        protected ChangedMetadataBO Description { get; set; }
-        public bool ChangeTitle { get; set; }
+        public Dictionary<string, ChangedSchemaBO> ChangedProperties { get; set; }
+        public Dictionary<string, OpenApiSchema> IncreasedProperties { get; set; }
+        public Dictionary<string, OpenApiSchema> MissingProperties { get; set; }
+        public bool IsChangeDeprecated { get; set; }
+        public ChangedMetadataBO Description { get; set; }
+        public bool IsChangeTitle { get; set; }
         public ChangedRequiredBO Required { get; set; }
-        public bool ChangeDefault { get; set; }
+        public bool IsChangeDefault { get; set; }
         public ChangedEnumBO Enumeration { get; set; }
-        public bool ChangeFormat { get; set; }
+        public bool IsChangeFormat { get; set; }
         public ChangedReadOnlyBO ReadOnly { get; set; }
         public ChangedWriteOnlyBO WriteOnly { get; set; }
-        public bool ChangedType { get; set; }
+        public bool IsChangedType { get; set; }
         public ChangedMaxLengthBO MaxLength { get; set; }
         public bool DiscriminatorPropertyChanged { get; set; }
-        protected ChangedSchemaBO Items { get; set; }
-        protected ChangedOneOfSchemaBO OneOfSchema { get; set; }
-        protected ChangedSchemaBO AddProp { get; set; }
-        private ChangedExtensionsBO Extensions { get; set; }
+        public ChangedSchemaBO Items { get; set; }
+        public ChangedOneOfSchemaBO OneOfSchema { get; set; }
+        public ChangedSchemaBO AddProp { get; set; }
+        public ChangedExtensionsBO Extensions { get; set; }
 
         public ChangedSchemaBO()
         {
@@ -62,13 +62,13 @@ namespace openapi_diff.BusinessObjects
         public override DiffResultBO IsCoreChanged()
         {
             if (
-                !ChangedType
+                !IsChangedType
                 && (OldSchema == null && NewSchema == null || OldSchema != null && NewSchema != null)
-                && !ChangeFormat
+                && !IsChangeFormat
                 && IncreasedProperties.Count == 0
                 && MissingProperties.Count == 0
                 && ChangedProperties.Values.Count == 0
-                && !ChangeDeprecated
+                && !IsChangeDeprecated
                 && ! DiscriminatorPropertyChanged
             )
                 return new DiffResultBO(DiffResultEnum.NoChanges);
@@ -79,7 +79,7 @@ namespace openapi_diff.BusinessObjects
 
             if ((Context.IsRequest && compatibleForRequest
                  || Context.IsResponse && compatibleForResponse)
-                && !ChangedType
+                && !IsChangedType
                 && !DiscriminatorPropertyChanged)
             {
                 return new DiffResultBO(DiffResultEnum.Compatible);

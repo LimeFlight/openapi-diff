@@ -122,12 +122,12 @@ components:
         lovesRocks:
           type: boolean
 
-    MyResponseType:
-      oneOf:
-      - $ref: '#/components/schemas/Cat'
-      - $ref: '#/components/schemas/Dog'
-      - $ref: '#/components/schemas/Lizard'
-      discriminator:
-        propertyName: pet_type
-        mapping:
-          dog: '#/components/schemas/Dog'
+    # MyResponseType:
+    #   oneOf:
+    #   - $ref: '#/components/schemas/Cat'
+    #   - $ref: '#/components/schemas/Dog'
+    #   - $ref: '#/components/schemas/Lizard'
+    #   discriminator:
+    #     propertyName: pet_type
+    #     mapping:
+    #       dog: '#/components/schemas/Dog'

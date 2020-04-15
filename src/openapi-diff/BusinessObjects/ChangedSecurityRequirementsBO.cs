@@ -7,14 +7,14 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedSecurityRequirementsBO : ComposedChangedBO
     {
-        private readonly List<OpenApiSecurityRequirement> _oldSecurityRequirements;
-        private readonly List<OpenApiSecurityRequirement> _newSecurityRequirements;
+        private readonly IList<OpenApiSecurityRequirement> _oldSecurityRequirements;
+        private readonly IList<OpenApiSecurityRequirement> _newSecurityRequirements;
 
         public List<OpenApiSecurityRequirement> Missing { get; set; }
         public List<OpenApiSecurityRequirement> Increased { get; set; }
         public List<ChangedSecurityRequirementBO> Changed { get; set; }
 
-        public ChangedSecurityRequirementsBO(List<OpenApiSecurityRequirement> oldSecurityRequirements, List<OpenApiSecurityRequirement> newSecurityRequirements)
+        public ChangedSecurityRequirementsBO(IList<OpenApiSecurityRequirement> oldSecurityRequirements, IList<OpenApiSecurityRequirement> newSecurityRequirements)
         {
             _oldSecurityRequirements = oldSecurityRequirements;
             _newSecurityRequirements = newSecurityRequirements;

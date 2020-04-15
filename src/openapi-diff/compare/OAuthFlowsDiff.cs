@@ -33,7 +33,7 @@ namespace openapi_diff.compare
 
             changedOAuthFlows.Extensions = _openApiDiff
                 .ExtensionsDiff
-                .diff(left?.Extensions, right?.Extensions);
+                .Diff(left?.Extensions, right?.Extensions);
 
             return ChangedUtils.IsChanged(changedOAuthFlows);
         }

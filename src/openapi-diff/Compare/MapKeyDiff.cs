@@ -15,18 +15,18 @@ namespace openapi_diff.Compare
             Missing = new Dictionary<T1, T2>();
         }
 
-        public static MapKeyDiff<T1, T2> Diff(Dictionary<T1, T2> mapLeft, Dictionary<T1, T2> mapRight)
+        public static MapKeyDiff<T1, T2> Diff(IDictionary<T1, T2> mapLeft, IDictionary<T1, T2> mapRight)
         {
             var instance = new MapKeyDiff<T1, T2>();
             if (null == mapLeft && null == mapRight) return instance;
             if (null == mapLeft)
             {
-                instance.Increased = mapRight;
+                instance.Increased = (Dictionary<T1, T2>) mapRight;
                 return instance;
             }
             if (null == mapRight)
             {
-                instance.Missing = mapLeft;
+                instance.Missing = (Dictionary<T1, T2>) mapLeft;
                 return instance;
             }
             instance.Increased = new Dictionary<T1, T2>(mapRight);

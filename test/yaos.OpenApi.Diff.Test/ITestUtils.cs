@@ -1,4 +1,6 @@
-﻿namespace yaos.OpenApi.Diff.Tests
+﻿using openapi_diff;
+
+namespace yaos.OpenApi.Diff.Tests
 {
     public interface ITestUtils
     {
@@ -6,5 +8,6 @@
         void AssertOpenAPIChangedEndpoints(string oldSpec, string newSpec);
         void AssertOpenAPIBackwardCompatible(string oldSpec, string newSpec, bool isDiff);
         void AssertOpenAPIBackwardIncompatible(string oldSpec, string newSpec);
+        IOpenAPICompare GetOpenAPICompare();
     }
 }

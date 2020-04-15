@@ -1,6 +1,6 @@
 openapi: 3.0.0
 servers:
-  - url: 'http://petstore.swagger.io/v2'
+  - url: "http://petstore.swagger.io/v2"
 info:
   description: >-
     This is a sample server Petstore server.  You can find out more about
@@ -9,45 +9,44 @@ info:
     `special-key` to test the authorization filters.
   version: 1.0.0
   title: Swagger Petstore
-  termsOfService: 'http://swagger.io/terms/'
+  termsOfService: "http://swagger.io/terms/"
   contact:
     email: apiteam@swagger.io
   license:
     name: Apache 2.0
-    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
 tags:
   - name: pet
     description: Everything about your Pets
     externalDocs:
       description: Find out more
-      url: 'http://swagger.io'
+      url: "http://swagger.io"
   - name: store
     description: Access to Petstore orders
   - name: user
     description: Operations about user
     externalDocs:
       description: Find out more about our store
-      url: 'http://swagger.io'
+      url: "http://swagger.io"
 paths:
   /pet:
     post:
       tags:
         - pet
       summary: Add a new pet to the store
-      description: ''
+      description: ""
       operationId: addPet
       responses:
-        '405':
+        "405":
           description: Invalid input
-      requestBody:
-        $ref: '#/components/requestBodies/Pet'
-      responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MyResponseType'
+                $ref: "#/components/schemas/MyResponseType"
+      requestBody:
+        $ref: "#/components/requestBodies/Pet"
     get:
       tags:
         - pet
@@ -62,12 +61,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Pet'
+                $ref: "#/components/schemas/Pet"
   /pet/findByStatus:
     get:
       tags:
@@ -91,7 +90,7 @@ paths:
                 - sold
               default: available
       responses:
-        '200':
+        "200":
           description: successful operation
           content:
             application/json:
@@ -101,23 +100,23 @@ paths:
                   pets:
                     type: array
                     items:
-                      $ref: '#/components/schemas/Dog'
-        '400':
+                      $ref: "#/components/schemas/Dog"
+        "400":
           description: Invalid status value
       security:
         - petstore_auth:
-            - 'write:pets'
-            - 'read:pets'
+            - "write:pets"
+            - "read:pets"
 externalDocs:
   description: Find out more about Swagger
-  url: 'http://swagger.io'
+  url: "http://swagger.io"
 components:
   requestBodies:
     Pet:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/Pet'
+            $ref: "#/components/schemas/Pet"
       description: Pet object that needs to be added to the store
       required: true
   securitySchemes:
@@ -125,10 +124,10 @@ components:
       type: oauth2
       flows:
         implicit:
-          authorizationUrl: 'http://petstore.swagger.io/oauth/dialog'
+          authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
           scopes:
-            'write:pets': modify pets in your account
-            'read:pets': read your pets
+            "write:pets": modify pets in your account
+            "read:pets": read your pets
     api_key:
       type: apiKey
       name: api_key
@@ -137,7 +136,7 @@ components:
     Pet:
       type: object
       required:
-      - pet_type
+        - pet_type
       properties:
         pet_type:
           type: string
@@ -162,11 +161,13 @@ components:
           type: boolean
 
     MyResponseType:
+      required:
+        - pet_type
       oneOf:
-      - $ref: '#/components/schemas/Cat'
-      - $ref: '#/components/schemas/Dog'
-      - $ref: '#/components/schemas/Lizard'
+        - $ref: "#/components/schemas/Cat"
+        - $ref: "#/components/schemas/Dog"
+        - $ref: "#/components/schemas/Lizard"
       discriminator:
         propertyName: pet_type
         mapping:
-          dog: '#/components/schemas/Dog'
+          dog: "#/components/schemas/Dog"

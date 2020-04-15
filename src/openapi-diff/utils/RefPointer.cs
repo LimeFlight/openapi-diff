@@ -64,7 +64,7 @@ namespace openapi_diff.utils
             }
 
             var baseRef = GetBaseRefForType(_refType.GetDisplayName());
-            if (!reference.StartsWith(baseRef))
+            if (!reference.StartsWith(baseRef, StringComparison.CurrentCultureIgnoreCase))
             {
                 throw new AggregateException("Invalid ref: " + reference);
             }

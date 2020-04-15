@@ -37,7 +37,7 @@ namespace openapi_diff.compare
                     Changed = responses,
                     Extensions = _openApiDiff
                         .ExtensionsDiff
-                        .diff(left.Extensions, right.Extensions, context)
+                        .Diff(left.Extensions, right.Extensions, context)
                 };
 
             return ChangedUtils.IsChanged(changedApiResponse);

@@ -11,13 +11,13 @@ namespace yaos.OpenApi.Diff.Tests.tests
         [Fact]
         public void TestDiffSame()
         {
-            TestUtils.AssertOpenApiAreEquals(OpenAPIDoc1, OpenAPIDoc2);
+            TestUtils.AssertOpenAPIAreEquals(OpenAPIDoc1, OpenAPIDoc1);
         }
 
         [Fact]
         public void TestDiffDifferent()
         {
-            TestUtils.AssertOpenApiBackwardIncompatible(OpenAPIDoc1, OpenAPIDoc2);
+            TestUtils.AssertOpenAPIBackwardIncompatible(OpenAPIDoc1, OpenAPIDoc2);
         }
     }
 }

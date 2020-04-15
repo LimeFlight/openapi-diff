@@ -8,9 +8,9 @@ namespace openapi_diff.BusinessObjects
     {
         private readonly OpenApiOperation _oldOperation;
         private readonly OpenApiOperation _newOperation;
-        private readonly string _pathUrl;
-        private readonly OperationType _httpMethod;
-        
+
+        public OperationType HttpMethod { get; }
+        public string PathUrl { get; }
         public ChangedMetadataBO Summary { get; set; }
         public ChangedMetadataBO Description { get; set; }
         public bool IsDeprecated { get; set; }
@@ -22,8 +22,8 @@ namespace openapi_diff.BusinessObjects
 
         public ChangedOperationBO(string pathUrl, OperationType httpMethod, OpenApiOperation oldOperation, OpenApiOperation newOperation)
         {
-            _pathUrl = pathUrl;
-            _httpMethod = httpMethod;
+            PathUrl = pathUrl;
+            HttpMethod = httpMethod;
             _oldOperation = oldOperation;
             _newOperation = newOperation;
         }
@@ -32,8 +32,8 @@ namespace openapi_diff.BusinessObjects
         {
             var endpoint = new EndpointBO
             {
-                PathUrl = _pathUrl,
-                Method = _httpMethod,
+                PathUrl = PathUrl,
+                Method = HttpMethod,
                 Summary = _newOperation.Summary,
                 Operation = _newOperation
             };

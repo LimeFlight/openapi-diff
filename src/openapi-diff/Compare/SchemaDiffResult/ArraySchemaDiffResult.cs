@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
 using openapi_diff.compare;
 using System.Collections.Generic;
@@ -11,23 +12,25 @@ namespace openapi_diff.Compare.SchemaDiffResult
         {
         }
 
-        public override ChangedSchemaBO diff<TV>(HashSet<string> refSet, OpenApiComponents leftComponents, OpenApiComponents rightComponents, TV left,
-            TV right, DiffContextBO context)
+        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents, OpenApiComponents rightComponents, T left,
+            T right, DiffContextBO context)
         {
-            var leftArraySchema = (ArraySchema)left;
-            var rightArraySchema = (ArraySchema)right;
+            if (left.Default.AnyType != AnyType.Array || right.Default.AnyType != AnyType.Array)
+                return null;
+            
+            base.Diff(refSet, leftComponents, rightComponents, left, right, context);
 
-            base.diff(refSet, leftComponents, rightComponents, left, right, context);
-
-            openApiDiff
-                .getSchemaDiff()
-                .diff(
+            var diff = OpenApiDiff
+                .SchemaDiff
+                .Diff(
                     refSet,
-                    leftArraySchema.getItems(),
-                    rightArraySchema.getItems(),
-                    context.copyWithRequired(true))
-                .ifPresent(changedSchema::setItems);
-            return isApplicable(context);
+                    left.Items,
+                    right.Items,
+                    context.copyWithRequired(true));
+            if (diff != null)
+                ChangedSchema.Items = diff;
+
+            return IsApplicable(context);
         }
     }
 }

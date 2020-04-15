@@ -23,13 +23,13 @@ namespace openapi_diff.compare
 
         public ChangedResponseBO Diff(OpenApiResponse left, OpenApiResponse right, DiffContextBO context)
         {
-            return CachedDiff(new HashSet<string>(), left, right, left.Reference.ReferenceV3, right.Reference.ReferenceV3, context);
+            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3, right.Reference?.ReferenceV3, context);
         }
 
         protected override ChangedResponseBO ComputeDiff(HashSet<string> refSet, OpenApiResponse left, OpenApiResponse right, DiffContextBO context)
         {
-            left = RefPointer.ResolveRef(_leftComponents, left, left.Reference.ReferenceV3);
-            right = RefPointer.ResolveRef(_rightComponents, right, right.Reference.ReferenceV3);
+            left = RefPointer.ResolveRef(_leftComponents, left, left.Reference?.ReferenceV3);
+            right = RefPointer.ResolveRef(_rightComponents, right, right.Reference?.ReferenceV3);
 
             var changedResponse = new ChangedResponseBO(left, right, context)
             {
@@ -41,10 +41,10 @@ namespace openapi_diff.compare
                     .Diff(left.Content, right.Content, context),
                 Headers = _openApiDiff
                     .HeadersDiff
-                    .diff(left.Headers, right.Headers, context),
+                    .Diff(left.Headers, right.Headers, context),
                 Extensions = _openApiDiff
                     .ExtensionsDiff
-                    .diff(left.Extensions, right.Extensions, context)
+                    .Diff(left.Extensions, right.Extensions, context)
             };
            
             return ChangedUtils.IsChanged(changedResponse);

@@ -8,14 +8,19 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedOpenApiBO : ComposedChangedBO
     {
-        private OpenApiDocument _oldSpecOpenApi;
-        private OpenApiDocument _newSpecOpenApi;
-
+        public OpenApiDocument OldSpecOpenApi { get; set; }
+        public OpenApiDocument NewSpecOpenApi { get; set; }
         public List<EndpointBO> NewEndpoints { get; set; }
         public List<EndpointBO> MissingEndpoints { get; set; }
         public List<ChangedOperationBO> ChangedOperations { get; set; }
         public ChangedExtensionsBO ChangedExtensions { get; set; }
 
+        public ChangedOpenApiBO()
+        {
+            NewEndpoints = new List<EndpointBO>();
+            MissingEndpoints = new List<EndpointBO>();
+            ChangedOperations = new List<ChangedOperationBO>();
+        }
         public List<EndpointBO> GetDeprecatedEndpoints()
         {
             return ChangedOperations

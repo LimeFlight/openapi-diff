@@ -1,42 +1,28 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.OpenApi.Models;
+using openapi_diff.BusinessObjects;
+using openapi_diff.Extensions;
+using openapi_diff.utils;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using Microsoft.OpenApi.Models;
-using openapi_diff.BusinessObjects;
 
 namespace openapi_diff.compare
 {
     public class PathsDiff
     {
         private const string RegexPath = "\\{([^/]+)\\}";
-        private OpenApiDiff _openApiDiff;
+        private readonly OpenApiDiff _openApiDiff;
 
         public PathsDiff(OpenApiDiff openApiDiff)
         {
             _openApiDiff = openApiDiff;
         }
 
-        private static string normalizePath(string path)
-        {
-            return path.Replace(RegexPath, "{}");
-        }
-
-        private static List<string> extractParameters(string path)
-        {
-            var paramsList = new List<string>();
-            var pattern = new Regex(RegexPath);
-            var matcher = pattern.Match(path);
-            while (matcher.Success)
-            {
-                paramsList.Add(matcher.Groups.Values.FirstOrDefault(x => x.));
-            }
-            return paramsList;
-        }
-
         public ChangedPathsBO Diff(Dictionary<string, OpenApiPathItem> left, Dictionary<string, OpenApiPathItem> right)
         {
             var changedPaths = new ChangedPathsBO(left, right);
-            
+
             foreach (var (key, value) in right)
             {
                 changedPaths.Increased.Add(key, value);
@@ -44,61 +30,66 @@ namespace openapi_diff.compare
 
             foreach (var (key, value) in left)
             {
-                
-            }
+                var template = NormalizePath(key);
+                var result = right.Keys.FirstOrDefault(x => NormalizePath(x) == template);
 
-            left.keySet()
-                .forEach(
-                    (String url)-> {
-                PathItem leftPath = left.get(url);
-                String template = normalizePath(url);
-                Optional<String> result =
-                    right
-                        .keySet()
-                        .stream()
-                        .filter(s->normalizePath(s).equals(template))
-                        .findFirst();
-                if (result.isPresent())
+                if (result != null)
                 {
-                    if (!changedPaths.getIncreased().containsKey(result.get()))
+                    if (!changedPaths.Increased.ContainsKey(result))
+                        throw new ArgumentException($"Two path items have the same signature: {template}");
+                    var rightPath = changedPaths.Increased[result];
+                    changedPaths.Increased.Remove(result);
+                    var paramsDict = new Dictionary<string, string>();
+                    if (key != result)
                     {
-                        throw new IllegalArgumentException(
-                            "Two path items have the same signature: " + template);
-                    }
-                    PathItem rightPath = changedPaths.getIncreased().remove(result.get());
-                    Map < String, String > params = new LinkedHashMap<>();
-                    if (!url.equals(result.get()))
-                    {
-                        List<String> oldParams = extractParameters(url);
-                        List<String> newParams = extractParameters(result.get());
-                        for (int i = 0; i < oldParams.size(); i++)
+                        var oldParams = ExtractParameters(key);
+                        var newParams = ExtractParameters(result);
+                        for (var i = oldParams.Count - 1; i >= 0; i--)
                         {
-                    params.put(oldParams.get(i), newParams.get(i));
+                            paramsDict.Add(oldParams[i], newParams[i]);
                         }
                     }
-                    DiffContext context = new DiffContext();
-                    context.setUrl(url);
-                    context.setParameters(params);
-                    openApiDiff
-                        .getPathDiff()
-                        .diff(leftPath, rightPath, context)
-                        .ifPresent(path->changedPaths.getChanged().put(result.get(), path));
+                    var context = new DiffContextBO();
+                    context.setUrl(key);
+                    context.setParameters(paramsDict);
+
+                    var diff = _openApiDiff
+                        .PathDiff
+                        .Diff(value, rightPath, context);
+
+                    if (diff != null)
+                        changedPaths.Changed.Add(result, diff);
                 }
                 else
                 {
-                    changedPaths.getMissing().put(url, leftPath);
+                    changedPaths.Missing.Add(key, value);
                 }
-            });
-            return isChanged(changedPaths);
+            }
+
+            return ChangedUtils.IsChanged(changedPaths);
         }
 
-        public static Paths valOrEmpty(Paths path)
+        private static string NormalizePath(string path)
         {
-            if (path == null)
+            return Regex.Replace(path, RegexPath, "{}");
+        }
+
+        private static List<string> ExtractParameters(string path)
+        {
+            var paramsList = new List<string>();
+            var reg = new Regex(RegexPath);
+            var matches = reg.Matches(path);
+            if (!matches.IsNullOrEmpty())
             {
-                path = new Paths();
+                foreach (Match m in matches)
+                    paramsList.Add(m.Groups[1].Value);
             }
-            return path;
+            return paramsList;
+        }
+
+        public static OpenApiPaths ValOrEmpty(OpenApiPaths path)
+        {
+            return path ?? new OpenApiPaths();
         }
     }
 }

@@ -4,6 +4,7 @@ using openapi_diff.utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.OpenApi.Interfaces;
 
 namespace openapi_diff.compare
 {
@@ -18,7 +19,7 @@ namespace openapi_diff.compare
             _extensions = extensions;
         }
 
-        public bool IsParentApplicable(TypeEnum type, object parent, Dictionary<string, object> extensions, DiffContextBO context)
+        public bool IsParentApplicable(TypeEnum type, object parent, IDictionary<string, IOpenApiExtension> extensions, DiffContextBO context)
         {
             if (extensions.Count == 0)
             {
@@ -40,16 +41,16 @@ namespace openapi_diff.compare
             return predicate(GetExtensionDiff(name).SetOpenApiDiff(_openApiDiff));
         }
 
-        public ChangedExtensionsBO Diff(Dictionary<string, object> left, Dictionary<string, object> right)
+        public ChangedExtensionsBO Diff(IDictionary<string, IOpenApiExtension> left, IDictionary<string, IOpenApiExtension> right)
         {
             return Diff(left, right, null);
         }
 
-        public ChangedExtensionsBO Diff(Dictionary<string, object> left, Dictionary<string, object> right, DiffContextBO context)
+        public ChangedExtensionsBO Diff(IDictionary<string, IOpenApiExtension> left, IDictionary<string, IOpenApiExtension> right, DiffContextBO context)
         {
-            left = left.CopyDictionary();
-            right = right.CopyDictionary();
-            var changedExtensions = new ChangedExtensionsBO(left, right.CopyDictionary(), context);
+            left = ((Dictionary<string, IOpenApiExtension>)left).CopyDictionary();
+            right = ((Dictionary<string, IOpenApiExtension>)right).CopyDictionary();
+            var changedExtensions = new ChangedExtensionsBO((Dictionary<string, IOpenApiExtension>)left, ((Dictionary<string, IOpenApiExtension>)right).CopyDictionary(), context);
             foreach (var (key, value) in left)
             {
                 if (right.ContainsKey(key))
@@ -58,13 +59,13 @@ namespace openapi_diff.compare
                     right.Remove(key);
                     var changed = ExecuteExtensionDiff(key, ChangeBO<object>.Changed(value, rightValue), context);
                     if (changed.IsDifferent())
-                            changedExtensions.Changed.Add(key, changed);
+                        changedExtensions.Changed.Add(key, changed);
                 }
                 else
                 {
                     var changed = ExecuteExtensionDiff(key, ChangeBO<object>.Removed(value), context);
                     if (changed.IsDifferent())
-                            changedExtensions.Missing.Add(key, changed);
+                        changedExtensions.Missing.Add(key, changed);
                 }
             }
 
@@ -72,7 +73,7 @@ namespace openapi_diff.compare
             {
                 var changed = ExecuteExtensionDiff(key, ChangeBO<object>.Added(value), context);
                 if (changed.IsDifferent())
-                        changedExtensions.Increased.Add(key, changed);
+                    changedExtensions.Increased.Add(key, changed);
             }
 
             return ChangedUtils.IsChanged(changedExtensions);

@@ -15,7 +15,7 @@ namespace openapi_diff.compare
             _openApiDiff = openApiDiff;
         }
 
-        public ChangedHeadersBO Diff(Dictionary<string, OpenApiHeader> left, Dictionary<string, OpenApiHeader> right, DiffContextBO context)
+        public ChangedHeadersBO Diff(IDictionary<string, OpenApiHeader> left, IDictionary<string, OpenApiHeader> right, DiffContextBO context)
         {
             var headerMapDiff = MapKeyDiff<string, OpenApiHeader>.Diff(left, right);
             var sharedHeaderKeys = headerMapDiff.SharedKey;

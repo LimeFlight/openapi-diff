@@ -1,5 +1,4 @@
 ﻿using openapi_diff.BusinessObjects;
-using openapi_diff.DTOs;
 using System.Collections.Generic;
 using System.Text;
 
@@ -7,7 +6,7 @@ namespace openapi_diff.output
 {
     public class MarkdownRender : IRender
     {
-        private ChangedOpenApiDTO _diff;
+        private ChangedOpenApiBO _diff;
         private const string H3 = "### ";
         private const string H4 = "#### ";
         private const string H5 = "##### ";
@@ -19,7 +18,7 @@ namespace openapi_diff.output
         private const string Li = "* ";
         private const string Hr = "---\n";
 
-        public string Render(ChangedOpenApiDTO diff)
+        public string Render(ChangedOpenApiBO diff)
         {
             _diff = diff;
             return ListEndpoints("What's New", diff.NewEndpoints)
@@ -28,7 +27,7 @@ namespace openapi_diff.output
                    + ListEndpoints(diff.ChangedOperations);
         }
 
-        private static string ListEndpoints(List<ChangedOperationDTO> changedOperations)
+        private static string ListEndpoints(List<ChangedOperationBO> changedOperations)
         {
             if (changedOperations == null || changedOperations.Count == 0) return "";
             var sb = new StringBuilder(SectionTitle("What's Changed"));
@@ -46,7 +45,7 @@ namespace openapi_diff.output
                 });
             return sb.ToString();
         }
-        private static string ListEndpoints(string title, List<EndpointDTO> endpoints)
+        private static string ListEndpoints(string title, List<EndpointBO> endpoints)
         {
             if (endpoints == null || endpoints.Count == 0) return "";
             var sb = new StringBuilder(SectionTitle(title));

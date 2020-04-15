@@ -7,15 +7,15 @@ namespace openapi_diff.BusinessObjects
 {
     public class ChangedHeadersBO : ComposedChangedBO
     {
-        private readonly Dictionary<string, OpenApiHeader> _oldHeaders;
-        private readonly Dictionary<string, OpenApiHeader> _newHeaders;
+        private readonly IDictionary<string, OpenApiHeader> _oldHeaders;
+        private readonly IDictionary<string, OpenApiHeader> _newHeaders;
         private readonly DiffContextBO _context;
 
         public Dictionary<string, OpenApiHeader> Increased { get; set; }
         public Dictionary<string, OpenApiHeader> Missing { get; set; }
         public Dictionary<string, ChangedHeaderBO> Changed { get; set; }
 
-        public ChangedHeadersBO(Dictionary<string, OpenApiHeader> oldHeaders, Dictionary<string, OpenApiHeader> newHeaders, DiffContextBO context)
+        public ChangedHeadersBO(IDictionary<string, OpenApiHeader> oldHeaders, IDictionary<string, OpenApiHeader> newHeaders, DiffContextBO context)
         {
             _oldHeaders = oldHeaders;
             _newHeaders = newHeaders;

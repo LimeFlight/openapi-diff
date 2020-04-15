@@ -6,7 +6,7 @@ namespace openapi_diff.BusinessObjects
     {
         public abstract DiffResultBO IsChanged();
 
-        public DiffResultBO Result(ChangedBO changed)
+        public static DiffResultBO Result(ChangedBO changed)
         {
             return changed.IsChanged() ?? new DiffResultBO(DiffResultEnum.NoChanges);
         }

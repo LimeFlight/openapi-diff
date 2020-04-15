@@ -39,7 +39,7 @@ namespace openapi_diff.compare
                     {
                         Schema = _openApiDiff
                             .SchemaDiff
-                            .diff(
+                            .Diff(
                                 new HashSet<string>(),
                                 oldMediaType.Schema,
                                 newMediaType.Schema,

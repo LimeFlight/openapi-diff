@@ -11,9 +11,9 @@ namespace openapi_diff.BusinessObjects
         private readonly Dictionary<string, string> _newMapping;
         private readonly DiffContextBO _context;
 
-        private Dictionary<string, OpenApiSchema> Increased { get; set; }
-        private Dictionary<string, OpenApiSchema> Missing { get; set; }
-        private Dictionary<string, ChangedSchemaBO> Changed { get; set; }
+        public Dictionary<string, OpenApiSchema> Increased { get; set; }
+        public Dictionary<string, OpenApiSchema> Missing { get; set; }
+        public Dictionary<string, ChangedSchemaBO> Changed { get; set; }
 
         public ChangedOneOfSchemaBO(
             Dictionary<string, string> oldMapping,

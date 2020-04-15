@@ -11,17 +11,11 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
 {
     public class OpenAPIDiffTest : BaseTest
     {
-        private readonly IOpenAPICompare _openAPICompare;
         const string SwaggerV2Http = "http://petstore.swagger.io/v2/swagger.json";
         private const string OpenAPIDoc1 = "petstore_v2_1.yaml";
         private const string OpenAPIDoc2 = "petstore_v2_2.yaml";
         private const string OpenAPIEmptyDoc = "petstore_v2_empty.yaml";
-
-        public OpenAPIDiffTest(IOpenAPICompare openAPICompare)
-        {
-            _openAPICompare = openAPICompare;
-        }
-
+        
         [Fact]
         public void TestEqual()
         {
@@ -31,13 +25,14 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
         [Fact]
         public void TestNewAPI()
         {
-            var changedOpenAPI = _openAPICompare.FromLocations(OpenAPIEmptyDoc, OpenAPIDoc2);
+            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenAPIEmptyDoc, OpenAPIDoc2);
             var newEndpoints = changedOpenAPI.NewEndpoints;
             var missingEndpoints = changedOpenAPI.MissingEndpoints;
             var changedEndPoints = changedOpenAPI.ChangedOperations;
-            string html =
-                new HtmlRender("Changelog", "http://deepoove.com/swagger-diff/stylesheets/demo.css")
-                    .Render(changedOpenAPI);
+            //string html =
+            //    new HtmlRender("Changelog", "http://deepoove.com/swagger-diff/stylesheets/demo.css")
+            //        .Render(changedOpenAPI);
+            string html = "";
 
             try
             {
@@ -55,13 +50,14 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
         [Fact]
         public void TestDeprecatedAPI()
         {
-            var changedOpenAPI = _openAPICompare.FromLocations(OpenAPIDoc1, OpenAPIEmptyDoc);
+            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenAPIDoc1, OpenAPIEmptyDoc);
             var newEndpoints = changedOpenAPI.NewEndpoints;
             var missingEndpoints = changedOpenAPI.MissingEndpoints;
             var changedEndPoints = changedOpenAPI.ChangedOperations;
-            var html =
-                new HtmlRender("Changelog", "http://deepoove.com/swagger-diff/stylesheets/demo.css")
-                    .Render(changedOpenAPI);
+            //var html =
+            //    new HtmlRender("Changelog", "http://deepoove.com/swagger-diff/stylesheets/demo.css")
+            //        .Render(changedOpenAPI);
+            var html = "";
 
             try
             {
@@ -79,11 +75,12 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
         [Fact]
         public void TestDiff()
         {
-            var changedOpenAPI = _openAPICompare.FromLocations(OpenAPIDoc1, OpenAPIDoc2);
+            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenAPIDoc1, OpenAPIDoc2);
             var changedEndPoints = changedOpenAPI.ChangedOperations;
-            var html =
-                new HtmlRender("Changelog", "http://deepoove.com/swagger-diff/stylesheets/demo.css")
-                    .Render(changedOpenAPI);
+            //var html =
+            //    new HtmlRender("Changelog", "http://deepoove.com/swagger-diff/stylesheets/demo.css")
+            //        .Render(changedOpenAPI);
+            var html = "";
             try
             {
                 File.WriteAllText("target/testDiff.html", html);
@@ -98,7 +95,7 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
         [Fact]
         public void TestDiffAndMarkdown()
         {
-            var changedOpenAPI = _openAPICompare.FromLocations(OpenAPIDoc1, OpenAPIDoc2);
+            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenAPIDoc1, OpenAPIDoc2);
             var render = new MarkdownRender().Render(changedOpenAPI);
             try
             {

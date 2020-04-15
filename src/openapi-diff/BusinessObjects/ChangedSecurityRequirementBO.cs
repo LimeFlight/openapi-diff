@@ -16,8 +16,9 @@ namespace openapi_diff.BusinessObjects
 
         public ChangedSecurityRequirementBO(OpenApiSecurityRequirement newSecurityRequirement, OpenApiSecurityRequirement oldSecurityRequirement)
         {
-            this._newSecurityRequirement = newSecurityRequirement;
-            this._oldSecurityRequirement = oldSecurityRequirement;
+            _newSecurityRequirement = newSecurityRequirement;
+            _oldSecurityRequirement = oldSecurityRequirement;
+            Changed = new List<ChangedSecuritySchemeBO>();
         }
 
         public override List<ChangedBO> GetChangedElements()

@@ -39,7 +39,7 @@ namespace openapi_diff.compare
 
             foreach (var keyValuePair in right)
             {
-                var rightSecurityScheme = _rightComponents.SecuritySchemes[keyValuePair.Key.Scheme];
+                var rightSecurityScheme = _rightComponents.SecuritySchemes[keyValuePair.Key.Reference.Id];
                 if (leftSecurityScheme.Type == rightSecurityScheme.Type)
                 {
                     switch (leftSecurityScheme.Type)
@@ -76,7 +76,7 @@ namespace openapi_diff.compare
 
             foreach (var (key, value) in left)
             {
-                var rightSec = Contains(right, key.Scheme);
+                var rightSec = Contains(right, key.Reference.Id);
                 if (rightSec.IsNullOrEmpty())
                 {
                     changedSecurityRequirement.Missing.Add(key, value);
@@ -88,11 +88,11 @@ namespace openapi_diff.compare
                     var diff =
                         _openApiDiff
                             .SecuritySchemeDiff
-                            .diff(
-                                key,
-                                value,
-                                rightSchemeRef,
-                                rightSec[rightSchemeRef],
+                            .Diff(
+                                key.Reference.Id,
+                                value.ToList(),
+                                rightSchemeRef.Reference.Id,
+                                rightSec[rightSchemeRef].ToList(),
                                 context);
                     if (diff != null)
                         changedSecurityRequirement.Changed.Add(diff);

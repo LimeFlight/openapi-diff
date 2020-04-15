@@ -5,6 +5,7 @@ using openapi_diff.DTOs;
 using openapi_diff.utils;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.OpenApi.Interfaces;
 
 namespace openapi_diff.compare
 {
@@ -18,16 +19,16 @@ namespace openapi_diff.compare
             this._openApiDiff = openApiDiff;
         }
 
-        private static Dictionary<string, object> GetExtensions(OpenApiRequestBody body)
+        private static IDictionary<string, IOpenApiExtension> GetExtensions(OpenApiRequestBody body)
         {
-            return body.Extensions.ToDictionary(x => x.Key, x => (object)x.Value);
+            return body.Extensions.ToDictionary(x => x.Key, x => x.Value);
         }
 
         public ChangedRequestBodyBO Diff(
             OpenApiRequestBody left, OpenApiRequestBody right, DiffContextBO context)
         {
-            var leftRef = left?.Reference.ReferenceV3;
-            var rightRef = right?.Reference.ReferenceV3;
+            var leftRef = left.Reference?.ReferenceV3;
+            var rightRef = right.Reference?.ReferenceV3;
             return CachedDiff(new HashSet<string>(), left, right, leftRef, rightRef, context);
         }
 
@@ -42,7 +43,7 @@ namespace openapi_diff.compare
             {
                 oldRequestBody =
                     RefPointer.ResolveRef(
-                        _openApiDiff.OldSpecOpenApi.Components, left, left.Reference.ReferenceV3);
+                        _openApiDiff.OldSpecOpenApi.Components, left, left.Reference?.ReferenceV3);
                 if (oldRequestBody.Content != null)
                 {
                     oldRequestContent = (Dictionary<string, OpenApiMediaType>) oldRequestBody.Content;
@@ -52,7 +53,7 @@ namespace openapi_diff.compare
             {
                 newRequestBody =
                     RefPointer.ResolveRef(
-                        _openApiDiff.NewSpecOpenApi.Components, right, right.Reference.ReferenceV3);
+                        _openApiDiff.NewSpecOpenApi.Components, right, right.Reference?.ReferenceV3);
                 if (newRequestBody.Content != null)
                 {
                     newRequestContent = (Dictionary<string, OpenApiMediaType>) newRequestBody.Content;
@@ -78,7 +79,7 @@ namespace openapi_diff.compare
                         .Diff(oldRequestContent, newRequestContent, context),
                     Extensions = _openApiDiff
                         .ExtensionsDiff
-                        .diff(GetExtensions(left), GetExtensions(right), context)
+                        .Diff(GetExtensions(left), GetExtensions(right), context)
                 };
 
             return ChangedUtils.IsChanged(changedRequestBody);

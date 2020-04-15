@@ -25,7 +25,7 @@ namespace openapi_diff.compare
         {
             return parameters
                 .FirstOrDefault(x =>
-                    Same(RefPointer.ResolveRef(components, x, x.Reference.ReferenceV3), parameter));
+                    Same(RefPointer.ResolveRef(components, x, x.Reference?.ReferenceV3), parameter));
         }
 
         public static bool Same(OpenApiParameter left, OpenApiParameter right)
@@ -44,7 +44,7 @@ namespace openapi_diff.compare
             foreach (var openApiParameter in left)
             {
                 var leftPara = openApiParameter;
-                leftPara = RefPointer.ResolveRef(_leftComponents, leftPara, leftPara.Reference.ReferenceV3);
+                leftPara = RefPointer.ResolveRef(_leftComponents, leftPara, leftPara.Reference?.ReferenceV3);
 
                 var rightParam = Contains(_rightComponents, right, leftPara);
                 if (rightParam == null)

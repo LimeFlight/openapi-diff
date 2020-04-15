@@ -43,13 +43,13 @@ namespace openapi_diff.compare
                         .Diff(left.Description, right.Description, context),
                     Schema = _openApiDiff
                         .SchemaDiff
-                        .diff(new HashSet<string>(), left.Schema, right.Schema, context.copyWithRequired(true)),
+                        .Diff(new HashSet<string>(), left.Schema, right.Schema, context.copyWithRequired(true)),
                     Content = _openApiDiff
                         .ContentDiff
                         .Diff(left.Content, right.Content, context),
                     Extensions = _openApiDiff
                         .ExtensionsDiff
-                        .diff(left.Extensions, right.Extensions, context)
+                        .Diff(left.Extensions, right.Extensions, context)
                 };
 
             return ChangedUtils.IsChanged(changedHeader);

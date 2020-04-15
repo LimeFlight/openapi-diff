@@ -15,6 +15,7 @@ namespace openapi_diff.BusinessObjects
             var elementsResultMax = GetChangedElements()
                 .Where(x => x != null)
                 .Select(x => (int)x.IsChanged().DiffResult)
+                .DefaultIfEmpty(0)
                 .Max();
 
             var elementsResult = new DiffResultBO((DiffResultEnum)elementsResultMax);
