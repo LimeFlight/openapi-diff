@@ -9,9 +9,9 @@ namespace openapi_diff.BusinessObjects
         private readonly Dictionary<string, object> _newExtensions;
         private readonly DiffContextBO _context;
 
-        private Dictionary<string, ChangedBO> Increased { get; set; }
-        private Dictionary<string, ChangedBO> Missing { get; set; }
-        private Dictionary<string, ChangedBO> Changed { get; set; }
+        public Dictionary<string, ChangedBO> Increased { get; set; }
+        public Dictionary<string, ChangedBO> Missing { get; set; }
+        public Dictionary<string, ChangedBO> Changed { get; set; }
 
         public ChangedExtensionsBO(Dictionary<string, object> oldExtensions, Dictionary<string, object> newExtensions, DiffContextBO context)
         {

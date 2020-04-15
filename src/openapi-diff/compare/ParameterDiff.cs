@@ -46,7 +46,7 @@ namespace openapi_diff.compare
                         .diff(refSet, left.Schema, right.Schema, context.copyWithRequired(true)),
                     Description = _openApiDiff
                         .MetadataDiff
-                        .diff(left.Description, right.Description, context),
+                        .Diff(left.Description, right.Description, context),
                     Content = _openApiDiff
                         .ContentDiff
                         .diff(left.Content, right.Content, context),

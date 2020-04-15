@@ -24,10 +24,10 @@ namespace openapi_diff.compare
                 {
                     Summary = _openApiDiff
                         .MetadataDiff
-                        .diff(oldOperation.Summary, newOperation.Summary, context),
+                        .Diff(oldOperation.Summary, newOperation.Summary, context),
                     Description = _openApiDiff
                         .MetadataDiff
-                        .diff(oldOperation.Description, newOperation.Description, context),
+                        .Diff(oldOperation.Description, newOperation.Description, context),
                     IsDeprecated = !oldOperation.Deprecated && newOperation.Deprecated
                 };
 

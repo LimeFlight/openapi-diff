@@ -40,7 +40,7 @@ namespace openapi_diff.compare
                     Explode = GetBooleanDiff(left.Explode, right.Explode),
                     Description = _openApiDiff
                         .MetadataDiff
-                        .diff(left.Description, right.Description, context),
+                        .Diff(left.Description, right.Description, context),
                     Schema = _openApiDiff
                         .SchemaDiff
                         .diff(new HashSet<string>(), left.Schema, right.Schema, context.copyWithRequired(true)),

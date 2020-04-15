@@ -1,106 +1,110 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
+using openapi_diff.Extensions;
+using openapi_diff.utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace openapi_diff.compare
 {
     public class SecurityRequirementDiff
     {
-        private OpenApiDiff openApiDiff;
-        private OpenApiComponents leftComponents;
-        private OpenApiComponents rightComponents;
+        private readonly OpenApiDiff _openApiDiff;
+        private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiComponents _rightComponents;
 
         public SecurityRequirementDiff(OpenApiDiff openApiDiff)
         {
-            this.openApiDiff = openApiDiff;
-            leftComponents = openApiDiff.OldSpecOpenApi?.Components;
-            rightComponents = openApiDiff.NewSpecOpenApi?.Components;
+            _openApiDiff = openApiDiff;
+            _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
+            _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
-        public static OpenApiSecurityRequirement GetCopy(Dictionary<OpenApiSecurityScheme, List<string>> right)
+        public static OpenApiSecurityRequirement GetCopy(Dictionary<OpenApiSecurityScheme, IList<string>> right)
         {
             var newSecurityRequirement = new OpenApiSecurityRequirement();
             foreach (var (key, value) in right)
             {
                 newSecurityRequirement.Add(key, value);
             }
-            
+
             return newSecurityRequirement;
         }
 
-        private LinkedHashMap<String, List<String>> contains(
-            SecurityRequirement right, String schemeRef)
+        private OpenApiSecurityRequirement Contains(
+            OpenApiSecurityRequirement right, string schemeRef)
         {
-            SecurityScheme leftSecurityScheme = leftComponents.SecuritySchemes().(schemeRef);
-            LinkedHashMap<String, List<String>> found = new LinkedHashMap<>();
+            var leftSecurityScheme = _leftComponents.SecuritySchemes[schemeRef];
+            var found = new OpenApiSecurityRequirement();
 
-            for (Map.Entry<String, List<String>> entry : right.entrySet())
+            foreach (var keyValuePair in right)
             {
-                SecurityScheme rightSecurityScheme = rightComponents.SecuritySchemes().(entry.Key());
-                if (leftSecurityScheme.Type() == rightSecurityScheme.Type())
+                var rightSecurityScheme = _rightComponents.SecuritySchemes[keyValuePair.Key.Scheme];
+                if (leftSecurityScheme.Type == rightSecurityScheme.Type)
                 {
-                    switch (leftSecurityScheme.Type())
+                    switch (leftSecurityScheme.Type)
                     {
-                        case APIKEY:
-                            if (leftSecurityScheme.Name().equals(rightSecurityScheme.Name()))
+                        case SecuritySchemeType.ApiKey:
+                            if (leftSecurityScheme.Name == rightSecurityScheme.Name)
                             {
-                                found.put(entry.Key(), entry.Value());
+                                found.Add(keyValuePair.Key, keyValuePair.Value);
                                 return found;
                             }
-                            break;
 
-                        case OAUTH2:
-                        case HTTP:
-                        case OPENIDCONNECT:
-                            found.put(entry.Key(), entry.Value());
+                            break;
+                        case SecuritySchemeType.Http:
+                        case SecuritySchemeType.OAuth2:
+                        case SecuritySchemeType.OpenIdConnect:
+                            found.Add(keyValuePair.Key, keyValuePair.Value);
                             return found;
+                        default:
+                            throw new ArgumentOutOfRangeException();
                     }
                 }
             }
-
             return found;
         }
 
         public ChangedSecurityRequirementBO Diff(
             OpenApiSecurityRequirement left, OpenApiSecurityRequirement right, DiffContextBO context)
         {
-            var newRight = new OpenApiSecurityRequirement[] { };
-            right.
-            right?.CopyTo(newRight);
-            right = newRight.ToList();
-
             var changedSecurityRequirement =
-                new ChangedSecurityRequirementBO(left, right != null ? getCopy(right) : null);
+                new ChangedSecurityRequirementBO(left, right != null ? GetCopy(right) : null);
 
-            left = left == null ? new SecurityRequirement() : left;
-            right = right == null ? new SecurityRequirement() : right;
+            left ??= new OpenApiSecurityRequirement();
+            right ??= new OpenApiSecurityRequirement();
 
-            for (String leftSchemeRef : left.keySet())
+            foreach (var (key, value) in left)
             {
-                LinkedHashMap<String, List<String>> rightSec = contains(right, leftSchemeRef);
-                if (rightSec.isEmpty())
+                var rightSec = Contains(right, key.Scheme);
+                if (rightSec.IsNullOrEmpty())
                 {
-                    changedSecurityRequirement.addMissing(leftSchemeRef, left.(leftSchemeRef));
+                    changedSecurityRequirement.Missing.Add(key, value);
                 }
                 else
                 {
-                    String rightSchemeRef = rightSec.keySet().stream().findFirst().();
-                    right.remove(rightSchemeRef);
-                    Optional<ChangedSecurityScheme> diff =
-                        openApiDiff
-                            .SecuritySchemeDiff()
+                    var rightSchemeRef = rightSec.Keys.First();
+                    right.Remove(rightSchemeRef);
+                    var diff =
+                        _openApiDiff
+                            .SecuritySchemeDiff
                             .diff(
-                                leftSchemeRef,
-                                left.(leftSchemeRef),
+                                key,
+                                value,
                                 rightSchemeRef,
-                                rightSec.(rightSchemeRef),
+                                rightSec[rightSchemeRef],
                                 context);
-                    diff.ifPresent(changedSecurityRequirement::addChanged);
+                    if (diff != null)
+                        changedSecurityRequirement.Changed.Add(diff);
                 }
             }
-            right.forEach(changedSecurityRequirement::addIncreased);
 
-            return isChanged(changedSecurityRequirement);
+            foreach (var (key, value) in right)
+            {
+                changedSecurityRequirement.Increased.Add(key, value);
+            }
+
+            return ChangedUtils.IsChanged(changedSecurityRequirement);
         }
     }
 }

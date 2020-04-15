@@ -1,28 +1,28 @@
 ﻿using Microsoft.OpenApi.Models;
+using openapi_diff.BusinessObjects;
 using openapi_diff.DTOs;
 using openapi_diff.utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using openapi_diff.BusinessObjects;
 
 namespace openapi_diff.compare
 {
     public class SecurityRequirementsDiff
     {
-        private OpenApiDiff openApiDiff;
-        private OpenApiComponents leftComponents;
-        private OpenApiComponents rightComponents;
-        private static RefPointer<OpenApiSecurityScheme> refPointer = new RefPointer<OpenApiSecurityScheme>(RefTypeEnum.SecuritySchemes);
+        private readonly OpenApiDiff _openApiDiff;
+        private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiComponents _rightComponents;
+        private static RefPointer<OpenApiSecurityScheme> _refPointer = new RefPointer<OpenApiSecurityScheme>(RefTypeEnum.SecuritySchemes);
 
         public SecurityRequirementsDiff(OpenApiDiff openApiDiff)
         {
-            this.openApiDiff = openApiDiff;
-            leftComponents = openApiDiff.OldSpecOpenApi?.Components;
-            rightComponents = openApiDiff.NewSpecOpenApi?.Components;
+            _openApiDiff = openApiDiff;
+            _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
+            _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
-        public OpenApiSecurityRequirement contains(List<OpenApiSecurityRequirement> securityRequirements, OpenApiSecurityRequirement left)
+        public OpenApiSecurityRequirement Contains(List<OpenApiSecurityRequirement> securityRequirements, OpenApiSecurityRequirement left)
         {
             return securityRequirements
                 .FirstOrDefault(x => Same(left, x));
@@ -30,8 +30,8 @@ namespace openapi_diff.compare
 
         public bool Same(OpenApiSecurityRequirement left, OpenApiSecurityRequirement right)
         {
-            var leftTypes = GetListOfSecuritySchemes(leftComponents, left);
-            var rightTypes = GetListOfSecuritySchemes(rightComponents, right);
+            var leftTypes = GetListOfSecuritySchemes(_leftComponents, left);
+            var rightTypes = GetListOfSecuritySchemes(_rightComponents, right);
 
             return leftTypes.SequenceEqual(rightTypes);
         }
@@ -60,16 +60,14 @@ namespace openapi_diff.compare
             List<OpenApiSecurityRequirement> left, List<OpenApiSecurityRequirement> right, DiffContextBO context)
         {
             left ??= new List<OpenApiSecurityRequirement>();
-            var newRight = new OpenApiSecurityRequirement[] { };
-            right?.CopyTo(newRight);
-            right = newRight.ToList();
+            right = right != null ? GetCopy(right) : new List<OpenApiSecurityRequirement>();
 
             var changedSecurityRequirements = new ChangedSecurityRequirementsBO(left, right);
 
             foreach (var leftSecurity in left)
             {
-                var rightSecOpt = contains(right, leftSecurity);
-                if (rightSecOpt != null)
+                var rightSecOpt = Contains(right, leftSecurity);
+                if (rightSecOpt == null)
                 {
                     changedSecurityRequirements.Missing.Add(leftSecurity);
                 }
@@ -79,22 +77,22 @@ namespace openapi_diff.compare
 
                     right.Remove(rightSec);
                     var diff =
-                        openApiDiff.
+                        _openApiDiff.
                             SecurityRequirementDiff
-                            .diff(leftSecurity, rightSec, context);
-                    diff.ifPresent(changedSecurityRequirements::addChanged);
+                            .Diff(leftSecurity, rightSec, context);
+                    if (diff != null)
+                        changedSecurityRequirements.Changed.Add(diff);
                 }
             }
 
-            right.forEach(changedSecurityRequirements::addIncreased);
+            changedSecurityRequirements.Increased.AddRange(right);
 
-            return isChanged(changedSecurityRequirements);
+            return ChangedUtils.IsChanged(changedSecurityRequirements);
         }
 
-        private List<OpenApiSecurityRequirement> GetCopy(List<OpenApiSecurityRequirement> right)
+        private static List<OpenApiSecurityRequirement> GetCopy(IEnumerable<OpenApiSecurityRequirement> right)
         {
-            return right.Select(x => SecurityRequirementDiff.GetCopy(x))
-            return right.stream().map(securitrequi).collect(Collectors.toList());
+            return right.Select(SecurityRequirementDiff.GetCopy).ToList();
         }
     }
 }

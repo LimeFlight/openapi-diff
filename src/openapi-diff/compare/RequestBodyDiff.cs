@@ -69,7 +69,7 @@ namespace openapi_diff.compare
                     ChangeRequired = leftRequired != rightRequired,
                     Description = _openApiDiff
                         .MetadataDiff
-                        .diff(
+                        .Diff(
                             oldRequestBody?.Description,
                             newRequestBody?.Description,
                             context),
