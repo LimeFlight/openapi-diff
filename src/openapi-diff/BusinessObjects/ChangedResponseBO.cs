@@ -7,9 +7,8 @@ namespace openapi_diff.BusinessObjects
     public class ChangedResponseBO : ComposedChangedBO
     {
         private readonly OpenApiResponse _oldApiResponse;
-        private readonly OpenApiResponse _newApiResponse;
         private readonly DiffContextBO _context;
-
+        public OpenApiResponse NewApiResponse { get; }
         public ChangedMetadataBO Description { get; set; }
         public ChangedHeadersBO Headers { get; set; }
         public ChangedContentBO Content { get; set; }
@@ -18,7 +17,7 @@ namespace openapi_diff.BusinessObjects
         public ChangedResponseBO(OpenApiResponse oldApiResponse, OpenApiResponse newApiResponse, DiffContextBO context)
         {
             this._oldApiResponse = oldApiResponse;
-            this._newApiResponse = newApiResponse;
+            this.NewApiResponse = newApiResponse;
             this._context = context;
         }
 

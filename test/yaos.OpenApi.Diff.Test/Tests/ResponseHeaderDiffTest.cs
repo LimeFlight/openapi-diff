@@ -7,8 +7,8 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class ResponseHeaderDiffTest : BaseTest
     {
-        private const string OpenapiDoc1 = "header_1.yaml";
-        private const string OpenapiDoc2 = "header_2.yaml";
+        private const string OpenapiDoc1 = "Resources\\header_1.yaml";
+        private const string OpenapiDoc2 = "Resources\\header_2.yaml";
         
         [Fact]
         public void TestDiffDifferent()

@@ -6,8 +6,8 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
 {
     public class ContentDiffTest : BaseTest
     {
-        private const string OpenAPIDoc1 = "content_diff_1.yaml";
-        private const string OpenAPIDoc2 = "content_diff_2.yaml";
+        private const string OpenAPIDoc1 = "Resources\\content_diff_1.yaml";
+        private const string OpenAPIDoc2 = "Resources\\content_diff_2.yaml";
         
         [Fact]
         public void TestContentDiffWithOneEmptyMediaType()

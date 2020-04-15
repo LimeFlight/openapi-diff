@@ -15,8 +15,6 @@ namespace yaos.OpenAPI.Diff.Tests
 
         public void AssertOpenAPIAreEquals(string oldSpec, string newSpec)
         {
-            oldSpec = $"Resources\\{oldSpec}";
-            newSpec = $"Resources\\{newSpec}";
             var changedOpenAPI = _openAPICompare.FromLocations(oldSpec, newSpec);
             Assert.Empty(changedOpenAPI.NewEndpoints);
             Assert.Empty(changedOpenAPI.MissingEndpoints);
@@ -25,8 +23,6 @@ namespace yaos.OpenAPI.Diff.Tests
 
         public void AssertOpenAPIChangedEndpoints(string oldSpec, string newSpec)
         {
-            oldSpec = $"Resources\\{oldSpec}";
-            newSpec = $"Resources\\{newSpec}";
             var changedOpenAPI = _openAPICompare.FromLocations(oldSpec, newSpec);
             Assert.Empty(changedOpenAPI.NewEndpoints);
             Assert.Empty(changedOpenAPI.MissingEndpoints);
@@ -35,16 +31,12 @@ namespace yaos.OpenAPI.Diff.Tests
 
         public void AssertOpenAPIBackwardCompatible(string oldSpec, string newSpec, bool isDiff)
         {
-            oldSpec = $"Resources\\{oldSpec}";
-            newSpec = $"Resources\\{newSpec}";
             var changedOpenAPI = _openAPICompare.FromLocations(oldSpec, newSpec);
             Assert.True(changedOpenAPI.IsCompatible());
         }
 
         public void AssertOpenAPIBackwardIncompatible(string oldSpec, string newSpec)
         {
-            oldSpec = $"Resources\\{oldSpec}";
-            newSpec = $"Resources\\{newSpec}";
             var changedOpenAPI = _openAPICompare.FromLocations(oldSpec, newSpec);
             Assert.True(changedOpenAPI.IsIncompatible());
         }

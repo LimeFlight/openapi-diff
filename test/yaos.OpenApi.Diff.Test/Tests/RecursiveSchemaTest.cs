@@ -5,8 +5,8 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class RecursiveSchemaTest : BaseTest
     {
-        private const string OpenAPIDoc1 = "recursive_model_1.yaml";
-        private const string OpenAPIDoc2 = "recursive_model_2.yaml";
+        private const string OpenAPIDoc1 = "Resources\\recursive_model_1.yaml";
+        private const string OpenAPIDoc2 = "Resources\\recursive_model_2.yaml";
 
         [Fact]
         public void TestDiffSame()

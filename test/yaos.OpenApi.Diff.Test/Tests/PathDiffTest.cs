@@ -6,9 +6,9 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class PathDiffTest : BaseTest
     {
-        private const string OpenAPIPath1 = "path_1.yaml";
-        private const string OpenAPIPath2 = "path_2.yaml";
-        private const string OpenAPIPath3 = "path_3.yaml";
+        private const string OpenAPIPath1 = "Resources\\path_1.yaml";
+        private const string OpenAPIPath2 = "Resources\\path_2.yaml";
+        private const string OpenAPIPath3 = "Resources\\path_3.yaml";
 
         [Fact]
         public void TestEqual()

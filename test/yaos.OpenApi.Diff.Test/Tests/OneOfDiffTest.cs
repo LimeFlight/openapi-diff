@@ -5,13 +5,13 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
 {
     public class OneOfDiffTest : BaseTest
     {
-        private const string OpenAPIDoc1 = "oneOf_diff_1.yaml";
-        private const string OpenAPIDoc2 = "oneOf_diff_2.yaml";
-        private const string OpenAPIDoc3 = "oneOf_diff_3.yaml";
-        private const string OpenAPIDoc4 = "composed_schema_1.yaml";
-        private const string OpenAPIDoc5 = "composed_schema_2.yaml";
-        private const string OpenAPIDoc6 = "oneOf_discriminator-changed_1.yaml";
-        private const string OpenAPIDoc7 = "oneOf_discriminator-changed_2.yaml";
+        private const string OpenAPIDoc1 = "Resources\\oneOf_diff_1.yaml";
+        private const string OpenAPIDoc2 = "Resources\\oneOf_diff_2.yaml";
+        private const string OpenAPIDoc3 = "Resources\\oneOf_diff_3.yaml";
+        private const string OpenAPIDoc4 = "Resources\\composed_schema_1.yaml";
+        private const string OpenAPIDoc5 = "Resources\\composed_schema_2.yaml";
+        private const string OpenAPIDoc6 = "Resources\\oneOf_discriminator-changed_1.yaml";
+        private const string OpenAPIDoc7 = "Resources\\oneOf_discriminator-changed_2.yaml";
 
         [Fact]
         public void TestDiffSame()

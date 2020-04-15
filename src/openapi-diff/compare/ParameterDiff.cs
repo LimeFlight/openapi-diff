@@ -36,8 +36,8 @@ namespace openapi_diff.compare
                 {
                     OldParameter = left,
                     NewParameter = right,
-                    ChangeRequired = GetBooleanDiff(left.Required, right.Required),
-                    Deprecated = !left.Deprecated && right.Deprecated,
+                    IsChangeRequired = GetBooleanDiff(left.Required, right.Required),
+                    IsDeprecated = !left.Deprecated && right.Deprecated,
                     ChangeAllowEmptyValue = GetBooleanDiff(left.AllowEmptyValue, right.AllowEmptyValue),
                     ChangeStyle = left.Style != right.Style,
                     ChangeExplode = GetBooleanDiff(left.Explode, right.Explode),

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using openapi_diff;
 using Xunit;
 using yaos.OpenApi.Diff.Tests._Base;
 
@@ -8,14 +7,14 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class SecurityDiffTest : BaseTest
     {
-        private const string OPENAPI_DOC1 = "security_diff_1.yaml";
-        private const string OPENAPI_DOC2 = "security_diff_2.yaml";
-        private const string OPENAPI_DOC3 = "security_diff_3.yaml";
+        private const string OpenapiDoc1 = "Resources\\security_diff_1.yaml";
+        private const string OpenapiDoc2 = "Resources\\security_diff_2.yaml";
+        private const string OpenapiDoc3 = "Resources\\security_diff_3.yaml";
 
         [Fact]
         public void TestDiffDifferent()
         {
-            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OPENAPI_DOC1, OPENAPI_DOC2);
+            var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenapiDoc1, OpenapiDoc2);
             Assert.Equal(3, changedOpenAPI.ChangedOperations.Count);
 
             var changedOperation1 = changedOpenAPI
@@ -83,7 +82,7 @@ namespace yaos.OpenApi.Diff.Tests.Tests
         [Fact]
         public void TestWithUnknownSecurityScheme()
         {
-            Assert.Throws<ArgumentException>(() => TestUtils.GetOpenAPICompare().FromLocations(OPENAPI_DOC3, OPENAPI_DOC3));
+            Assert.Throws<ArgumentException>(() => TestUtils.GetOpenAPICompare().FromLocations(OpenapiDoc3, OpenapiDoc3));
         }
     }
 }

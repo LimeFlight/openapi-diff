@@ -7,12 +7,12 @@ namespace openapi_diff.BusinessObjects
     public class ChangedParameterBO : ComposedChangedBO
     {
         private readonly DiffContextBO _context;
-        private readonly string _name;
-        private readonly ParameterLocation? _in;
+        public ParameterLocation? In { get; set; }
+        public string Name { get; set; }
         public OpenApiParameter OldParameter { get; set; }
         public OpenApiParameter NewParameter { get; set; }
-        public bool ChangeRequired { get; set; }
-        public bool Deprecated { get; set; }
+        public bool IsChangeRequired { get; set; }
+        public bool IsDeprecated { get; set; }
         public bool ChangeStyle { get; set; }
         public bool ChangeExplode { get; set; }
         public bool ChangeAllowEmptyValue { get; set; }
@@ -24,8 +24,8 @@ namespace openapi_diff.BusinessObjects
         public ChangedParameterBO(string name, ParameterLocation? @in, DiffContextBO context)
         {
             _context = context;
-            _name = name;
-            _in = @in;
+            Name = name;
+            In = @in;
         }
 
         public override List<ChangedBO> GetChangedElements()
@@ -35,15 +35,15 @@ namespace openapi_diff.BusinessObjects
 
         public override DiffResultBO IsCoreChanged()
         {
-            if (!ChangeRequired
-                && !Deprecated
+            if (!IsChangeRequired
+                && !IsDeprecated
                 && !ChangeAllowEmptyValue
                 && !ChangeStyle
                 && !ChangeExplode)
             {
                 return new DiffResultBO(DiffResultEnum.NoChanges);
             }
-            if ((!ChangeRequired || OldParameter.Required)
+            if ((!IsChangeRequired || OldParameter.Required)
                 && (!ChangeAllowEmptyValue || NewParameter.AllowEmptyValue)
                 && !ChangeStyle
                 && !ChangeExplode)
