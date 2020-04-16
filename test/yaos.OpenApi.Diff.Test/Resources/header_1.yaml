@@ -119,6 +119,8 @@ components:
           type: boolean
 
     MyResponseType:
+      required:
+        - pet_type
       oneOf:
       - $ref: '#/components/schemas/Cat'
       - $ref: '#/components/schemas/Dog'

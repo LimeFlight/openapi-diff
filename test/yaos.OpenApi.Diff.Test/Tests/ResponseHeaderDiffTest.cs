@@ -17,7 +17,7 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 
             Assert.Empty(changedOpenAPI.NewEndpoints);
             Assert.Empty(changedOpenAPI.MissingEndpoints);
-            Assert.Empty(changedOpenAPI.ChangedOperations);
+            Assert.NotEmpty(changedOpenAPI.ChangedOperations);
 
             var changedResponses = changedOpenAPI.ChangedOperations.FirstOrDefault()?.APIResponses.Changed;
 

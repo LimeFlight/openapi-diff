@@ -75,8 +75,8 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 
             var securityRequirement3 = changedSecurityRequirements3.Increased.First();
             Assert.Single(securityRequirement3);
-            Assert.All(securityRequirement3.Keys, x => Assert.Equal("petstore_auth", x.Name));
-            Assert.Equal(2, securityRequirement3.Values.Count);
+            Assert.All(securityRequirement3.Keys, x => Assert.Equal("petstore_auth", x.Reference.ReferenceV3));
+            Assert.Equal(2, securityRequirement3.First().Value.Count);
         }
 
         [Fact]

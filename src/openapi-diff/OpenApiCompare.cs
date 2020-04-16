@@ -39,7 +39,7 @@ namespace openapi_diff
             var openAPIDoc =  new OpenApiStreamReader().Read(sr.BaseStream, out var diagnostic);
 
             if (!diagnostic.Errors.IsNullOrEmpty())
-                throw new Exception("Error reading file");
+                throw new Exception($"Error reading file. Error: {string.Join(", ", diagnostic.Errors)}");
 
             return openAPIDoc;
         }

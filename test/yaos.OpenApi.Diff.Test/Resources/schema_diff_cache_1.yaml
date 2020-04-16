@@ -170,4 +170,4 @@ components:
       discriminator:
         propertyName: pet_type
         mapping:
-          dog: "#/components/schemas/Dog"
+          Dog: "#/components/schemas/Dog"
