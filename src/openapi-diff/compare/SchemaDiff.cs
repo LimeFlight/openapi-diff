@@ -350,7 +350,7 @@ namespace openapi_diff.compare
             // SchemaDiffResult and
             // return the object
             if ((left == null || right == null)
-                || left.GetSchemaType() != right.GetSchemaType()
+                || left.Type != right.Type
                 || left.Format != right.Format)
             {
                 return GetTypeChangedSchema(left, right, context);
