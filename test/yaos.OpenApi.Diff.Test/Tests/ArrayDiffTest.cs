@@ -17,7 +17,7 @@ namespace yaos.OpenApi.Diff.Tests.Tests
         [Fact]
         public void TestArrayDiffSame()
         {
-            TestUtils.AssertOpenAPIAreEquals(OpenAPIDoc31, OpenAPIDoc32);
+            TestUtils.AssertOpenAPIAreEquals(OpenAPIDoc31, OpenAPIDoc31);
         }
     }
 }

@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Validations;
 using openapi_diff.BusinessObjects;
 using openapi_diff.compare;
 using openapi_diff.Extensions;
@@ -37,7 +38,7 @@ namespace openapi_diff
             using var sr = new StreamReader(location);
 
             var openAPIDoc =  new OpenApiStreamReader().Read(sr.BaseStream, out var diagnostic);
-
+            
             if (!diagnostic.Errors.IsNullOrEmpty())
                 throw new Exception($"Error reading file. Error: {string.Join(", ", diagnostic.Errors)}");
 
