@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 namespace openapi_diff.BusinessObjects
 {
-    public class ChangedEnumBO : ChangedListBO<object>
+    public class ChangedEnumBO : ChangedListBO<string>
     {
-        public ChangedEnumBO(List<object> oldValue, List<object> newValue, DiffContextBO context) : base(oldValue, newValue, context)
+        public ChangedEnumBO(IList<string> oldValue, IList<string> newValue, DiffContextBO context) : base(oldValue, newValue, context)
         {
         }
 

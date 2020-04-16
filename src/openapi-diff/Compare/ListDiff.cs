@@ -1,12 +1,13 @@
 ﻿using openapi_diff.BusinessObjects;
 using openapi_diff.Extensions;
+using System.Linq;
 
 namespace openapi_diff.Compare
 {
     public static class ListDiff
     {
-        public static T1 Diff<T1, T2>(T1 instance)
-            where T1 : ChangedListBO<T2>
+        public static T1 Diff<T1>(T1 instance)
+            where T1 : ChangedListBO<string>
         {
             if (instance.OldValue.IsNullOrEmpty() && instance.NewValue.IsNullOrEmpty())
             {
@@ -14,12 +15,12 @@ namespace openapi_diff.Compare
             }
             if (instance.OldValue.IsNullOrEmpty())
             {
-                instance.Increased = instance.NewValue;
+                instance.Increased = instance.NewValue.ToList();
                 return instance;
             }
             if (instance.NewValue.IsNullOrEmpty())
             {
-                instance.Missing = instance.OldValue;
+                instance.Missing = instance.OldValue.ToList();
                 return instance;
             }
             instance.Increased.AddRange(instance.NewValue);

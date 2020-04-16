@@ -35,14 +35,14 @@ namespace openapi_diff.compare
                 var oldMediaType = left[sharedMediaType];
                 var newMediaType = right[sharedMediaType];
                 var changedMediaType =
-                    new ChangedMediaTypeBO(oldMediaType.Schema, newMediaType.Schema, context)
+                    new ChangedMediaTypeBO(oldMediaType?.Schema, newMediaType?.Schema, context)
                     {
                         Schema = _openApiDiff
                             .SchemaDiff
                             .Diff(
                                 new HashSet<string>(),
-                                oldMediaType.Schema,
-                                newMediaType.Schema,
+                                oldMediaType?.Schema,
+                                newMediaType?.Schema,
                                 context.copyWithRequired(true))
                     };
                 if (!ChangedUtils.IsUnchanged(changedMediaType))

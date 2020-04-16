@@ -8,18 +8,19 @@ using openapi_diff.DTOs;
 using openapi_diff.utils;
 using System;
 using System.Collections.Generic;
+using openapi_diff.Extensions;
 
 namespace openapi_diff.compare
 {
     public class SchemaDiff : ReferenceDiffCache<OpenApiSchema, ChangedSchemaBO>
     {
         private static readonly RefPointer<OpenApiSchema> RefPointer = new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
-        
+
         private readonly OpenApiComponents _leftComponents;
         private readonly OpenApiComponents _rightComponents;
         private readonly OpenApiDiff _openApiDiff;
 
-        public SchemaDiff(OpenApiDiff openApiDiff) 
+        public SchemaDiff(OpenApiDiff openApiDiff)
         {
             _openApiDiff = openApiDiff;
             _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
@@ -31,38 +32,32 @@ namespace openapi_diff.compare
             return GetSchemaDiffResult(null, openApiDiff);
         }
 
-        public static SchemaDiffResult GetSchemaDiffResult(AnyType? classType, OpenApiDiff openApiDiff)
+        public static SchemaDiffResult GetSchemaDiffResult(OpenApiSchema schema, OpenApiDiff openApiDiff)
         {
-            if (classType == null)
+            switch (schema.GetSchemaType())
             {
-                classType = AnyType.Primitive;
-            }
-
-            switch (classType)
-            {
-                case AnyType.Primitive:
+                case SchemaTypeEnum.Schema:
                     return new SchemaDiffResult(openApiDiff);
-                case AnyType.Array:
+                case SchemaTypeEnum.ArraySchema:
                     return new ArraySchemaDiffResult(openApiDiff);
-                case AnyType.Object:
+                case SchemaTypeEnum.ComposedSchema:
                     return new ComposedSchemaDiffResult(openApiDiff);
-                case AnyType.Null:
-                    throw new ArgumentException($"type {classType} is illegal");
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(classType), classType, null);
+                    throw new ArgumentOutOfRangeException();
             }
         }
 
         protected static OpenApiSchema ResolveComposedSchema(OpenApiComponents components, OpenApiSchema schema)
         {
-            if (schema.Default == null || schema.Default.AnyType == AnyType.Object) {
+            if (schema != null && schema.GetSchemaType() == SchemaTypeEnum.ComposedSchema)
+            {
                 var allOfSchemaList = schema.AllOf;
                 if (allOfSchemaList != null)
                 {
                     foreach (var t in allOfSchemaList)
                     {
                         var allOfSchema = t;
-                        allOfSchema = RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference.ReferenceV3);
+                        allOfSchema = RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference?.ReferenceV3);
                         allOfSchema = ResolveComposedSchema(components, allOfSchema);
                         schema = AddSchema(schema, allOfSchema);
                     }
@@ -172,7 +167,7 @@ namespace openapi_diff.compare
                 {
                     if (discriminator.Mapping == null)
                     {
-                        discriminator.Mapping  = new Dictionary<string, string>();
+                        discriminator.Mapping = new Dictionary<string, string>();
                     }
                     foreach (var element in fromDiscriminator.Mapping)
                     {
@@ -194,7 +189,7 @@ namespace openapi_diff.compare
             }
             if (fromSchema.Example != null)
             {
-                schema.Example  = fromSchema.Example;
+                schema.Example = fromSchema.Example;
             }
             if (fromSchema.ExternalDocs != null)
             {
@@ -283,7 +278,7 @@ namespace openapi_diff.compare
                     schema.Xml = new OpenApiXml();
                 }
                 var xml = schema.Xml;
-                var fromXml  = fromSchema.Xml;
+                var fromXml = fromSchema.Xml;
 
                 xml.Attribute = fromXml.Attribute;
 
@@ -318,7 +313,7 @@ namespace openapi_diff.compare
 
         private static string GetSchemaRef(OpenApiSchema schema)
         {
-            return schema.Reference?.ReferenceV3;
+            return schema?.Reference?.ReferenceV3;
         }
 
         public ChangedSchemaBO Diff(HashSet<string> refSet, OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
@@ -355,14 +350,14 @@ namespace openapi_diff.compare
             // SchemaDiffResult and
             // return the object
             if ((left == null || right == null)
-                || left.Type != right.Type
+                || left.GetSchemaType() != right.GetSchemaType()
                 || left.Format != right.Format)
             {
                 return GetTypeChangedSchema(left, right, context);
             }
 
             // If schema type is same then get specific SchemaDiffResult and compare the properties
-            var result = GetSchemaDiffResult(right.Default?.AnyType, _openApiDiff);
+            var result = GetSchemaDiffResult(right, _openApiDiff);
             return result.Diff(refSet, _leftComponents, _rightComponents, left, right, context);
         }
     }

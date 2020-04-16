@@ -44,7 +44,7 @@ namespace openapi_diff.compare
             if (changedSecurityScheme != null
                 && leftSecurityScheme.Type == SecuritySchemeType.OAuth2)
             {
-                var changed = ChangedUtils.IsChanged(ListDiff.Diff<ChangedSecuritySchemeScopesBO, string>(
+                var changed = ChangedUtils.IsChanged(ListDiff.Diff(
                     new ChangedSecuritySchemeScopesBO(leftScopes, rightScopes)
                 ));
 

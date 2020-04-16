@@ -26,7 +26,7 @@ namespace yaos.OpenAPI.Diff.Tests
             var changedOpenAPI = _openAPICompare.FromLocations(oldSpec, newSpec);
             Assert.Empty(changedOpenAPI.NewEndpoints);
             Assert.Empty(changedOpenAPI.MissingEndpoints);
-            Assert.Empty(changedOpenAPI.ChangedOperations);
+            Assert.NotEmpty(changedOpenAPI.ChangedOperations);
         }
 
         public void AssertOpenAPIBackwardCompatible(string oldSpec, string newSpec, bool isDiff)

@@ -31,7 +31,7 @@ namespace openapi_diff.Compare.SchemaDiffResult
 
         private static Dictionary<string, string> GetMapping(OpenApiSchema composedSchema)
         {
-            if (composedSchema.Default.AnyType != AnyType.Object)
+            if (composedSchema.GetSchemaType() != SchemaTypeEnum.ComposedSchema)
                 return null;
 
             var reverseMapping = new Dictionary<string, string>();
@@ -64,7 +64,7 @@ namespace openapi_diff.Compare.SchemaDiffResult
         public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents, OpenApiComponents rightComponents, T left,
             T right, DiffContextBO context)
         {
-            if (left.Default.AnyType == AnyType.Object)
+            if (left.GetSchemaType() == SchemaTypeEnum.ComposedSchema)
             {
                 if (!left.OneOf.IsNullOrEmpty() || !right.OneOf.IsNullOrEmpty())
                 {

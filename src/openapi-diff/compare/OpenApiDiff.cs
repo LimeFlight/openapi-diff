@@ -34,7 +34,6 @@ namespace openapi_diff.compare
         public OAuthFlowDiff OAuthFlowDiff { get; set; }
         public ExtensionsDiff ExtensionsDiff { get; set; }
         public MetadataDiff MetadataDiff { get; set; }
-
         public OpenApiDocument OldSpecOpenApi { get; set; }
         public OpenApiDocument NewSpecOpenApi { get; set; }
         public List<EndpointBO> NewEndpoints { get; set; }

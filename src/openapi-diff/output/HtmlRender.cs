@@ -1,11 +1,9 @@
 ﻿using DotNet2HTML.Tags;
-using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
 using openapi_diff.DTOs;
 using openapi_diff.Extensions;
 using openapi_diff.utils;
-using System;
 using System.Collections.Generic;
 using static DotNet2HTML.TagCreator;
 
@@ -319,7 +317,7 @@ namespace openapi_diff.output
 
             if (schema.IsCoreChanged().DiffResult == DiffResultEnum.Incompatible && schema.IsChangedType)
             {
-                var type = Type(schema.OldSchema) + " -> " + Type(schema.NewSchema);
+                var type = schema.OldSchema.Type + " -> " + schema.NewSchema.Type;
                 Property(output, propName, "Changed property type", type);
             }
 
@@ -331,19 +329,7 @@ namespace openapi_diff.output
                 Incompatibilities(output, prefix + name, property);
             }
         }
-
-        protected static string Type(OpenApiSchema schema)
-        {
-            return schema.Default.AnyType switch
-            {
-                AnyType.Primitive => "primitive",
-                AnyType.Null => "null",
-                AnyType.Array => "array",
-                AnyType.Object => "object",
-                _ => throw new ArgumentOutOfRangeException()
-            };
-        }
-
+        
         private static void Properties(
             ContainerTag output,
             string propPrefix,
@@ -366,7 +352,7 @@ namespace openapi_diff.output
 
         protected static void Property(ContainerTag output, string name, string title, OpenApiSchema schema)
         {
-            Property(output, name, title, Type(schema));
+            Property(output, name, title, schema.Type);
         }
 
         protected static OpenApiSchema Resolve(OpenApiSchema schema)

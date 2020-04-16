@@ -3,6 +3,7 @@ using openapi_diff.BusinessObjects;
 using openapi_diff.compare;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using openapi_diff.DTOs;
 using openapi_diff.utils;
@@ -34,16 +35,21 @@ namespace openapi_diff.Compare.SchemaDiffResult
           DiffContextBO context)
             where T : OpenApiSchema
         {
+            var leftEnumStrings = left.Enum.Select(x => ((OpenApiString)x)?.Value).ToList();
+            var rightEnumStrings = right.Enum.Select(x => ((OpenApiString)x)?.Value).ToList();
+            var leftDefault = (OpenApiPrimitive<>)left.Default;
+            var rightDefault = (OpenApiString)right.Default;
+
             var changedEnum =
-                ListDiff.Diff<ChangedEnumBO, object>(new ChangedEnumBO(new List<object>(left.Enum), new List<object>(right.Enum), context));
+                ListDiff.Diff(new ChangedEnumBO(leftEnumStrings, rightEnumStrings, context));
 
             ChangedSchema.Context = context;
             ChangedSchema.OldSchema = left;
             ChangedSchema.NewSchema = right;
             ChangedSchema.IsChangeDeprecated = !left.Deprecated && right.Deprecated;
             ChangedSchema.IsChangeTitle = left.Title != right.Title;
-            ChangedSchema.Required = ListDiff.Diff<ChangedRequiredBO, string>(new ChangedRequiredBO(left.Required.ToList(), right.Required.ToList(), context));
-            ChangedSchema.IsChangeDefault = !Equals(left.Default, right.Default);
+            ChangedSchema.Required = ListDiff.Diff(new ChangedRequiredBO(left.Required.ToList(), right.Required.ToList(), context));
+            ChangedSchema.IsChangeDefault = leftDefault?.Value != rightDefault?.Value;
             ChangedSchema.Enumeration = changedEnum;
             ChangedSchema.IsChangeFormat = left.Format != right.Format;
             ChangedSchema.ReadOnly = new ChangedReadOnlyBO(left.ReadOnly, right.ReadOnly, context);

@@ -13,7 +13,7 @@ namespace openapi_diff.compare
 
         public OperationDiff(OpenApiDiff openApiDiff)
         {
-            this._openApiDiff = openApiDiff;
+            _openApiDiff = openApiDiff;
         }
 
         public ChangedOperationBO Diff(

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 
 namespace openapi_diff
 {
@@ -6,7 +7,17 @@ namespace openapi_diff
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            {
+                var versionString = Assembly.GetEntryAssembly()
+                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
+                    .InformationalVersion;
+
+                Console.WriteLine($"openapi-diff v{versionString}");
+                Console.WriteLine("-------------");
+                Console.WriteLine("\nUsage:");
+                Console.WriteLine("  openapi-diff <message>");
+                return;
+            }
         }
     }
 }
