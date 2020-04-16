@@ -3,6 +3,7 @@ using Microsoft.OpenApi.Models;
 using openapi_diff.DTOs;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace openapi_diff.utils
 {
@@ -21,9 +22,14 @@ namespace openapi_diff.utils
             if (reference != null)
             {
                 var refName = GetRefName(reference);
-                GetMap(components).TryGetValue(refName, out var result);
+                var maps = GetMap(components);
+                maps.TryGetValue(refName, out var result);
                 if (result == null)
                 {
+                    var caseInsensitiveDictionary = new Dictionary<string, T>(maps, StringComparer.OrdinalIgnoreCase);
+                    if (caseInsensitiveDictionary.TryGetValue(refName, out var insensitiveValue))
+                        throw new Exception($"Reference case sensitive error. {refName} is not equal to {caseInsensitiveDictionary.First(x => x.Value.Equals(insensitiveValue)).Key}");
+
                     throw new AggregateException($"ref '{reference}' doesn't exist.");
                 }
                 return result;

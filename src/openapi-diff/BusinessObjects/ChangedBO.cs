@@ -8,7 +8,7 @@ namespace openapi_diff.BusinessObjects
 
         public static DiffResultBO Result(ChangedBO changed)
         {
-            return changed.IsChanged() ?? new DiffResultBO(DiffResultEnum.NoChanges);
+            return changed?.IsChanged() ?? new DiffResultBO(DiffResultEnum.NoChanges);
         }
         public bool IsCompatible()
         {

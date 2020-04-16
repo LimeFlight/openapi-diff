@@ -50,19 +50,25 @@ namespace openapi_diff.compare
 
             if (oldOperation.Responses != null || newOperation.Responses != null)
             {
-                changedOperation.APIResponses =
-                    _openApiDiff
-                        .APIResponseDiff
-                        .Diff(oldOperation.Responses, newOperation.Responses, context.copyAsResponse());
+
+                var diff = _openApiDiff
+                    .APIResponseDiff
+                    .Diff(oldOperation.Responses, newOperation.Responses, context.copyAsResponse());
+
+                if (diff != null)
+                    changedOperation.APIResponses = diff;
             }
 
             if (oldOperation.Security != null || newOperation.Security != null)
             {
-                changedOperation.SecurityRequirements =
-                    _openApiDiff
-                        .SecurityRequirementsDiff
-                        .Diff(oldOperation.Security, newOperation.Security, context);
+                var diff = _openApiDiff
+                    .SecurityRequirementsDiff
+                    .Diff(oldOperation.Security, newOperation.Security, context);
+
+                if (diff != null)
+                    changedOperation.SecurityRequirements = diff;
             }
+
             changedOperation.Extensions =
                 _openApiDiff
                     .ExtensionsDiff

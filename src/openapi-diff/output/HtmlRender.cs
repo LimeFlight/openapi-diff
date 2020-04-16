@@ -358,7 +358,7 @@ namespace openapi_diff.output
         protected static OpenApiSchema Resolve(OpenApiSchema schema)
         {
             return RefPointer.ResolveRef(
-                _diff.NewSpecOpenApi.Components, schema, schema.Reference.ReferenceV3);
+                _diff.NewSpecOpenApi.Components, schema, schema.Reference?.ReferenceV3);
         }
 
         private static void Items(ContainerTag output, string propName, ChangedSchemaBO schema)

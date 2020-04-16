@@ -43,7 +43,7 @@ namespace openapi_diff.compare
             foreach (var openApiSecurityScheme in securityRequirement.Keys.ToList())
             {
 
-                if (components.SecuritySchemes.TryGetValue(openApiSecurityScheme.Reference.Id, out var result))
+                if (components.SecuritySchemes.TryGetValue(openApiSecurityScheme.Reference?.ReferenceV3, out var result))
                 {
                     if (!tmpResult.ContainsKey(result.Type))
                         tmpResult.Add(result.Type, result.In);

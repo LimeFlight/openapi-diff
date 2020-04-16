@@ -37,7 +37,7 @@ namespace openapi_diff.Compare.SchemaDiffResult
             var reverseMapping = new Dictionary<string, string>();
             foreach (var schema in composedSchema.OneOf)
             {
-                var schemaRef = schema.Reference.ReferenceV3;
+                var schemaRef = schema.Reference?.ReferenceV3;
                 if (schemaRef == null)
                 {
                     throw new ArgumentNullException("invalid oneOf schema");
@@ -54,7 +54,8 @@ namespace openapi_diff.Compare.SchemaDiffResult
             {
                 foreach (var (key, value) in composedSchema.Discriminator.Mapping)
                 {
-                    reverseMapping.Add(value, key);
+                    if (!reverseMapping.TryAdd(value, key))
+                        reverseMapping[value] = key;
                 }
             }
 
@@ -97,8 +98,8 @@ namespace openapi_diff.Compare.SchemaDiffResult
                     var changedMapping = new Dictionary<string, ChangedSchemaBO>();
                     foreach (var key in mappingDiff.SharedKey)
                     {
-                        var leftSchema = new OpenApiSchema { Reference = new OpenApiReference { Id = leftMapping[key] } };
-                        var rightSchema = new OpenApiSchema { Reference = new OpenApiReference { Id = rightMapping[key] } };
+                        var leftSchema = new OpenApiSchema { Reference = new OpenApiReference { Id = key, Type = ReferenceType.Schema } };
+                        var rightSchema = new OpenApiSchema { Reference = new OpenApiReference { Id = key, Type = ReferenceType.Schema } };
                         var changedSchema = OpenApiDiff.SchemaDiff
                                 .Diff(refSet, leftSchema, rightSchema, context.copyWithRequired(true));
                         if (changedSchema != null)

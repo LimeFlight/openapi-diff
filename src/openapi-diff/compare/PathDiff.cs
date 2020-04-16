@@ -30,9 +30,13 @@ namespace openapi_diff.compare
             {
                 var oldOperation = oldOperationMap[operationType];
                 var newOperation = newOperationMap[operationType];
-                changedPath.Changed.Add(_openApiDiff
-                        .OperationDiff
-                        .Diff(oldOperation, newOperation, context.CopyWithMethod(operationType)));
+
+                var diff = _openApiDiff
+                    .OperationDiff
+                    .Diff(oldOperation, newOperation, context.CopyWithMethod(operationType));
+
+                if (diff != null)
+                    changedPath.Changed.Add(diff);
             }
 
             changedPath.Extensions = _openApiDiff
