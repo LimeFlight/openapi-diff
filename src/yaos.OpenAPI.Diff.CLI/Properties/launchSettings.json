@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "yaos.OpenAPI.Diff.CLI": {
-      "commandName": "Project",
-      "commandLineArgs": "-o .\\current\\inventorymanagement.json -n .\\new\\inventorymanagement.json -c",
-      "workingDirectory": "C:\\Users\\FabianNiederer\\Downloads\\nswag\\diff"
-    }
-  }
-}

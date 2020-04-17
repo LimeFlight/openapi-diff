@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "yaos.OpenAPI.Diff": {
-      "commandName": "Project",
-      "commandLineArgs": "-o .\\current\\inventorymanagement.json -n .\\new\\inventorymanagement.json -c"
-    }
-  }
-}
