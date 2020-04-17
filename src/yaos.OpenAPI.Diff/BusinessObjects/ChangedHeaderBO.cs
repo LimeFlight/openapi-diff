@@ -7,7 +7,7 @@ namespace yaos.OpenAPI.Diff.BusinessObjects
     public class ChangedHeaderBO : ComposedChangedBO
     {
         private readonly OpenApiHeader _oldHeader;
-        public OpenApiHeader NewHeader { get; };
+        public OpenApiHeader NewHeader { get; }
         private readonly DiffContextBO _context;
 
         public bool Required { get; set; }

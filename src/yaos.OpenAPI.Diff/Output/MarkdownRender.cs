@@ -56,8 +56,7 @@ namespace yaos.OpenAPI.Diff.Output
                             ItemEndpoint(
                                 operation.HttpMethod.ToString(),
                                 operation.PathUrl,
-                                operation.Summary.ToString()
-                                ));
+                                operation.Summary));
 
                     if (ChangedBO.Result(operation.Parameters).IsDifferent())
                     {
@@ -202,6 +201,12 @@ namespace yaos.OpenAPI.Diff.Output
         {
             return H5 + CodeText + method + CodeText + " " + path + "\n\n" + Metadata(summary) + "\n";
         }
+
+        protected string ItemEndpoint(string method, string path, ChangedMetadataBO summary)
+        {
+            return H5 + CodeText + method + CodeText + " " + path + "\n\n" + Metadata("summary", summary) + "\n";
+        }
+
         private string GetBlockQuote(string beginning)
         {
             return beginning + BlockQuote;
