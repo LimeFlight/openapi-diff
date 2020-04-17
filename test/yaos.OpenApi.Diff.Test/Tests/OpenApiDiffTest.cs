@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
-using yaos.OpenAPI.Diff.Output;
 using yaos.OpenApi.Diff.Tests._Base;
+using yaos.OpenAPI.Diff.Output;
 
 namespace yaos.OpenAPI.Diff.Tests.Tests
 {
@@ -98,7 +98,8 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
         public void TestDiffAndMarkdown()
         {
             var changedOpenAPI = TestUtils.GetOpenAPICompare().FromLocations(OpenAPIDoc1, OpenAPIDoc2);
-            var render = new MarkdownRender().Render(changedOpenAPI);
+            var logger = _testOutputHelper.BuildLoggerFor<MarkdownRender>();
+            var render = new MarkdownRender(logger).Render(changedOpenAPI);
             try
             {
                 File.WriteAllText("testDiff.md", render);

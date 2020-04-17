@@ -9,7 +9,7 @@ namespace yaos.OpenAPI.Diff.BusinessObjects
     {
         private readonly Dictionary<string, string> _oldMapping;
         private readonly Dictionary<string, string> _newMapping;
-        private readonly DiffContextBO _context;
+        public DiffContextBO Context { get; }
 
         public Dictionary<string, OpenApiSchema> Increased { get; set; }
         public Dictionary<string, OpenApiSchema> Missing { get; set; }
@@ -22,7 +22,7 @@ namespace yaos.OpenAPI.Diff.BusinessObjects
         {
             _oldMapping = oldMapping;
             _newMapping = newMapping;
-            _context = context;
+            Context = context;
         }
 
         public override List<ChangedBO> GetChangedElements()
@@ -36,7 +36,7 @@ namespace yaos.OpenAPI.Diff.BusinessObjects
             {
                 return new DiffResultBO(DiffResultEnum.NoChanges);
             }
-            if (_context.IsRequest && Missing.IsNullOrEmpty() || _context.IsResponse && Increased.IsNullOrEmpty())
+            if (Context.IsRequest && Missing.IsNullOrEmpty() || Context.IsResponse && Increased.IsNullOrEmpty())
             {
                 return new DiffResultBO(DiffResultEnum.Compatible);
             }
