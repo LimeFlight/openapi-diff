@@ -21,12 +21,12 @@ namespace openapi_diff.Compare
             if (null == mapLeft && null == mapRight) return instance;
             if (null == mapLeft)
             {
-                instance.Increased = (Dictionary<T1, T2>) mapRight;
+                instance.Increased = (Dictionary<T1, T2>)mapRight;
                 return instance;
             }
             if (null == mapRight)
             {
-                instance.Missing = (Dictionary<T1, T2>) mapLeft;
+                instance.Missing = (Dictionary<T1, T2>)mapLeft;
                 return instance;
             }
             instance.Increased = new Dictionary<T1, T2>(mapRight);

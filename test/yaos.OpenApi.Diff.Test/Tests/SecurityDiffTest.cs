@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Microsoft.OpenApi.Readers;
 using Xunit;
 using yaos.OpenApi.Diff.Tests._Base;
 
@@ -82,7 +83,11 @@ namespace yaos.OpenApi.Diff.Tests.Tests
         [Fact]
         public void TestWithUnknownSecurityScheme()
         {
-            Assert.Throws<ArgumentException>(() => TestUtils.GetOpenAPICompare().FromLocations(OpenapiDoc3, OpenapiDoc3));
+            var settings = new OpenApiReaderSettings
+            {
+                ReferenceResolution = ReferenceResolutionSetting.DoNotResolveReferences
+            };
+            Assert.Throws<ArgumentException>(() => TestUtils.GetOpenAPICompare().FromLocations(OpenapiDoc3, OpenapiDoc3, settings));
         }
     }
 }

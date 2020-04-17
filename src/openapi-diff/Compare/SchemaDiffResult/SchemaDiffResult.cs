@@ -1,16 +1,13 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Interfaces;
+using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
 using openapi_diff.compare;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Microsoft.OpenApi;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Interfaces;
-using Microsoft.OpenApi.Writers;
 using openapi_diff.DTOs;
 using openapi_diff.Extensions;
 using openapi_diff.utils;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace openapi_diff.Compare.SchemaDiffResult
 {

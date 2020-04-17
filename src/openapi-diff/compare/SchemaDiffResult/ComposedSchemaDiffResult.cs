@@ -1,5 +1,4 @@
-﻿using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
 using openapi_diff.BusinessObjects;
 using openapi_diff.compare;
 using openapi_diff.DTOs;
@@ -54,7 +53,8 @@ namespace openapi_diff.Compare.SchemaDiffResult
             {
                 foreach (var (key, value) in composedSchema.Discriminator.Mapping)
                 {
-                    reverseMapping.TryAdd(value, key);
+                    if (!reverseMapping.TryAdd(value, key))
+                        reverseMapping[value] = key;
                 }
             }
 
@@ -95,14 +95,19 @@ namespace openapi_diff.Compare.SchemaDiffResult
 
                     var mappingDiff = MapKeyDiff<string, OpenApiSchema>.Diff(GetSchema(leftComponents, leftMapping), GetSchema(rightComponents, rightMapping));
                     var changedMapping = new Dictionary<string, ChangedSchemaBO>();
-                    foreach (var key in mappingDiff.SharedKey)
+                    foreach (var refId in mappingDiff.SharedKey)
                     {
-                        var leftSchema = new OpenApiSchema { Reference = new OpenApiReference { Id = key, Type = ReferenceType.Schema } };
-                        var rightSchema = new OpenApiSchema { Reference = new OpenApiReference { Id = key, Type = ReferenceType.Schema } };
+                        var leftReference = leftComponents.Schemas.Values
+                            .First(x => x.Reference.ReferenceV3 == leftMapping[refId]).Reference;
+                        var rightReference = rightComponents.Schemas.Values
+                            .First(x => x.Reference.ReferenceV3 == rightMapping[refId]).Reference;
+
+                        var leftSchema = new OpenApiSchema { Reference = leftReference };
+                        var rightSchema = new OpenApiSchema { Reference = rightReference };
                         var changedSchema = OpenApiDiff.SchemaDiff
                                 .Diff(refSet, leftSchema, rightSchema, context.copyWithRequired(true));
                         if (changedSchema != null)
-                            changedMapping.Add(key, changedSchema);
+                            changedMapping.Add(refId, changedSchema);
                     }
 
                     ChangedSchema.OneOfSchema = new ChangedOneOfSchemaBO(leftMapping, rightMapping, context)

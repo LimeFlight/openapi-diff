@@ -22,11 +22,12 @@ namespace openapi_diff.compare
             var responses = new Dictionary<string, ChangedResponseBO>();
             foreach (var responseCode in sharedResponseCodes)
             {
-                responses.Add(
-                    responseCode, _openApiDiff
-                        .ResponseDiff
-                        .Diff(left[responseCode], right[responseCode], context)
-                    );
+                var diff = _openApiDiff
+                    .ResponseDiff
+                    .Diff(left[responseCode], right[responseCode], context);
+
+                if(diff!= null)
+                    responses.Add(responseCode, diff);
             }
 
             var changedApiResponse =
