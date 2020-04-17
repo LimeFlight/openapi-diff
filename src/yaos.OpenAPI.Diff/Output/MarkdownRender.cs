@@ -12,7 +12,7 @@ using yaos.OpenAPI.Diff.Utils;
 
 namespace yaos.OpenAPI.Diff.Output
 {
-    public class MarkdownRender : IRender
+    public class MarkdownRender : IMarkdownRender
     {
         private readonly ILogger<MarkdownRender> _logger;
         protected RefPointer<OpenApiSchema> RefPointer = new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
@@ -477,7 +477,7 @@ namespace yaos.OpenAPI.Diff.Output
 
         protected string ListItem<T>(int deepness, string name, List<T> list)
         {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             if (list != null && !list.IsNullOrEmpty())
             {
                 var multiple = list.Count > 1 ? "s" : "";

@@ -1,15 +1,18 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using McMaster.Extensions.CommandLineUtils;
+﻿using McMaster.Extensions.CommandLineUtils;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.IO;
 using yaos.OpenAPI.Diff.Compare;
+using yaos.OpenAPI.Diff.Output;
 
 namespace yaos.OpenAPI.Diff.CLI
 {
     class Program
     {
+        private ILogger _logger;
+
         [Required]
         [Option(CommandOptionType.SingleValue, ShortName = "o", LongName = "old", Description = "Path to old OpenAPI Specification file")]
         public string OldPath { get; }
@@ -17,32 +20,22 @@ namespace yaos.OpenAPI.Diff.CLI
         [Option(CommandOptionType.SingleValue, ShortName = "n", LongName = "new", Description = "Path to new OpenAPI Specification file")]
         public string NewPath { get; }
 
-        [Option(CommandOptionType.SingleValue, Description =
-            "Only output diff state: no_changes, incompatible, compatible")]
-        public string State { get; }
-
-        [Option(CommandOptionType.SingleValue, Description = "Fail only if API changes broke backward compatibility")]
-        public bool FailOnIncompatible { get; }
-
-        [Option(CommandOptionType.SingleValue, Description = "Be extra verbose")]
-        public bool Trace { get; }
-
-        [Option(CommandOptionType.SingleValue, Description = "Print debugging information")]
-        public bool Debug { get; }
-
-        [Option(CommandOptionType.SingleValue, Description = "Use given format (html, markdown) for output in file")]
-        public bool Output { get; }
+        [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exit", Description = "Define exit behavior. Default: Fail only if API changes broke backward compatibility")]
+        public ExitTypeEnum? ExitType { get; }
 
         [Option(CommandOptionType.SingleValue, Description = "Export diff as markdown in given file")]
-        public bool Markdown { get; }
+        public string Markdown { get; }
+
+        [Option(CommandOptionType.NoValue, ShortName = "c", LongName = "console", Description = "Export diff in console")]
+        public bool ToConsole { get; }
 
         [Option(CommandOptionType.SingleValue, Description = "Export diff as html in given file")]
-        public bool HTML { get; }
+        public string HTML { get; }
 
-        static void Main(string[] args)
+        static int Main(string[] args)
             => CommandLineApplication.Execute<Program>(args);
-        
-        private void OnExecute()
+
+        private int OnExecute()
         {
             //setup our DI
             var serviceProvider = new ServiceCollection()
@@ -52,29 +45,64 @@ namespace yaos.OpenAPI.Diff.CLI
                     builder.AddConsole();
                 })
                 .AddSingleton<IOpenAPICompare, OpenAPICompare>()
+                .AddSingleton<IMarkdownRender, MarkdownRender>()
+                .AddSingleton<IHtmlRender, HtmlRender>()
+                .AddSingleton<IConsoleRender, ConsoleRender>()
                 .AddTransient(x => (IExtensionDiff)x.GetService(typeof(ExtensionDiff)))
                 .BuildServiceProvider();
 
-            var logger = serviceProvider.GetService<ILogger<Program>>();
-            logger.LogDebug("Starting application");
-
-            if (OldPath == null || NewPath == null)
-            {
-                var versionString = Assembly.GetEntryAssembly()
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                    .InformationalVersion;
-
-                Console.WriteLine($"openapi-diff-cli v{versionString}");
-                Console.WriteLine("-------------");
-                Console.WriteLine("\nUsage:");
-                Console.WriteLine("  openapi-diff-cli --old <paht> --new <path>");
-                return;
-            }
+            _logger = serviceProvider.GetService<ILogger<Program>>();
+            _logger.LogDebug("Starting application");
 
             var openAPICompare = serviceProvider.GetService<IOpenAPICompare>();
-            openAPICompare.FromLocations(OldPath, NewPath);
+            var result = openAPICompare.FromLocations(OldPath, NewPath);
+            if (ToConsole)
+            {
+                var renderer = serviceProvider.GetService<IConsoleRender>();
+                var renderedResult = renderer.Render(result);
+                Console.WriteLine(renderedResult);
+            }
+            if (HTML != null && Uri.IsWellFormedUriString(HTML, UriKind.RelativeOrAbsolute))
+            {
+                var renderer = serviceProvider.GetService<IHtmlRender>();
+                var renderedResult = renderer.Render(result);
+                SaveToFile(renderedResult, HTML);
+            }
+            if (Markdown != null && Uri.IsWellFormedUriString(Markdown, UriKind.RelativeOrAbsolute))
+            {
+                var renderer = serviceProvider.GetService<IMarkdownRender>();
+                var renderedResult = renderer.Render(result);
+                SaveToFile(renderedResult, Markdown);
+            }
 
-            logger.LogDebug("All done!");
+            switch (ExitType)
+            {
+                case ExitTypeEnum.PrintState:
+                    Console.WriteLine(result.IsChanged().DiffResult);
+                    break;
+                case ExitTypeEnum.FailOnChanged:
+                    Environment.ExitCode = result.IsUnchanged() ? 0 : 1;
+                    break;
+                case null:
+                    Environment.ExitCode = result.IsCompatible() ? 0 : 1;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+            _logger.LogDebug("All done!");
+            return Environment.ExitCode;
+        }
+
+        private void SaveToFile(string renderedResult, string path)
+        {
+            try
+            {
+                File.WriteAllText(path, renderedResult);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.ToString());
+            }
         }
     }
 }

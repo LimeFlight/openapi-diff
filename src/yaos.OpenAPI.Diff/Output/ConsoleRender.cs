@@ -10,7 +10,7 @@ using yaos.OpenAPI.Diff.Utils;
 
 namespace yaos.OpenAPI.Diff.Output
 {
-    public class ConsoleRender : IRender
+    public class ConsoleRender : IConsoleRender
     {
         private static readonly RefPointer<OpenApiSchema> RefPointer = new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
         private static ChangedOpenApiBO _diff;
@@ -28,6 +28,7 @@ namespace yaos.OpenAPI.Diff.Output
             else
             {
                 _output
+                    .Append(Environment.NewLine)
                     .Append(BigTitle("Api Change Log"))
                     .Append(Center(diff.NewSpecOpenApi.Info.Title))
                     .Append(Environment.NewLine);
@@ -89,8 +90,9 @@ namespace yaos.OpenAPI.Diff.Output
         private static string Title(string title, char ch = '-')
         {
             var little = new string(ch, 2);
+            var offset = little.Length * 2;
 
-            return $"{Separator(ch)}{little}{Center(title, -4)}{little}{Environment.NewLine}{Separator(ch)}";
+            return $"{Separator(ch)}{little}{Center(title, -offset)}{little.PadLeft(Console.WindowWidth / 2 - title.Length / 2 + little.Length)}{Environment.NewLine}{Separator(ch)}";
         }
         private static StringBuilder Separator(char ch)
         {
@@ -111,7 +113,7 @@ namespace yaos.OpenAPI.Diff.Output
             {
                 var pathUrl = operation.PathUrl;
                 var method = operation.HttpMethod.ToString();
-                var desc = operation.Summary.Right ?? "";
+                var desc = operation.Summary?.Right ?? "";
 
                 var ul_detail = new StringBuilder();
                 if (ChangedBO.Result(operation.Parameters).IsDifferent())
@@ -299,7 +301,7 @@ namespace yaos.OpenAPI.Diff.Output
         private static string Items(string propName, ChangedSchemaBO schema)
         {
             var sb = new StringBuilder();
-            sb.Append(Incompatibilities(propName + "[n]", schema));
+            sb.Append(Incompatibilities(propName + "[]", schema));
             return sb.ToString();
         }
         private static string Properties(string propPrefix, string title, Dictionary<string, OpenApiSchema> properties, DiffContextBO context)

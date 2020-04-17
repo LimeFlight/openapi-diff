@@ -9,7 +9,7 @@ using static DotNet2HTML.TagCreator;
 
 namespace yaos.OpenAPI.Diff.Output
 {
-    public class HtmlRender : IRender
+    public class HtmlRender : IHtmlRender
     {
         private readonly string _title;
         private readonly string _linkCss;
@@ -50,7 +50,7 @@ namespace yaos.OpenAPI.Diff.Output
         public string RenderHtml(ContainerTag olNwEndpoint, ContainerTag olMissingEndpoint,
             ContainerTag olDeprecatedEndpoint, ContainerTag olChanged)
         {
-            ContainerTag html =
+            var html =
                 Html()
                     .Attr("lang", "en")
                     .With(
@@ -363,7 +363,7 @@ namespace yaos.OpenAPI.Diff.Output
 
         private static void Items(ContainerTag output, string propName, ChangedSchemaBO schema)
         {
-            Incompatibilities(output, propName + "[n]", schema);
+            Incompatibilities(output, propName + "[]", schema);
         }
 
         private static ContainerTag div_changedSchema(ChangedSchemaBO schema)
