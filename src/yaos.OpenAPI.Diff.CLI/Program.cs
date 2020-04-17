@@ -17,6 +17,28 @@ namespace yaos.OpenAPI.Diff.CLI
         [Option(CommandOptionType.SingleValue, ShortName = "n", LongName = "new", Description = "Path to new OpenAPI Specification file")]
         public string NewPath { get; }
 
+        [Option(CommandOptionType.SingleValue, Description =
+            "Only output diff state: no_changes, incompatible, compatible")]
+        public string State { get; }
+
+        [Option(CommandOptionType.SingleValue, Description = "Fail only if API changes broke backward compatibility")]
+        public bool FailOnIncompatible { get; }
+
+        [Option(CommandOptionType.SingleValue, Description = "Be extra verbose")]
+        public bool Trace { get; }
+
+        [Option(CommandOptionType.SingleValue, Description = "Print debugging information")]
+        public bool Debug { get; }
+
+        [Option(CommandOptionType.SingleValue, Description = "Use given format (html, markdown) for output in file")]
+        public bool Output { get; }
+
+        [Option(CommandOptionType.SingleValue, Description = "Export diff as markdown in given file")]
+        public bool Markdown { get; }
+
+        [Option(CommandOptionType.SingleValue, Description = "Export diff as html in given file")]
+        public bool HTML { get; }
+
         static void Main(string[] args)
             => CommandLineApplication.Execute<Program>(args);
         
