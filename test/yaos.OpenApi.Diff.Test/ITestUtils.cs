@@ -1,4 +1,4 @@
-﻿using openapi_diff;
+﻿using yaos.OpenAPI.Diff;
 
 namespace yaos.OpenApi.Diff.Tests
 {

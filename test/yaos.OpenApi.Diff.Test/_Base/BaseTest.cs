@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.Extensions.DependencyInjection;
-using openapi_diff;
-using openapi_diff.compare;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Xunit.Abstractions;
-using Xunit.Sdk;
+using yaos.OpenAPI.Diff;
+using yaos.OpenAPI.Diff.Compare;
 using yaos.OpenAPI.Diff.Tests;
 
 namespace yaos.OpenApi.Diff.Tests._Base

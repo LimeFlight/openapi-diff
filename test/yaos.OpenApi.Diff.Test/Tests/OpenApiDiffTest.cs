@@ -1,8 +1,8 @@
-﻿using openapi_diff.output;
-using System;
+﻿using System;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
+using yaos.OpenAPI.Diff.Output;
 using yaos.OpenApi.Diff.Tests._Base;
 
 namespace yaos.OpenAPI.Diff.Tests.Tests
