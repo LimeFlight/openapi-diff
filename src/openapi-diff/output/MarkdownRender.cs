@@ -34,41 +34,42 @@ namespace openapi_diff.output
 
         private static string ListEndpoints(List<ChangedOperationBO> changedOperations)
         {
-            if (changedOperations == null || changedOperations.Count == 0) return "";
-            var sb = new StringBuilder(SectionTitle("What's Changed"));
-            changedOperations.ForEach(x =>
-                {
-                    var details = new StringBuilder()
-                        .Append(
-                            ItemEndpoint(
-                                x.HttpMethod.ToString(),
-                                x.PathUrl,
-                                x.Summary.ToString()
-                                ));
+            //if (changedOperations == null || changedOperations.Count == 0) return "";
+            //var sb = new StringBuilder(SectionTitle("What's Changed"));
+            //changedOperations.ForEach(x =>
+            //    {
+            //        var details = new StringBuilder()
+            //            .Append(
+            //                ItemEndpoint(
+            //                    x.HttpMethod.ToString(),
+            //                    x.PathUrl,
+            //                    x.Summary.ToString()
+            //                    ));
 
-                    if (ChangedBO.Result(x.Parameters).IsDifferent())
-                    {
-                        details
-                            .Append(TitleH5("Parameters:"))
-                            .Append(Parameters(x.Parameters));
-                    }
-                    if (x.ResultRequestBody().IsDifferent())
-                    {
-                        details
-                            .Append(TitleH5("Request:"))
-                            .Append(Metadata("Description", x.RequestBody.Description))
-                            .Append(BodyContent(operation.RequestBody().Content()));
-                    }
-                    if (operation.resultApiResponses().isDifferent())
-                    {
-                        details
-                            .append(TitleH5("Return Type:"))
-                            .append(responses(operation.ApiResponses()));
-                    }
+            //        if (ChangedBO.Result(x.Parameters).IsDifferent())
+            //        {
+            //            details
+            //                .Append(TitleH5("Parameters:"))
+            //                .Append(Parameters(x.Parameters));
+            //        }
+            //        if (x.ResultRequestBody().IsDifferent())
+            //        {
+            //            details
+            //                .Append(TitleH5("Request:"))
+            //                .Append(Metadata("Description", x.RequestBody.Description))
+            //                .Append(BodyContent(operation.RequestBody().Content()));
+            //        }
+            //        if (operation.resultApiResponses().isDifferent())
+            //        {
+            //            details
+            //                .append(TitleH5("Return Type:"))
+            //                .append(responses(operation.ApiResponses()));
+            //        }
 
-                    sb.Append(details);
-                });
-            return sb.ToString();
+            //        sb.Append(details);
+            //    });
+            //return sb.ToString();
+            return null;
         }
         private static string ListEndpoints(string title, List<EndpointBO> endpoints)
         {
@@ -204,35 +205,36 @@ namespace openapi_diff.output
         }
         private static string BodyContent(ChangedContentBO changedContent)
         {
-            return BodyContent("", changedContent);
+            return null;
+            //-return BodyContent("", changedContent);
         }
-        private static string BodyContent(string prefix, ChangedContentBO changedContent)
-        {
-            if (changedContent == null)
-            {
-                return "";
-            }
-            var sb = new StringBuilder("\n");
-            sb.Append(listContent(prefix, "New content type", changedContent.Increased));
-            sb.Append(listContent(prefix, "Deleted content type", changedContent.Missing));
-            var deepness = !prefix.IsNullOrEmpty() ? 1 : 0;
-            changedContent
-                .Changed
-                .entrySet()
-                .stream()
-                .map(e-> this.itemContent(deepness, e.getKey(), e.getValue()))
-                .forEach(e->sb.append(prefix).append(e));
-            return sb.toString();
-        }
-        private static string listContent(string prefix, string title, Dictionary<string, OpenApiMediaType> mediaTypes)
-        {
-            var sb = new StringBuilder();
-            mediaTypes
-                .entrySet()
-                .stream()
-                .map(e-> this.itemContent(title, e.getKey(), e.getValue()))
-                .forEach(e->sb.append(prefix).append(e));
-            return sb.toString();
-        }
+        //private static string BodyContent(string prefix, ChangedContentBO changedContent)
+        //{
+        //    if (changedContent == null)
+        //    {
+        //        return "";
+        //    }
+        //    var sb = new StringBuilder("\n");
+        //    sb.Append(listContent(prefix, "New content type", changedContent.Increased));
+        //    sb.Append(listContent(prefix, "Deleted content type", changedContent.Missing));
+        //    var deepness = !prefix.IsNullOrEmpty() ? 1 : 0;
+        //    changedContent
+        //        .Changed
+        //        .entrySet()
+        //        .stream()
+        //        .map(e-> this.itemContent(deepness, e.getKey(), e.getValue()))
+        //        .forEach(e->sb.append(prefix).append(e));
+        //    return sb.toString();
+        //}
+        //private static string listContent(string prefix, string title, Dictionary<string, OpenApiMediaType> mediaTypes)
+        //{
+        //    var sb = new StringBuilder();
+        //    mediaTypes
+        //        .entrySet()
+        //        .stream()
+        //        .map(e-> this.itemContent(title, e.getKey(), e.getValue()))
+        //        .forEach(e->sb.append(prefix).append(e));
+        //    return sb.toString();
+        //}
     }
 }

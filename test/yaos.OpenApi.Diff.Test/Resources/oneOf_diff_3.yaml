@@ -109,7 +109,7 @@ components:
       discriminator:
         propertyName: pet_type
         mapping:
-          MyDog: "#/components/schemas/MyDog"
+          dog: "#/components/schemas/MyDog"
     Cat:
       allOf:
         - $ref: "#/components/schemas/Pet"

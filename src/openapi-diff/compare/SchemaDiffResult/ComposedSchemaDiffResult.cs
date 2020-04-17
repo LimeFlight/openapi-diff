@@ -50,12 +50,11 @@ namespace openapi_diff.Compare.SchemaDiffResult
                 reverseMapping.Add(schemaRef, schemaName);
             }
 
-            if (composedSchema.Discriminator.Mapping != null)
+            if (!composedSchema.Discriminator.Mapping.IsNullOrEmpty())
             {
                 foreach (var (key, value) in composedSchema.Discriminator.Mapping)
                 {
-                    if (!reverseMapping.TryAdd(value, key))
-                        reverseMapping[value] = key;
+                    reverseMapping.TryAdd(value, key);
                 }
             }
 
