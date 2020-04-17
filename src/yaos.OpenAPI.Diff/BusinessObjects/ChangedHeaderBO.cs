@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.OpenApi.Models;
+﻿using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using yaos.OpenAPI.Diff.Enums;
 
 namespace yaos.OpenAPI.Diff.BusinessObjects
@@ -7,7 +7,7 @@ namespace yaos.OpenAPI.Diff.BusinessObjects
     public class ChangedHeaderBO : ComposedChangedBO
     {
         private readonly OpenApiHeader _oldHeader;
-        private readonly OpenApiHeader _newHeader;
+        public OpenApiHeader NewHeader { get; };
         private readonly DiffContextBO _context;
 
         public bool Required { get; set; }
@@ -22,7 +22,7 @@ namespace yaos.OpenAPI.Diff.BusinessObjects
         public ChangedHeaderBO(OpenApiHeader oldHeader, OpenApiHeader newHeader, DiffContextBO context)
         {
             _oldHeader = oldHeader;
-            _newHeader = newHeader;
+            NewHeader = newHeader;
             _context = context;
         }
         
