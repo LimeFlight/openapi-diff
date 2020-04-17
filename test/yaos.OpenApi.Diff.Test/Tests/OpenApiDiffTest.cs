@@ -1,10 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
-using openapi_diff.output;
 using System;
 using System.IO;
 using Xunit;
 using Xunit.Abstractions;
 using yaos.OpenApi.Diff.Tests._Base;
+using yaos.OpenAPI.Diff.Output;
 
 namespace yaos.OpenAPI.Diff.Tests.Tests
 {

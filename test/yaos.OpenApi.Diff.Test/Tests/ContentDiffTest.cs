@@ -1,5 +1,4 @@
-﻿using openapi_diff;
-using Xunit;
+﻿using Xunit;
 using yaos.OpenApi.Diff.Tests._Base;
 
 namespace yaos.OpenAPI.Diff.Tests.Tests

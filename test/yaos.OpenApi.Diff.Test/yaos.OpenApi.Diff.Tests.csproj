@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\openapi-diff\openapi-diff.csproj" />
+    <ProjectReference Include="..\..\src\yaos.OpenAPI.Diff\yaos.OpenAPI.Diff.csproj" />
   </ItemGroup>
 
   <ItemGroup>

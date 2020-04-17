@@ -1,5 +1,4 @@
-﻿using openapi_diff;
-using System.Linq;
+﻿using System.Linq;
 using Xunit;
 using yaos.OpenApi.Diff.Tests._Base;
 
