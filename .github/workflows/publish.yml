@@ -22,7 +22,7 @@ jobs:
         working-directory: ./src/yaos.OpenAPI.Diff
       - name: Publish the package
         run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN}}
-        working-directory: ./src/yaos.OpenAPI.Diff/yaos.OpenAPI.Diff/nupkg
+        working-directory: ./src/yaos.OpenAPI.Diff/nupkg
   publish-cli:
     runs-on: ubuntu-latest
     name: Publish OpenAPI Diff Action tool to nuget
@@ -40,4 +40,4 @@ jobs:
         working-directory: ./src/yaos.OpenAPI.Diff.CLI
       - name: Publish the package
         run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN}}
-        working-directory: ./src/yaos.OpenAPI.Diff.CLI/yaos.OpenAPI.Diff.CLI/nupkg
+        working-directory: ./src/yaos.OpenAPI.Diff.CLI/nupkg
