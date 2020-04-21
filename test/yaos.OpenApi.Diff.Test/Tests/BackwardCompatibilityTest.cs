@@ -5,11 +5,11 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
 {
     public class BackwardCompatibilityTest : BaseTest
     {
-        private const string OpenAPIDoc1 = "Resources\\backwardCompatibility\\bc_1.yaml";
-        private const string OpenAPIDoc2 = "Resources\\backwardCompatibility\\bc_2.yaml";
-        private const string OpenAPIDoc3 = "Resources\\backwardCompatibility\\bc_3.yaml";
-        private const string OpenAPIDoc4 = "Resources\\backwardCompatibility\\bc_4.yaml";
-        private const string OpenAPIDoc5 = "Resources\\backwardCompatibility\\bc_5.yaml";
+        private const string OpenAPIDoc1 = "Resources/backwardCompatibility/bc_1.yaml";
+        private const string OpenAPIDoc2 = "Resources/backwardCompatibility/bc_2.yaml";
+        private const string OpenAPIDoc3 = "Resources/backwardCompatibility/bc_3.yaml";
+        private const string OpenAPIDoc4 = "Resources/backwardCompatibility/bc_4.yaml";
+        private const string OpenAPIDoc5 = "Resources/backwardCompatibility/bc_5.yaml";
 
         [Fact]
         public void TestNoChange()

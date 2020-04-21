@@ -334,7 +334,7 @@ namespace yaos.OpenAPI.Diff.Output
         protected string Schema(int deepness, OpenApiSchema schema, DiffContextBO context)
         {
             var sb = new StringBuilder();
-            sb.Append(ListItem<IOpenApiAny>(deepness, "Enum", schema.Enum.ToList()));
+            sb.Append(ListItem(deepness, "Enum", schema.Enum.Select(x => ((IOpenApiPrimitive)x)?.GetValueString()).ToList()));
             sb.Append(Properties(deepness, "Property", schema.Properties, true, context));
 
             if (schema.GetSchemaType() == SchemaTypeEnum.ComposedSchema)

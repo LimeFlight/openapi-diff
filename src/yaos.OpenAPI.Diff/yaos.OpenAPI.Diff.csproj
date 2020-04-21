@@ -3,6 +3,10 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
+    <PackageId>yaos.OpenAPI.Diff</PackageId>
+    <Version>1.0.0-alpha</Version>
+    <Company>yaos</Company>
+    <PackageOutputPath>./nupkg</PackageOutputPath>
   </PropertyGroup>
 
   <ItemGroup>

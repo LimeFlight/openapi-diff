@@ -8,9 +8,9 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class SecurityDiffTest : BaseTest
     {
-        private const string OpenapiDoc1 = "Resources\\security_diff_1.yaml";
-        private const string OpenapiDoc2 = "Resources\\security_diff_2.yaml";
-        private const string OpenapiDoc3 = "Resources\\security_diff_3.yaml";
+        private const string OpenapiDoc1 = "Resources/security_diff_1.yaml";
+        private const string OpenapiDoc2 = "Resources/security_diff_2.yaml";
+        private const string OpenapiDoc3 = "Resources/security_diff_3.yaml";
 
         [Fact]
         public void TestDiffDifferent()
