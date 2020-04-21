@@ -5,8 +5,8 @@ namespace yaos.OpenApi.Diff.Tests.tests
 {
     public class AddPropDiffTest : BaseTest
     {
-        private const string OpenAPIDoc1 = "Resources\\add-prop-1.yaml";
-        private const string OpenAPIDoc2 = "Resources\\add-prop-2.yaml";
+        private const string OpenAPIDoc1 = "Resources/add-prop-1.yaml";
+        private const string OpenAPIDoc2 = "Resources/add-prop-2.yaml";
 
         [Fact]
         public void TestDiffSame()
