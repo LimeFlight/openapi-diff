@@ -5,7 +5,7 @@ on: [pull_request]
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    name: Publish OpenAPI Diff Action tool to nuget
+    name: Run build test
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
         run: dotnet build --configuration Release
   xunit-test:
     runs-on: ubuntu-latest
-    name: Publish OpenAPI Diff Action tool to nuget
+    name: Run xunit tests
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
