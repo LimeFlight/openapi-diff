@@ -1,0 +1,29 @@
+name: Tests
+
+on: [pull_request]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    name: Publish OpenAPI Diff Action tool to nuget
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup .net
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "3.1.201" # SDK Version to use.
+      - name: Build
+        run: dotnet build --configuration Release --nologo
+  xunit-test:
+    runs-on: ubuntu-latest
+    name: Publish OpenAPI Diff Action tool to nuget
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Setup .net
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: "3.1.201" # SDK Version to use.
+      - name: Test
+        run: dotnet test --no-build --nologo
