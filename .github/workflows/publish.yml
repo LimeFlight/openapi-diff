@@ -15,13 +15,11 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "3.1.201" # SDK Version to use.
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN_LIB}}
       - name: Create the package
         run: dotnet pack --configuration Release
         working-directory: ./src/yaos.OpenAPI.Diff
       - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN}}
+        run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_LIB}}
         working-directory: ./src/yaos.OpenAPI.Diff/nupkg
   publish-cli:
     runs-on: ubuntu-latest
@@ -33,11 +31,9 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "3.1.201" # SDK Version to use.
-        env:
-          NUGET_AUTH_TOKEN: ${{secrets.NUGET_AUTH_TOKEN_CLI}}
       - name: Create the package
         run: dotnet pack --configuration Release
         working-directory: ./src/yaos.OpenAPI.Diff.CLI
       - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN}}
+        run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_CLI}}
         working-directory: ./src/yaos.OpenAPI.Diff.CLI/nupkg
