@@ -6,9 +6,9 @@ namespace yaos.OpenApi.Diff.Tests.Tests
 {
     public class ResponseHeaderDiffTest : BaseTest
     {
-        private const string OpenapiDoc1 = "Resources\\header_1.yaml";
-        private const string OpenapiDoc2 = "Resources\\header_2.yaml";
-        
+        private const string OpenapiDoc1 = "Resources/header_1.yaml";
+        private const string OpenapiDoc2 = "Resources/header_2.yaml";
+
         [Fact]
         public void TestDiffDifferent()
         {
@@ -23,7 +23,7 @@ namespace yaos.OpenApi.Diff.Tests.Tests
             Assert.NotNull(changedResponses);
             Assert.NotEmpty(changedResponses);
             Assert.True(changedResponses.ContainsKey("200"));
-            
+
             var changedHeaders = changedResponses["200"].Headers;
             Assert.True(changedHeaders.IsDifferent());
             Assert.Single(changedHeaders.Changed);
