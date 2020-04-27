@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using yaos.OpenApi.Diff.Tests._Base;
-using yaos.OpenAPI.Diff.Output;
 using yaos.OpenAPI.Diff.Output.Html;
 using yaos.OpenAPI.Diff.Output.Markdown;
 
@@ -19,7 +18,6 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
             _testOutputHelper = testOutputHelper;
         }
 
-        const string SwaggerV2Http = "http://petstore.swagger.io/v2/swagger.json";
         private const string OpenAPIDoc1 = "Resources/petstore_v2_1.yaml";
         private const string OpenAPIDoc2 = "Resources/petstore_v2_2.yaml";
         private const string OpenAPIEmptyDoc = "Resources/petstore_v2_empty.yaml";

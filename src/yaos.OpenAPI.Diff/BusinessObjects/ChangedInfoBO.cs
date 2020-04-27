@@ -1,5 +1,4 @@
 ﻿using yaos.OpenAPI.Diff.Enums;
-using yaos.OpenAPI.Diff.Extensions;
 
 namespace yaos.OpenAPI.Diff.BusinessObjects
 {
