@@ -27,7 +27,7 @@ jobs:
         uses: aarnott/nbgv@v0.3
         id: nbgv
       - name: Create the package
-        run: dotnet pack --configuration Release /p:PublicRelease=true
+        run: dotnet pack --configuration Release
         working-directory: ./src/yaos.OpenAPI.Diff
       # - name: Publish the package
       #   run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_LIB}}
