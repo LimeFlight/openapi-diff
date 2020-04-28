@@ -9,3 +9,21 @@ update_configs:
       - match:
           dependency_type: "all"
           update_type: "semver:minor"
+  - package_manager: "dotnet:nuget"
+    directory: "/src/yaos.OpenAPI.Diff.CLI"
+    update_schedule: "live"
+    default_reviewers:
+      - "fabich"
+    automerged_updates:
+      - match:
+          dependency_type: "all"
+          update_type: "semver:minor"
+  - package_manager: "dotnet:nuget"
+    directory: "/test/yaos.OpenApi.Diff.Test"
+    update_schedule: "live"
+    default_reviewers:
+      - "fabich"
+    automerged_updates:
+      - match:
+          dependency_type: "all"
+          update_type: "semver:minor"
