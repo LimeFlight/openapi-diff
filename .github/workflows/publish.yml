@@ -1,8 +1,14 @@
 name: Publish
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - master
+      - release/*
+  pull_request:
+    branches:
+      - master
+      - release/*
 
 jobs:
   publish-lib:
@@ -15,25 +21,12 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "3.1.201" # SDK Version to use.
+      - name: Setup nbgv
+        uses: aarnott/nbgv@v0.3
+        id: nbgv
       - name: Create the package
-        run: dotnet pack --configuration Release
+        run: dotnet pack --configuration Release /p:PublicRelease=true
         working-directory: ./src/yaos.OpenAPI.Diff
-      - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_LIB}}
-        working-directory: ./src/yaos.OpenAPI.Diff/nupkg
-  publish-cli:
-    runs-on: ubuntu-latest
-    name: Publish OpenAPI Diff Action tool to nuget
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - name: Setup .net
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: "3.1.201" # SDK Version to use.
-      - name: Create the package
-        run: dotnet pack --configuration Release
-        working-directory: ./src/yaos.OpenAPI.Diff.CLI
-      - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_CLI}}
-        working-directory: ./src/yaos.OpenAPI.Diff.CLI/nupkg
+      # - name: Publish the package
+      #   run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_LIB}}
+      #   working-directory: ./src/yaos.OpenAPI.Diff/nupkg
