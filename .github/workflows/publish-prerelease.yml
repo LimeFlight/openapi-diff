@@ -19,11 +19,12 @@ jobs:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Setup nuget config
         run: sed 's/GITHUB_TOKEN/${{ secrets.GITHUB_TOKEN }}/g' nuget.config > nuget.config
+        working-directory: ./src/
       - name: Setup nbgv
         uses: aarnott/nbgv@v0.3
       - name: Create the package
         run: dotnet pack --configuration Release
         working-directory: ./src/yaos.OpenAPI.Diff
       - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate --source github
-        working-directory: ./src/yaos.OpenAPI.Diff/nupkg
+        run: dotnet nuget push ./yaos.OpenAPI.Diff/nupkg/*.nupkg --skip-duplicate --source github
+        working-directory: ./src
