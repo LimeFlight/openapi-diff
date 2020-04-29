@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
-          ref: ${{ GITHUB_REF }}
+          ref: ${ GITHUB_REF }
       - name: Setup nbgv
         uses: aarnott/nbgv@v0.3
       - name: Create the package
