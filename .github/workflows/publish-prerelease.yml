@@ -21,14 +21,17 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: "3.1.201" # SDK Version to use.
+          source-url: https://nuget.pkg.github.com/yaos/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}
       - name: Setup nbgv
         uses: aarnott/nbgv@v0.3
         id: nbgv
       - name: Create the package
         run: dotnet pack --configuration Release
         working-directory: ./src/yaos.OpenAPI.Diff
-      - name: Add GPR Source
-        run: dotnet nuget add source https://nuget.pkg.github.com/yaos/index.json --name "GPR" --username fabich --password ${{ secrets.GPR_READ }} --store-password-in-clear-text
+      # - name: Add GPR Source
+      #   run: dotnet nuget add source https://nuget.pkg.github.com/yaos/index.json --name "GPR" --username fabich --password ${{ secrets.GPR_READ }} --store-password-in-clear-text --valid-authentication-types basic
       - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate --source "GPR"
+        run: dotnet nuget push *.nupkg --skip-duplicate
         working-directory: ./src/yaos.OpenAPI.Diff/nupkg
