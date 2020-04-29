@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Setup nuget config
-        run: sed 's/GITHUB_TOKEN/${{ secrets.GITHUB_TOKEN }}/g' .nuget.config > nuget.config
+        run: sed 's/GITHUB_TOKEN/${{ secrets.GITHUB_TOKEN }}/g' nuget.config > nuget.config
       - name: Setup nbgv
         uses: aarnott/nbgv@v0.3
       - name: Create the package
