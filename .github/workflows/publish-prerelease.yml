@@ -33,5 +33,5 @@ jobs:
       # - name: Add GPR Source
       #   run: dotnet nuget add source https://nuget.pkg.github.com/yaos/index.json --name "GPR" --username fabich --password ${{ secrets.GPR_READ }} --store-password-in-clear-text --valid-authentication-types basic
       - name: Publish the package
-        run: dotnet nuget push *.nupkg --skip-duplicate
+        run: dotnet nuget push *.nupkg --skip-duplicate --api-key ${{secrets.GITHUB_TOKEN}}
         working-directory: ./src/yaos.OpenAPI.Diff/nupkg

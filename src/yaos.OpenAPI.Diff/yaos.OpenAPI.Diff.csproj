@@ -4,6 +4,7 @@
     <TargetFramework>netstandard2.1</TargetFramework>
     <LangVersion>latest</LangVersion>
     <PackageId>yaos.OpenAPI.Diff</PackageId>
+    <Authors>yaos</Authors>
     <Company>yaos</Company>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <RepositoryUrl>https://github.com/yaos/openapi-diff</RepositoryUrl>
