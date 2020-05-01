@@ -84,7 +84,7 @@ namespace yaos.OpenAPI.Diff.Output.Markdown
                 returnString += $"<details>\n" +
                                 $"  <summary>" +
                                 $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={endpoint.Method}&amp;color=grey&amp;\" alt=\"{endpoint.Method}\"> " +
-                                $"/pet/findByTags " +
+                                $"{endpoint.PathUrl} " +
                                 $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={endpoint.ChangeType.DiffResult}&amp;color={GetColorForDiffResult(endpoint.ChangeType.DiffResult)}&amp;\" alt=\"{endpoint.ChangeType.DiffResult}\">" +
                                 $"</summary>\n" +
                                 $"  \n";
