@@ -1,8 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.OpenApi.Any;
+﻿using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Extensions;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using yaos.OpenAPI.Diff.BusinessObjects;
 using yaos.OpenAPI.Diff.Compare.SchemaDiffResult;
 using yaos.OpenAPI.Diff.Enums;
@@ -51,17 +53,27 @@ namespace yaos.OpenAPI.Diff.Compare
             if (schema != null && schema.GetSchemaType() == SchemaTypeEnum.ComposedSchema)
             {
                 var allOfSchemaList = schema.AllOf;
-                if (allOfSchemaList != null)
+                if (!allOfSchemaList.IsNullOrEmpty())
                 {
+                    var refName = "allOfCombined-";
+                    allOfSchemaList
+                        .ToList()
+                        .ForEach(x => refName += x.Reference?.ReferenceV3);
+                    if (components.Schemas.ContainsKey(refName))
+                        return components.Schemas[refName];
+                    components.Schemas.Add(refName, new OpenApiSchema());
+
+                    var allOfCombinedSchema = new OpenApiSchema();
+                    allOfCombinedSchema = AddSchema(allOfCombinedSchema, schema);
                     foreach (var t in allOfSchemaList)
                     {
                         var allOfSchema = t;
-                        allOfSchema = RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference?.ReferenceV3);
+                        allOfSchema =
+                            RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference?.ReferenceV3);
                         allOfSchema = ResolveComposedSchema(components, allOfSchema);
-                        schema = AddSchema(schema, allOfSchema);
+                        allOfCombinedSchema = AddSchema(allOfCombinedSchema, allOfSchema);
                     }
-
-                    schema.AllOf = null;
+                    return allOfCombinedSchema;
                 }
             }
             return schema;

@@ -123,3 +123,5 @@ components:
       properties:
         bark:
           type: string
+        pet_color:
+          type: string
