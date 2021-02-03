@@ -30,7 +30,6 @@ namespace yaos.OpenAPI.Diff.Compare
             var rightSecurityScheme = _rightComponents.SecuritySchemes[rightSchemeRef];
             var changedSecuritySchemeOpt =
                 CachedDiff(
-                    new HashSet<string>(),
                     leftSecurityScheme,
                     rightSecurityScheme,
                     leftSchemeRef,
@@ -55,7 +54,6 @@ namespace yaos.OpenAPI.Diff.Compare
         }
 
         protected override ChangedSecuritySchemeBO ComputeDiff(
-            HashSet<string> refSet,
             OpenApiSecurityScheme leftSecurityScheme,
             OpenApiSecurityScheme rightSecurityScheme,
             DiffContextBO context)

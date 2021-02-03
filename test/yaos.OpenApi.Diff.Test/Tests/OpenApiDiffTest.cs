@@ -39,7 +39,7 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
 
             try
             {
-                File.WriteAllText("testNewAPI.html", html);
+                await File.WriteAllTextAsync("testNewAPI.html", html);
             }
             catch (Exception e)
             {
@@ -61,7 +61,7 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
 
             try
             {
-                File.WriteAllText("testDeprecatedAPI.html", html);
+                await File.WriteAllTextAsync("testDeprecatedAPI.html", html);
             }
             catch (Exception e)
             {
@@ -80,7 +80,7 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
             var html = await new HtmlRender().Render(changedOpenAPI);
             try
             {
-                File.WriteAllText("testDiff.html", html);
+                await File.WriteAllTextAsync("testDiff.html", html);
             }
             catch (Exception e)
             {
@@ -97,7 +97,7 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
             var render = await new MarkdownRender(logger).Render(changedOpenAPI);
             try
             {
-                File.WriteAllText("testDiff.md", render);
+                await File.WriteAllTextAsync("testDiff.md", render);
 
             }
             catch (Exception e)
@@ -114,7 +114,7 @@ namespace yaos.OpenAPI.Diff.Tests.Tests
             var render = await new HtmlRender().Render(changedOpenAPI);
             try
             {
-                File.WriteAllText("testDiff.html", render);
+                await File.WriteAllTextAsync("testDiff.html", render);
 
             }
             catch (Exception e)

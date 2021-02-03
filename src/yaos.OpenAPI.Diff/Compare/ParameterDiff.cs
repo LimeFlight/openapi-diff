@@ -22,10 +22,10 @@ namespace yaos.OpenAPI.Diff.Compare
 
         public ChangedParameterBO Diff(OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
         {
-            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3, right.Reference?.ReferenceV3, context);
+            return CachedDiff(left, right, left.Reference?.ReferenceV3, right.Reference?.ReferenceV3, context);
         }
 
-        protected override ChangedParameterBO ComputeDiff(HashSet<string> refSet, OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
+        protected override ChangedParameterBO ComputeDiff(OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
         {
             left = RefPointer.ResolveRef(_leftComponents, left, left.Reference?.ReferenceV3);
             right = RefPointer.ResolveRef(_rightComponents, right, right.Reference?.ReferenceV3);
@@ -40,7 +40,7 @@ namespace yaos.OpenAPI.Diff.Compare
                     ChangeExplode = GetBooleanDiff(left.Explode, right.Explode),
                     Schema = _openApiDiff
                         .SchemaDiff
-                        .Diff(refSet, left.Schema, right.Schema, context.CopyWithRequired(true)),
+                        .Diff(left.Schema, right.Schema, context.CopyWithRequired(true)),
                     Description = _openApiDiff
                         .MetadataDiff
                         .Diff(left.Description, right.Description, context),

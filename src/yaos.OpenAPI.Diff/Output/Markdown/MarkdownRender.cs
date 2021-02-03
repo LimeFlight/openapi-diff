@@ -99,12 +99,16 @@ namespace yaos.OpenAPI.Diff.Output.Markdown
                                     $"> \n";
                 }
 
-                if (endpoint.ChangesByType.Any(x => x.ChangeType.IsCompatible()))
+                var allChangesToDisplay = endpoint.ChangesByType
+                    .Where(x => x.ChangeType.IsCompatible() &&
+                                x.Changes.Any()).ToList();
+
+                if (allChangesToDisplay.Any())
                 {
                     returnString += $"> <details>\n" +
                                     $">   <summary>Compatible Changes</summary>\n" +
                                     $">   \n" +
-                                    $"{GetChangeDetails(endpoint.ChangesByType.Where(x => x.ChangeType.IsCompatible()))}" +
+                                    $"{GetChangeDetails(allChangesToDisplay)}" +
                                     $"> </details>\n" +
                                     $"> \n";
                 }
@@ -117,6 +121,7 @@ namespace yaos.OpenAPI.Diff.Output.Markdown
         private string GetChangeDetails(IEnumerable<ChangeViewModel> changes)
         {
             var returnString = string.Empty;
+
             foreach (var change in changes)
             {
                 returnString += $">   - **{string.Join(" - ", change.Path)}**\n";

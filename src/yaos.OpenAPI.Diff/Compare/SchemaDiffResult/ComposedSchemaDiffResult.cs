@@ -60,7 +60,7 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
             return reverseMapping.ToDictionary(x => x.Value, x => x.Key);
         }
 
-        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents, OpenApiComponents rightComponents, T left,
+        public override ChangedSchemaBO Diff<T>(OpenApiComponents leftComponents, OpenApiComponents rightComponents, T left,
             T right, DiffContextBO context)
         {
             if (left.GetSchemaType() == SchemaTypeEnum.ComposedSchema)
@@ -104,7 +104,7 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
                         var leftSchema = new OpenApiSchema { Reference = leftReference };
                         var rightSchema = new OpenApiSchema { Reference = rightReference };
                         var changedSchema = OpenApiDiff.SchemaDiff
-                                .Diff(refSet, leftSchema, rightSchema, context.CopyWithRequired(true));
+                                .Diff(leftSchema, rightSchema, context.CopyWithRequired(true));
                         if (changedSchema != null)
                             changedMapping.Add(refId, changedSchema);
                     }
@@ -116,7 +116,7 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
                         Changed = changedMapping
                     };
                 }
-                return base.Diff(refSet, leftComponents, rightComponents, left, right, context);
+                return base.Diff(leftComponents, rightComponents, left, right, context);
             }
 
             return OpenApiDiff.SchemaDiff.GetTypeChangedSchema(left, right, context);

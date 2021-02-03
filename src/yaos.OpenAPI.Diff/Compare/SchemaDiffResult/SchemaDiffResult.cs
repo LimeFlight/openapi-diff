@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Any;
+﻿using System;
+using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Interfaces;
 using Microsoft.OpenApi.Models;
 using System.Collections.Generic;
@@ -27,7 +28,6 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
         }
 
         public virtual ChangedSchemaBO Diff<T>(
-          HashSet<string> refSet,
           OpenApiComponents leftComponents,
           OpenApiComponents rightComponents,
           T left,
@@ -71,13 +71,13 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
             {
                 var diff = OpenApiDiff
                     .SchemaDiff
-                    .Diff(refSet, leftProperties[s], rightProperties[s], Required(context, s, right.Required));
+                    .Diff(leftProperties[s], rightProperties[s], Required(context, s, right.Required));
 
                 if (diff != null)
                     ChangedSchema.ChangedProperties.Add(s, diff);
             }
 
-            CompareAdditionalProperties(refSet, left, right, context);
+            CompareAdditionalProperties(left, right, context);
 
             var allIncreasedProperties = FilterProperties(TypeEnum.Added, propertyDiff.Increased, context);
             foreach (var (key, value) in allIncreasedProperties)
@@ -98,7 +98,7 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
             return context.CopyWithRequired(required != null && required.Contains(key));
         }
 
-        private void CompareAdditionalProperties(HashSet<string> refSet, OpenApiSchema leftSchema, OpenApiSchema rightSchema, DiffContextBO context)
+        private void CompareAdditionalProperties(OpenApiSchema leftSchema, OpenApiSchema rightSchema, DiffContextBO context)
         {
             var left = leftSchema.AdditionalProperties;
             var right = rightSchema.AdditionalProperties;
@@ -115,7 +115,7 @@ namespace yaos.OpenAPI.Diff.Compare.SchemaDiffResult
                     var addPropChangedSchemaOp =
                         OpenApiDiff
                             .SchemaDiff
-                            .Diff(refSet, left, right, context.CopyWithRequired(false));
+                            .Diff(left, right, context.CopyWithRequired(false));
                     apChangedSchema = addPropChangedSchemaOp ?? apChangedSchema;
                 }
                 var changed = ChangedUtils.IsChanged(apChangedSchema);

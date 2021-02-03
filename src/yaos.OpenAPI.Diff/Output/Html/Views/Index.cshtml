@@ -159,13 +159,20 @@
                         </dl>
                     }
 
-                    @if (changedOperation.ChangesByType.Any(x => x.ChangeType.IsCompatible()))
+                    
                     {
-                        <h4>Compatible Changes</h4>
-                        <hr class="m-0" />
-                        <dl>
-                            @{ await IncludeAsync("Views.ChangeDetail", changedOperation.ChangesByType.Where(x => x.ChangeType.IsCompatible()).ToList()); }
-                        </dl>
+                        var allChangesToDisplay = changedOperation.ChangesByType
+                            .Where(x => x.ChangeType.IsCompatible() &&
+                                        x.Changes.Any()).ToList();
+
+                        @if (allChangesToDisplay.Any())
+                        {
+                            <h4>Compatible Changes</h4>
+                            <hr class="m-0" />
+                            <dl>
+                                @{ await IncludeAsync("Views.ChangeDetail", allChangesToDisplay); }
+                            </dl>
+                        }
                     }
                 }
             </main>

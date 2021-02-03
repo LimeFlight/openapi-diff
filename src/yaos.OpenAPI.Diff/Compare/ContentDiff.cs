@@ -38,9 +38,7 @@ namespace yaos.OpenAPI.Diff.Compare
                     {
                         Schema = _openApiDiff
                             .SchemaDiff
-                            .Diff(
-                                new HashSet<string>(),
-                                oldMediaType?.Schema,
+                            .Diff(oldMediaType?.Schema,
                                 newMediaType?.Schema,
                                 context.CopyWithRequired(true))
                     };
