@@ -1,18 +1,18 @@
-﻿using Microsoft.OpenApi.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
 using LimeFlight.OpenAPI.Diff.Enums;
-using LimeFlight.OpenAPI.Diff.Utils;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using LimeFlight.OpenAPI.Diff.Utils;
+using Microsoft.OpenApi.Interfaces;
 
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class ExtensionsDiff
     {
-        private readonly OpenApiDiff _openApiDiff;
         private readonly IEnumerable<IExtensionDiff> _extensions;
+        private readonly OpenApiDiff _openApiDiff;
 
         public ExtensionsDiff(OpenApiDiff openApiDiff, IEnumerable<IExtensionDiff> extensions)
         {
@@ -20,7 +20,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             _extensions = extensions;
         }
 
-        public bool IsParentApplicable(TypeEnum type, object parent, IDictionary<string, IOpenApiExtension> extensions, DiffContextBO context)
+        public bool IsParentApplicable(TypeEnum type, object parent, IDictionary<string, IOpenApiExtension> extensions,
+            DiffContextBO context)
         {
             if (extensions.IsNullOrEmpty())
                 return true;
@@ -46,18 +47,20 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             return predicate(GetExtensionDiff(name).SetOpenApiDiff(_openApiDiff));
         }
 
-        public ChangedExtensionsBO Diff(IDictionary<string, IOpenApiExtension> left, IDictionary<string, IOpenApiExtension> right)
+        public ChangedExtensionsBO Diff(IDictionary<string, IOpenApiExtension> left,
+            IDictionary<string, IOpenApiExtension> right)
         {
             return Diff(left, right, null);
         }
 
-        public ChangedExtensionsBO Diff(IDictionary<string, IOpenApiExtension> left, IDictionary<string, IOpenApiExtension> right, DiffContextBO context)
+        public ChangedExtensionsBO Diff(IDictionary<string, IOpenApiExtension> left,
+            IDictionary<string, IOpenApiExtension> right, DiffContextBO context)
         {
-            left = ((Dictionary<string, IOpenApiExtension>)left).CopyDictionary();
-            right = ((Dictionary<string, IOpenApiExtension>)right).CopyDictionary();
-            var changedExtensions = new ChangedExtensionsBO((Dictionary<string, IOpenApiExtension>)left, ((Dictionary<string, IOpenApiExtension>)right).CopyDictionary(), context);
+            left = ((Dictionary<string, IOpenApiExtension>) left).CopyDictionary();
+            right = ((Dictionary<string, IOpenApiExtension>) right).CopyDictionary();
+            var changedExtensions = new ChangedExtensionsBO((Dictionary<string, IOpenApiExtension>) left,
+                ((Dictionary<string, IOpenApiExtension>) right).CopyDictionary(), context);
             foreach (var (key, value) in left)
-            {
                 if (right.ContainsKey(key))
                 {
                     var rightValue = right[key];
@@ -72,7 +75,6 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     if (changed?.IsDifferent() ?? false)
                         changedExtensions.Missing.Add(key, changed);
                 }
-            }
 
             foreach (var (key, value) in right)
             {
@@ -85,7 +87,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         }
 
         private ChangedBO ExecuteExtensionDiff<T>(string name, ChangeBO<T> change, DiffContextBO context)
-        where T : class
+            where T : class
         {
             return ExecuteExtension(name, x => x.Diff(change, context));
         }

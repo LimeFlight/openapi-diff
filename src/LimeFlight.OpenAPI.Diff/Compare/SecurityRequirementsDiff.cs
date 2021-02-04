@@ -11,10 +11,12 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class SecurityRequirementsDiff
     {
-        private readonly OpenApiDiff _openApiDiff;
+        private static RefPointer<OpenApiSecurityScheme> _refPointer =
+            new RefPointer<OpenApiSecurityScheme>(RefTypeEnum.SecuritySchemes);
+
         private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiDiff _openApiDiff;
         private readonly OpenApiComponents _rightComponents;
-        private static RefPointer<OpenApiSecurityScheme> _refPointer = new RefPointer<OpenApiSecurityScheme>(RefTypeEnum.SecuritySchemes);
 
         public SecurityRequirementsDiff(OpenApiDiff openApiDiff)
         {
@@ -22,7 +24,9 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
             _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
-        public OpenApiSecurityRequirement Contains(IList<OpenApiSecurityRequirement> securityRequirements, OpenApiSecurityRequirement left)
+
+        public OpenApiSecurityRequirement Contains(IList<OpenApiSecurityRequirement> securityRequirements,
+            OpenApiSecurityRequirement left)
         {
             return securityRequirements
                 .FirstOrDefault(x => Same(left, x));
@@ -41,9 +45,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         {
             var tmpResult = new Dictionary<SecuritySchemeType, ParameterLocation>();
             foreach (var openApiSecurityScheme in securityRequirement.Keys.ToList())
-            {
-
-                if (components.SecuritySchemes.TryGetValue(openApiSecurityScheme.Reference?.ReferenceV3, out var result))
+                if (components.SecuritySchemes.TryGetValue(openApiSecurityScheme.Reference?.ReferenceV3,
+                    out var result))
                 {
                     if (!tmpResult.ContainsKey(result.Type))
                         tmpResult.Add(result.Type, result.In);
@@ -52,7 +55,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                 {
                     throw new ArgumentException("Impossible to find security scheme: " + openApiSecurityScheme.Scheme);
                 }
-            }
+
             return tmpResult.ToImmutableDictionary();
         }
 
@@ -77,8 +80,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 
                     right.Remove(rightSec);
                     var diff =
-                        _openApiDiff.
-                            SecurityRequirementDiff
+                        _openApiDiff.SecurityRequirementDiff
                             .Diff(leftSecurity, rightSec, context);
                     if (diff != null)
                         changedSecurityRequirements.Changed.Add(diff);

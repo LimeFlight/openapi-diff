@@ -1,20 +1,17 @@
-﻿using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Interfaces;
-using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
 using LimeFlight.OpenAPI.Diff.Enums;
-using LimeFlight.OpenAPI.Diff.Utils;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using LimeFlight.OpenAPI.Diff.Utils;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Interfaces;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
 {
     public class SchemaDiffResult
     {
-        public ChangedSchemaBO ChangedSchema { get; set; }
-        public OpenApiDiff OpenApiDiff { get; set; }
-
         public SchemaDiffResult(OpenApiDiff openApiDiff)
         {
             OpenApiDiff = openApiDiff;
@@ -26,20 +23,23 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             ChangedSchema.Type = type;
         }
 
+        public ChangedSchemaBO ChangedSchema { get; set; }
+        public OpenApiDiff OpenApiDiff { get; set; }
+
         public virtual ChangedSchemaBO Diff<T>(
-          HashSet<string> refSet,
-          OpenApiComponents leftComponents,
-          OpenApiComponents rightComponents,
-          T left,
-          T right,
-          DiffContextBO context)
+            HashSet<string> refSet,
+            OpenApiComponents leftComponents,
+            OpenApiComponents rightComponents,
+            T left,
+            T right,
+            DiffContextBO context)
             where T : OpenApiSchema
         {
-            var leftEnumStrings = left.Enum.Select(x => ((IOpenApiPrimitive)x)?.GetValueString()).ToList();
-            var rightEnumStrings = right.Enum.Select(x => ((IOpenApiPrimitive)x)?.GetValueString()).ToList();
-            var leftDefault= (IOpenApiPrimitive)left.Default;
-            var rightDefault = (IOpenApiPrimitive)right.Default;
-            
+            var leftEnumStrings = left.Enum.Select(x => ((IOpenApiPrimitive) x)?.GetValueString()).ToList();
+            var rightEnumStrings = right.Enum.Select(x => ((IOpenApiPrimitive) x)?.GetValueString()).ToList();
+            var leftDefault = (IOpenApiPrimitive) left.Default;
+            var rightDefault = (IOpenApiPrimitive) right.Default;
+
             var changedEnum =
                 ListDiff.Diff(new ChangedEnumBO(leftEnumStrings, rightEnumStrings, context));
 
@@ -48,7 +48,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             ChangedSchema.NewSchema = right;
             ChangedSchema.IsChangeDeprecated = !left.Deprecated && right.Deprecated;
             ChangedSchema.IsChangeTitle = left.Title != right.Title;
-            ChangedSchema.Required = ListDiff.Diff(new ChangedRequiredBO(left.Required.ToList(), right.Required.ToList(), context));
+            ChangedSchema.Required =
+                ListDiff.Diff(new ChangedRequiredBO(left.Required.ToList(), right.Required.ToList(), context));
             ChangedSchema.IsChangeDefault = leftDefault?.GetValueString() != rightDefault?.GetValueString();
             ChangedSchema.Enumeration = changedEnum;
             ChangedSchema.IsChangeFormat = left.Format != right.Format;
@@ -80,15 +81,9 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             CompareAdditionalProperties(refSet, left, right, context);
 
             var allIncreasedProperties = FilterProperties(TypeEnum.Added, propertyDiff.Increased, context);
-            foreach (var (key, value) in allIncreasedProperties)
-            {
-                ChangedSchema.IncreasedProperties.Add(key, value);
-            }
+            foreach (var (key, value) in allIncreasedProperties) ChangedSchema.IncreasedProperties.Add(key, value);
             var allMissingProperties = FilterProperties(TypeEnum.Removed, propertyDiff.Missing, context);
-            foreach (var (key, value) in allMissingProperties)
-            {
-                ChangedSchema.MissingProperties.Add(key, value);
-            }
+            foreach (var (key, value) in allMissingProperties) ChangedSchema.MissingProperties.Add(key, value);
 
             return IsApplicable(context);
         }
@@ -98,7 +93,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             return context.CopyWithRequired(required != null && required.Contains(key));
         }
 
-        private void CompareAdditionalProperties(HashSet<string> refSet, OpenApiSchema leftSchema, OpenApiSchema rightSchema, DiffContextBO context)
+        private void CompareAdditionalProperties(HashSet<string> refSet, OpenApiSchema leftSchema,
+            OpenApiSchema rightSchema, DiffContextBO context)
         {
             var left = leftSchema.AdditionalProperties;
             var right = rightSchema.AdditionalProperties;
@@ -118,32 +114,29 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                             .Diff(refSet, left, right, context.CopyWithRequired(false));
                     apChangedSchema = addPropChangedSchemaOp ?? apChangedSchema;
                 }
+
                 var changed = ChangedUtils.IsChanged(apChangedSchema);
                 if (changed != null)
                     ChangedSchema.AddProp = changed;
             }
         }
-        private Dictionary<string, OpenApiSchema> FilterProperties(TypeEnum type, Dictionary<string, OpenApiSchema> properties, DiffContextBO context)
+
+        private Dictionary<string, OpenApiSchema> FilterProperties(TypeEnum type,
+            Dictionary<string, OpenApiSchema> properties, DiffContextBO context)
         {
             var result = new Dictionary<string, OpenApiSchema>();
 
             foreach (var (key, value) in properties)
-            {
                 if (IsPropertyApplicable(value, context)
                     && OpenApiDiff
                         .ExtensionsDiff.IsParentApplicable(type,
                             value,
                             value?.Extensions ?? new Dictionary<string, IOpenApiExtension>(),
                             context))
-                {
                     result.Add(key, value);
-                }
                 else
-                {
                     // Child property is not applicable, so required cannot be applied
                     ChangedSchema.Required.Increased.Remove(key);
-                }
-            }
 
 
             return result;
@@ -159,9 +152,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             if (ChangedSchema.ReadOnly.IsUnchanged()
                 && ChangedSchema.WriteOnly.IsUnchanged()
                 && !IsPropertyApplicable(ChangedSchema.NewSchema, context))
-            {
                 return null;
-            }
             return ChangedUtils.IsChanged(ChangedSchema);
         }
     }

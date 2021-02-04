@@ -6,8 +6,8 @@ namespace LimeFlight.OpenAPI.Diff.Output
 {
     public abstract class BaseRenderer
     {
-        protected RenderViewModel GetRenderModel(ChangedOpenApiBO diff, 
-            string reportName = "OpenAPI Compatibility Report", 
+        protected RenderViewModel GetRenderModel(ChangedOpenApiBO diff,
+            string reportName = "OpenAPI Compatibility Report",
             string logoUrl = "",
             string pageTitle = "Api Change Log",
             string pageDescription = null)
@@ -25,47 +25,47 @@ namespace LimeFlight.OpenAPI.Diff.Output
                 OldSpecIdentifier = diff.OldSpecIdentifier,
                 NewSpecIdentifier = diff.NewSpecIdentifier,
                 NewEndpoints = diff.NewEndpoints
-                   .OrderBy(x => x.PathUrl.NormalizePath())
-                   .ThenBy(x => x.Method)
-                   .ToList(),
+                    .OrderBy(x => x.PathUrl.NormalizePath())
+                    .ThenBy(x => x.Method)
+                    .ToList(),
                 MissingEndpoints = diff.MissingEndpoints
-                   .OrderBy(x => x.PathUrl.NormalizePath())
-                   .ThenBy(x => x.Method)
-                   .ToList(),
+                    .OrderBy(x => x.PathUrl.NormalizePath())
+                    .ThenBy(x => x.Method)
+                    .ToList(),
                 DeprecatedEndpoints = diff.GetDeprecatedEndpoints()
-                   .OrderBy(x => x.PathUrl.NormalizePath())
-                   .ThenBy(x => x.Method)
-                   .ToList(),
+                    .OrderBy(x => x.PathUrl.NormalizePath())
+                    .ThenBy(x => x.Method)
+                    .ToList(),
                 ChangedEndpoints = diff.ChangedOperations
                     .Select(x => new ChangedEndpointViewModel
-                   {
-                       Method = x.HttpMethod,
-                       PathUrl = x.PathUrl,
-                       Summary = x.Description?.Right ?? x.Summary?.Right,
-                       ChangeType = x.IsChanged(),
-                       ChangesByType = x.GetAllChangeInfoFlat(null)
-                           .Where(y => !y.ChangeType.IsUnchanged())
-                           .Select(y => new ChangeViewModel
-                           {
-                               Path = y.Path.Where(z => !z.IsNullOrEmpty()).ToList(),
-                               ChangeType = y.ChangeType,
-                               Changes = y.Changes
-                                   .Select(z => new SingleChangeViewModel
-                                   {
-                                       ElementType = z.ElementType,
-                                       ChangeType = z.ChangeType,
-                                       FieldName = z.FieldName,
-                                       NewValue = z.NewValue,
-                                       OldValue = z.OldValue
-                                   })
-                                   .ToList()
-                           })
-                           .ToList()
-                   })
-                   .OrderByDescending(x => x.ChangeType.DiffResult)
-                   .ThenBy(x => x.PathUrl.NormalizePath())
-                   .ThenBy(x => x.Method)
-                   .ToList(),
+                    {
+                        Method = x.HttpMethod,
+                        PathUrl = x.PathUrl,
+                        Summary = x.Description?.Right ?? x.Summary?.Right,
+                        ChangeType = x.IsChanged(),
+                        ChangesByType = x.GetAllChangeInfoFlat(null)
+                            .Where(y => !y.ChangeType.IsUnchanged())
+                            .Select(y => new ChangeViewModel
+                            {
+                                Path = y.Path.Where(z => !z.IsNullOrEmpty()).ToList(),
+                                ChangeType = y.ChangeType,
+                                Changes = y.Changes
+                                    .Select(z => new SingleChangeViewModel
+                                    {
+                                        ElementType = z.ElementType,
+                                        ChangeType = z.ChangeType,
+                                        FieldName = z.FieldName,
+                                        NewValue = z.NewValue,
+                                        OldValue = z.OldValue
+                                    })
+                                    .ToList()
+                            })
+                            .ToList()
+                    })
+                    .OrderByDescending(x => x.ChangeType.DiffResult)
+                    .ThenBy(x => x.PathUrl.NormalizePath())
+                    .ThenBy(x => x.Method)
+                    .ToList()
             };
         }
     }

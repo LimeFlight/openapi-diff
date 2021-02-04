@@ -23,17 +23,17 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 
         public bool IsIncompatible()
         {
-            return (int)DiffResult > 2;
+            return (int) DiffResult > 2;
         }
 
         public bool IsCompatible()
         {
-            return (int)DiffResult <= 2;
+            return (int) DiffResult <= 2;
         }
 
         public bool IsMetaChanged()
         {
-            return (int)DiffResult == 1;
+            return (int) DiffResult == 1;
         }
     }
 }

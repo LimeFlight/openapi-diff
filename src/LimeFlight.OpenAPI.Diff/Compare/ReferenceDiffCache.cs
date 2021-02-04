@@ -4,14 +4,14 @@ using LimeFlight.OpenAPI.Diff.BusinessObjects;
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public abstract class ReferenceDiffCache<TC, TD>
-    where TD : class
+        where TD : class
     {
-        public Dictionary<CacheKey, TD> RefDiffMap { get; set; }
-
         protected ReferenceDiffCache()
         {
             RefDiffMap = new Dictionary<CacheKey, TD>();
         }
+
+        public Dictionary<CacheKey, TD> RefDiffMap { get; set; }
 
         protected string GetRefKey(string leftRef, string rightRef)
         {
@@ -35,18 +35,18 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                 var key = new CacheKey(leftRef, rightRef, context);
                 if (RefDiffMap.TryGetValue(key, out var changedFromRef))
                     return changedFromRef;
-               
+
                 var refKey = GetRefKey(leftRef, rightRef);
                 if (refSet.Contains(refKey))
                     return null;
-                
+
                 refSet.Add(refKey);
                 var changed = ComputeDiff(refSet, left, right, context);
                 RefDiffMap.Add(key, changed);
                 refSet.Remove(refKey);
                 return changed;
             }
-            
+
             return ComputeDiff(refSet, left, right, context);
         }
     }

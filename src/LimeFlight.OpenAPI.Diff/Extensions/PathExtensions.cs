@@ -18,10 +18,8 @@ namespace LimeFlight.OpenAPI.Diff.Extensions
             var reg = new Regex(RegexPath);
             var matches = reg.Matches(path);
             if (!matches.IsNullOrEmpty())
-            {
                 foreach (Match m in matches)
                     paramsList.Add(m.Groups[1].Value);
-            }
             return paramsList;
         }
     }

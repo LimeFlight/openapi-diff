@@ -28,12 +28,15 @@ namespace LimeFlight.OpenAPI.Diff.Utils
                 {
                     var caseInsensitiveDictionary = new Dictionary<string, T>(maps, StringComparer.OrdinalIgnoreCase);
                     if (caseInsensitiveDictionary.TryGetValue(refName, out var insensitiveValue))
-                        throw new Exception($"Reference case sensitive error. {refName} is not equal to {caseInsensitiveDictionary.First(x => x.Value.Equals(insensitiveValue)).Key}");
+                        throw new Exception(
+                            $"Reference case sensitive error. {refName} is not equal to {caseInsensitiveDictionary.First(x => x.Value.Equals(insensitiveValue)).Key}");
 
                     throw new AggregateException($"ref '{reference}' doesn't exist.");
                 }
+
                 return result;
             }
+
             return t;
         }
 
@@ -42,17 +45,17 @@ namespace LimeFlight.OpenAPI.Diff.Utils
             switch (_refType)
             {
                 case RefTypeEnum.RequestBodies:
-                    return (Dictionary<string, T>)components.RequestBodies;
+                    return (Dictionary<string, T>) components.RequestBodies;
                 case RefTypeEnum.Responses:
-                    return (Dictionary<string, T>)components.Responses;
+                    return (Dictionary<string, T>) components.Responses;
                 case RefTypeEnum.Parameters:
-                    return (Dictionary<string, T>)components.Parameters;
+                    return (Dictionary<string, T>) components.Parameters;
                 case RefTypeEnum.Schemas:
-                    return (Dictionary<string, T>)components.Schemas;
+                    return (Dictionary<string, T>) components.Schemas;
                 case RefTypeEnum.Headers:
-                    return (Dictionary<string, T>)components.Headers;
+                    return (Dictionary<string, T>) components.Headers;
                 case RefTypeEnum.SecuritySchemes:
-                    return (Dictionary<string, T>)components.SecuritySchemes;
+                    return (Dictionary<string, T>) components.SecuritySchemes;
                 default:
                     throw new ArgumentOutOfRangeException("Not mapped for refType: " + _refType);
             }
@@ -60,20 +63,12 @@ namespace LimeFlight.OpenAPI.Diff.Utils
 
         public string GetRefName(string reference)
         {
-            if (reference == null)
-            {
-                return null;
-            }
-            if (_refType == RefTypeEnum.SecuritySchemes)
-            {
-                return reference;
-            }
+            if (reference == null) return null;
+            if (_refType == RefTypeEnum.SecuritySchemes) return reference;
 
             var baseRef = GetBaseRefForType(_refType.GetDisplayName());
             if (!reference.StartsWith(baseRef, StringComparison.CurrentCultureIgnoreCase))
-            {
                 throw new AggregateException("Invalid ref: " + reference);
-            }
             return reference.Substring(baseRef.Length);
         }
 

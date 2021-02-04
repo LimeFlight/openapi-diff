@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
 using LimeFlight.OpenAPI.Diff.Enums;
+using LimeFlight.OpenAPI.Diff.Extensions;
 using LimeFlight.OpenAPI.Diff.Utils;
 using Microsoft.OpenApi.Models;
-using LimeFlight.OpenAPI.Diff.Extensions;
 
 namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
 {
     public class ComposedSchemaDiffResult : SchemaDiffResult
     {
-        private static RefPointer<OpenApiSchema> refPointer = new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
+        private static readonly RefPointer<OpenApiSchema> refPointer =
+            new RefPointer<OpenApiSchema>(RefTypeEnum.Schemas);
 
         public ComposedSchemaDiffResult(OpenApiDiff openApiDiff) : base(openApiDiff)
         {
         }
 
-        private static Dictionary<string, OpenApiSchema> GetSchema(OpenApiComponents components, Dictionary<string, string> mapping)
+        private static Dictionary<string, OpenApiSchema> GetSchema(OpenApiComponents components,
+            Dictionary<string, string> mapping)
         {
             var result = new Dictionary<string, OpenApiSchema>();
             foreach (var map in mapping)
-            {
                 result.Add(map.Key, refPointer.ResolveRef(components, new OpenApiSchema(), map.Value));
-            }
             return result;
         }
 
@@ -36,31 +36,22 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             foreach (var schema in composedSchema.OneOf)
             {
                 var schemaRef = schema.Reference?.ReferenceV3;
-                if (schemaRef == null)
-                {
-                    throw new ArgumentNullException("invalid oneOf schema");
-                }
+                if (schemaRef == null) throw new ArgumentNullException("invalid oneOf schema");
                 var schemaName = refPointer.GetRefName(schemaRef);
-                if (schemaName == null)
-                {
-                    throw new ArgumentNullException("invalid schema: " + schemaRef);
-                }
+                if (schemaName == null) throw new ArgumentNullException("invalid schema: " + schemaRef);
                 reverseMapping.Add(schemaRef, schemaName);
             }
 
             if (!composedSchema.Discriminator.Mapping.IsNullOrEmpty())
-            {
                 foreach (var (key, value) in composedSchema.Discriminator.Mapping)
-                {
                     if (!reverseMapping.TryAdd(value, key))
                         reverseMapping[value] = key;
-                }
-            }
 
             return reverseMapping.ToDictionary(x => x.Value, x => x.Key);
         }
 
-        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents, OpenApiComponents rightComponents, T left,
+        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents,
+            OpenApiComponents rightComponents, T left,
             T right, DiffContextBO context)
         {
             if (left.GetSchemaType() == SchemaTypeEnum.ComposedSchema)
@@ -73,10 +64,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                         || rightDis == null
                         || leftDis.PropertyName == null
                         || rightDis.PropertyName == null)
-                    {
                         throw new ArgumentException(
                             "discriminator or property not found for oneOf schema");
-                    }
 
                     if (leftDis.PropertyName != rightDis.PropertyName
                         || left.OneOf.IsNullOrEmpty()
@@ -92,7 +81,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                     var leftMapping = GetMapping(left);
                     var rightMapping = GetMapping(right);
 
-                    var mappingDiff = MapKeyDiff<string, OpenApiSchema>.Diff(GetSchema(leftComponents, leftMapping), GetSchema(rightComponents, rightMapping));
+                    var mappingDiff = MapKeyDiff<string, OpenApiSchema>.Diff(GetSchema(leftComponents, leftMapping),
+                        GetSchema(rightComponents, rightMapping));
                     var changedMapping = new Dictionary<string, ChangedSchemaBO>();
                     foreach (var refId in mappingDiff.SharedKey)
                     {
@@ -101,10 +91,10 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                         var rightReference = rightComponents.Schemas.Values
                             .First(x => x.Reference.ReferenceV3 == rightMapping[refId]).Reference;
 
-                        var leftSchema = new OpenApiSchema { Reference = leftReference };
-                        var rightSchema = new OpenApiSchema { Reference = rightReference };
+                        var leftSchema = new OpenApiSchema {Reference = leftReference};
+                        var rightSchema = new OpenApiSchema {Reference = rightReference};
                         var changedSchema = OpenApiDiff.SchemaDiff
-                                .Diff(refSet, leftSchema, rightSchema, context.CopyWithRequired(true));
+                            .Diff(refSet, leftSchema, rightSchema, context.CopyWithRequired(true));
                         if (changedSchema != null)
                             changedMapping.Add(refId, changedSchema);
                     }
@@ -116,6 +106,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                         Changed = changedMapping
                     };
                 }
+
                 return base.Diff(refSet, leftComponents, rightComponents, left, right, context);
             }
 

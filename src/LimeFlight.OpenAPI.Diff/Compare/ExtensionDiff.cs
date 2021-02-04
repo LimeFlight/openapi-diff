@@ -12,7 +12,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         public abstract ChangedBO Diff<T>(ChangeBO<T> extension, DiffContextBO context)
             where T : class;
 
-        public virtual bool IsParentApplicable(TypeEnum type, object objectElement, object extension, DiffContextBO context)
+        public virtual bool IsParentApplicable(TypeEnum type, object objectElement, object extension,
+            DiffContextBO context)
         {
             return true;
         }

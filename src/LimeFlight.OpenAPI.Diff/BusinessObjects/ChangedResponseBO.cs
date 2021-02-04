@@ -1,28 +1,28 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.Enums;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 {
     public class ChangedResponseBO : ComposedChangedBO
     {
-        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.Response;
-       
         private readonly DiffContextBO _context;
+
+        public ChangedResponseBO(OpenApiResponse oldApiResponse, OpenApiResponse newApiResponse, DiffContextBO context)
+        {
+            OldApiResponse = oldApiResponse;
+            NewApiResponse = newApiResponse;
+            _context = context;
+        }
+
         public OpenApiResponse OldApiResponse { get; }
         public OpenApiResponse NewApiResponse { get; }
         public ChangedMetadataBO Description { get; set; }
         public ChangedHeadersBO Headers { get; set; }
         public ChangedContentBO Content { get; set; }
         public ChangedExtensionsBO Extensions { get; set; }
-
-        public ChangedResponseBO(OpenApiResponse oldApiResponse, OpenApiResponse newApiResponse, DiffContextBO context) 
-        {
-            OldApiResponse = oldApiResponse;
-            NewApiResponse = newApiResponse;
-            _context = context;
-        }
+        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.Response;
 
         public override List<(string Identifier, ChangedBO Change)> GetChangedElements()
         {

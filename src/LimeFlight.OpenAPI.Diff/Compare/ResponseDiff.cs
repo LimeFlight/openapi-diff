@@ -8,9 +8,11 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class ResponseDiff : ReferenceDiffCache<OpenApiResponse, ChangedResponseBO>
     {
-        private static readonly RefPointer<OpenApiResponse> RefPointer = new RefPointer<OpenApiResponse>(RefTypeEnum.Responses);
-        private readonly OpenApiDiff _openApiDiff;
+        private static readonly RefPointer<OpenApiResponse> RefPointer =
+            new RefPointer<OpenApiResponse>(RefTypeEnum.Responses);
+
         private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiDiff _openApiDiff;
         private readonly OpenApiComponents _rightComponents;
 
         public ResponseDiff(OpenApiDiff openApiDiff)
@@ -22,10 +24,12 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 
         public ChangedResponseBO Diff(OpenApiResponse left, OpenApiResponse right, DiffContextBO context)
         {
-            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3, right.Reference?.ReferenceV3, context);
+            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3,
+                right.Reference?.ReferenceV3, context);
         }
 
-        protected override ChangedResponseBO ComputeDiff(HashSet<string> refSet, OpenApiResponse left, OpenApiResponse right, DiffContextBO context)
+        protected override ChangedResponseBO ComputeDiff(HashSet<string> refSet, OpenApiResponse left,
+            OpenApiResponse right, DiffContextBO context)
         {
             left = RefPointer.ResolveRef(_leftComponents, left, left.Reference?.ReferenceV3);
             right = RefPointer.ResolveRef(_rightComponents, right, right.Reference?.ReferenceV3);
@@ -45,7 +49,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     .ExtensionsDiff
                     .Diff(left.Extensions, right.Extensions, context)
             };
-           
+
             return ChangedUtils.IsChanged(changedResponse);
         }
     }

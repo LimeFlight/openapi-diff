@@ -1,10 +1,10 @@
-﻿using Microsoft.OpenApi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
-using LimeFlight.OpenAPI.Diff.Utils;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using LimeFlight.OpenAPI.Diff.Utils;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
@@ -21,10 +21,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         {
             var changedPaths = new ChangedPathsBO(left, right);
 
-            foreach (var (key, value) in right)
-            {
-                changedPaths.Increased.Add(key, value);
-            }
+            foreach (var (key, value) in right) changedPaths.Increased.Add(key, value);
 
             foreach (var (key, value) in left)
             {
@@ -42,12 +39,10 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     {
                         var oldParams = key.ExtractParametersFromPath();
                         var newParams = result.ExtractParametersFromPath();
-                        for (var i = oldParams.Count - 1; i >= 0; i--)
-                        {
-                            paramsDict.Add(oldParams[i], newParams[i]);
-                        }
+                        for (var i = oldParams.Count - 1; i >= 0; i--) paramsDict.Add(oldParams[i], newParams[i]);
                     }
-                    var context = new DiffContextBO()
+
+                    var context = new DiffContextBO
                     {
                         URL = key,
                         Parameters = paramsDict

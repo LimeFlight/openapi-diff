@@ -8,8 +8,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class SecuritySchemeDiff : ReferenceDiffCache<OpenApiSecurityScheme, ChangedSecuritySchemeBO>
     {
-        private readonly OpenApiDiff _openApiDiff;
         private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiDiff _openApiDiff;
         private readonly OpenApiComponents _rightComponents;
 
         public SecuritySchemeDiff(OpenApiDiff openApiDiff)
@@ -20,11 +20,11 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         }
 
         public ChangedSecuritySchemeBO Diff(
-          string leftSchemeRef,
-          List<string> leftScopes,
-          string rightSchemeRef,
-          List<string> rightScopes,
-          DiffContextBO context)
+            string leftSchemeRef,
+            List<string> leftScopes,
+            string rightSchemeRef,
+            List<string> rightScopes,
+            DiffContextBO context)
         {
             var leftSecurityScheme = _leftComponents.SecuritySchemes[leftSchemeRef];
             var rightSecurityScheme = _rightComponents.SecuritySchemes[rightSchemeRef];
@@ -103,7 +103,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         private static ChangedSecuritySchemeBO GetCopyWithoutScopes(ChangedSecuritySchemeBO original)
         {
             return new ChangedSecuritySchemeBO(
-                    original.OldSecurityScheme, original.NewSecurityScheme)
+                original.OldSecurityScheme, original.NewSecurityScheme)
             {
                 IsChangedType = original.IsChangedType,
                 IsChangedIn = original.IsChangedIn,

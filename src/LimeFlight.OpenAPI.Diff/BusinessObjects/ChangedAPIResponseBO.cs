@@ -10,7 +10,6 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
     {
         private readonly DiffContextBO _context;
         private readonly OpenApiResponses _newApiResponses;
-
         private readonly OpenApiResponses _oldApiResponses;
 
         public ChangedAPIResponseBO(OpenApiResponses oldApiResponses, OpenApiResponses newApiResponses,

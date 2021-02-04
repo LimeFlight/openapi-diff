@@ -1,14 +1,14 @@
 ﻿using System.Threading.Tasks;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
-using RazorLight;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using RazorLight;
 
 namespace LimeFlight.OpenAPI.Diff.Output.Html
 {
     public class HtmlRender : BaseRenderer, IHtmlRender
     {
-        private readonly string _title;
         private readonly RazorLightEngine _engine;
+        private readonly string _title;
 
         public HtmlRender()
         {

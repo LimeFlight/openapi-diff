@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
 using LimeFlight.OpenAPI.Diff.Enums;
-using Microsoft.OpenApi.Models;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
 {
@@ -12,7 +12,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
         {
         }
 
-        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents, OpenApiComponents rightComponents, T left,
+        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents,
+            OpenApiComponents rightComponents, T left,
             T right, DiffContextBO context)
         {
             if (left.GetSchemaType() != SchemaTypeEnum.ArraySchema

@@ -20,10 +20,11 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             return false;
         }
 
-        public ChangedContentBO Diff(IDictionary<string, OpenApiMediaType> left, IDictionary<string, OpenApiMediaType> right, DiffContextBO context)
+        public ChangedContentBO Diff(IDictionary<string, OpenApiMediaType> left,
+            IDictionary<string, OpenApiMediaType> right, DiffContextBO context)
         {
-            var leftDict = (Dictionary<string, OpenApiMediaType>)left;
-            var rightDict = (Dictionary<string, OpenApiMediaType>)right;
+            var leftDict = (Dictionary<string, OpenApiMediaType>) left;
+            var rightDict = (Dictionary<string, OpenApiMediaType>) right;
 
 
             var mediaTypeDiff = MapKeyDiff<string, OpenApiMediaType>.Diff(leftDict, rightDict);
@@ -45,9 +46,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                                 context.CopyWithRequired(true))
                     };
                 if (!ChangedUtils.IsUnchanged(changedMediaType))
-                {
                     changedMediaTypes.Add(sharedMediaType, changedMediaType);
-                }
             }
 
             return ChangedUtils.IsChanged(new ChangedContentBO(leftDict, rightDict, context)

@@ -1,14 +1,18 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.Enums;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 {
     public class ChangedSecuritySchemeBO : ComposedChangedBO
     {
-        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.SecurityScheme;
+        public ChangedSecuritySchemeBO(OpenApiSecurityScheme oldSecurityScheme, OpenApiSecurityScheme newSecurityScheme)
+        {
+            OldSecurityScheme = oldSecurityScheme;
+            NewSecurityScheme = newSecurityScheme;
+        }
 
         public OpenApiSecurityScheme OldSecurityScheme { get; }
         public OpenApiSecurityScheme NewSecurityScheme { get; }
@@ -22,21 +26,16 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
         public ChangedMetadataBO Description { get; set; }
         public ChangedOAuthFlowsBO OAuthFlows { get; set; }
         public ChangedExtensionsBO Extensions { get; set; }
-
-        public ChangedSecuritySchemeBO(OpenApiSecurityScheme oldSecurityScheme, OpenApiSecurityScheme newSecurityScheme)
-        {
-            OldSecurityScheme = oldSecurityScheme;
-            NewSecurityScheme = newSecurityScheme;
-        }
+        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.SecurityScheme;
 
         public override List<(string Identifier, ChangedBO Change)> GetChangedElements()
         {
             return new List<(string Identifier, ChangedBO Change)>
-            {
-                (null, Description), 
-                (null, OAuthFlows), 
-                (null, Extensions)
-            }
+                {
+                    (null, Description),
+                    (null, OAuthFlows),
+                    (null, Extensions)
+                }
                 .Where(x => x.Change != null).ToList();
         }
 
@@ -48,18 +47,14 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
                 && !IsChangedBearerFormat
                 && !IsChangedOpenIdConnectUrl
                 && (ChangedScopes == null || ChangedScopes.IsUnchanged()))
-            {
                 return new DiffResultBO(DiffResultEnum.NoChanges);
-            }
             if (!IsChangedType
                 && !IsChangedIn
                 && !IsChangedScheme
                 && !IsChangedBearerFormat
                 && !IsChangedOpenIdConnectUrl
                 && (ChangedScopes == null || ChangedScopes.Increased.IsNullOrEmpty()))
-            {
                 return new DiffResultBO(DiffResultEnum.Compatible);
-            }
             return new DiffResultBO(DiffResultEnum.Incompatible);
         }
 
@@ -70,19 +65,24 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
             const TypeEnum changeType = TypeEnum.Changed;
 
             if (IsChangedBearerFormat)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Bearer Format", OldSecurityScheme?.BearerFormat, NewSecurityScheme?.BearerFormat));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Bearer Format",
+                    OldSecurityScheme?.BearerFormat, NewSecurityScheme?.BearerFormat));
 
             if (IsChangedIn)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "In", OldSecurityScheme?.In.ToString(), NewSecurityScheme?.In.ToString()));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "In", OldSecurityScheme?.In.ToString(),
+                    NewSecurityScheme?.In.ToString()));
 
             if (IsChangedOpenIdConnectUrl)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "OpenIdConnect Url", OldSecurityScheme?.OpenIdConnectUrl.ToString(), NewSecurityScheme?.OpenIdConnectUrl.ToString()));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "OpenIdConnect Url",
+                    OldSecurityScheme?.OpenIdConnectUrl.ToString(), NewSecurityScheme?.OpenIdConnectUrl.ToString()));
 
             if (IsChangedScheme)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Scheme", OldSecurityScheme?.Scheme, NewSecurityScheme?.Scheme));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Scheme", OldSecurityScheme?.Scheme,
+                    NewSecurityScheme?.Scheme));
 
             if (IsChangedType)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Type", OldSecurityScheme?.Type.ToString(), NewSecurityScheme?.Type.ToString()));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Type", OldSecurityScheme?.Type.ToString(),
+                    NewSecurityScheme?.Type.ToString()));
 
             return returnList;
         }

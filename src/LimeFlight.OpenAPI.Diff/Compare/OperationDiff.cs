@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
+using LimeFlight.OpenAPI.Diff.Extensions;
 using LimeFlight.OpenAPI.Diff.Utils;
 using Microsoft.OpenApi.Models;
-using LimeFlight.OpenAPI.Diff.Extensions;
 
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
@@ -50,7 +50,6 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 
             if (oldOperation.Responses != null || newOperation.Responses != null)
             {
-
                 var diff = _openApiDiff
                     .APIResponseDiff
                     .Diff(oldOperation.Responses, newOperation.Responses, context.CopyAsResponse());

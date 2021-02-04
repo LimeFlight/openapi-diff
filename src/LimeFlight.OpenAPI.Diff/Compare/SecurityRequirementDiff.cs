@@ -2,16 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
+using LimeFlight.OpenAPI.Diff.Extensions;
 using LimeFlight.OpenAPI.Diff.Utils;
 using Microsoft.OpenApi.Models;
-using LimeFlight.OpenAPI.Diff.Extensions;
 
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class SecurityRequirementDiff
     {
-        private readonly OpenApiDiff _openApiDiff;
         private readonly OpenApiComponents _leftComponents;
+        private readonly OpenApiDiff _openApiDiff;
         private readonly OpenApiComponents _rightComponents;
 
         public SecurityRequirementDiff(OpenApiDiff openApiDiff)
@@ -20,13 +20,11 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             _leftComponents = openApiDiff.OldSpecOpenApi?.Components;
             _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
+
         public static OpenApiSecurityRequirement GetCopy(Dictionary<OpenApiSecurityScheme, IList<string>> right)
         {
             var newSecurityRequirement = new OpenApiSecurityRequirement();
-            foreach (var (key, value) in right)
-            {
-                newSecurityRequirement.Add(key, value);
-            }
+            foreach (var (key, value) in right) newSecurityRequirement.Add(key, value);
 
             return newSecurityRequirement;
         }
@@ -41,7 +39,6 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             {
                 var rightSecurityScheme = _rightComponents.SecuritySchemes[keyValuePair.Key.Reference?.ReferenceV3];
                 if (leftSecurityScheme.Type == rightSecurityScheme.Type)
-                {
                     switch (leftSecurityScheme.Type)
                     {
                         case SecuritySchemeType.ApiKey:
@@ -60,8 +57,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                         default:
                             throw new ArgumentOutOfRangeException();
                     }
-                }
             }
+
             return found;
         }
 
@@ -99,10 +96,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                 }
             }
 
-            foreach (var (key, value) in right)
-            {
-                changedSecurityRequirement.Increased.Add(key, value);
-            }
+            foreach (var (key, value) in right) changedSecurityRequirement.Increased.Add(key, value);
 
             return ChangedUtils.IsChanged(changedSecurityRequirement);
         }

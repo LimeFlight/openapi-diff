@@ -1,11 +1,18 @@
-﻿using Microsoft.OpenApi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 {
     public class DiffContextBO
     {
+        public DiffContextBO()
+        {
+            Parameters = new Dictionary<string, string>();
+            IsResponse = false;
+            IsRequest = true;
+        }
+
         public string URL { get; set; }
         public Dictionary<string, string> Parameters { get; set; }
         public OperationType Method { get; private set; }
@@ -13,13 +20,6 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
         public bool IsRequest { get; private set; }
 
         public bool IsRequired { get; private set; }
-
-        public DiffContextBO()
-        {
-            Parameters = new Dictionary<string, string>();
-            IsResponse = false;
-            IsRequest = true;
-        }
 
         public string GetDiffContextElementType() => IsResponse ? "Response" : "Request";
 
@@ -67,13 +67,14 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
             };
             return context;
         }
+
         public override bool Equals(object o)
         {
             if (this == o) return true;
 
             if (o == null || GetType() != o.GetType()) return false;
 
-            var that = (DiffContextBO)o;
+            var that = (DiffContextBO) o;
 
             return IsResponse.Equals(that.IsResponse)
                    && IsRequest.Equals(that.IsRequest)

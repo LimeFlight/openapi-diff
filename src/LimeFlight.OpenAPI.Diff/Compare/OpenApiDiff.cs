@@ -1,17 +1,32 @@
-﻿using Microsoft.Extensions.Logging;
-using Microsoft.OpenApi.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
-using LimeFlight.OpenAPI.Diff.Utils;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using LimeFlight.OpenAPI.Diff.Utils;
+using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class OpenApiDiff
     {
         private readonly ILogger _logger;
+
+        public OpenApiDiff(OpenApiDocument oldSpecOpenApi, string oldSpecIdentifier, OpenApiDocument newSpecOpenApi,
+            string newSpecIdentifier, IEnumerable<IExtensionDiff> extensions, ILogger logger)
+        {
+            _logger = logger;
+            OldSpecOpenApi = oldSpecOpenApi;
+            NewSpecOpenApi = newSpecOpenApi;
+            OldIdentifier = oldSpecIdentifier;
+            NewIdentifier = newSpecIdentifier;
+
+            if (null == oldSpecOpenApi || null == newSpecOpenApi)
+                throw new Exception("one of the old or new object is null");
+
+            InitializeFields(extensions);
+        }
 
         public string OldIdentifier { get; }
         public string NewIdentifier { get; }
@@ -42,23 +57,12 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         public List<ChangedOperationBO> ChangedOperations { get; set; }
         public ChangedExtensionsBO ChangedExtensions { get; set; }
 
-        public OpenApiDiff(OpenApiDocument oldSpecOpenApi, string oldSpecIdentifier, OpenApiDocument newSpecOpenApi, string newSpecIdentifier, IEnumerable<IExtensionDiff> extensions, ILogger logger)
+        public static ChangedOpenApiBO Compare(OpenApiDocument oldSpecOpenApi, string oldSpecIdentifier,
+            OpenApiDocument newSpecOpenApi, string newSpecIdentifier, IEnumerable<IExtensionDiff> extensions,
+            ILogger logger)
         {
-            _logger = logger;
-            OldSpecOpenApi = oldSpecOpenApi;
-            NewSpecOpenApi = newSpecOpenApi;
-            OldIdentifier = oldSpecIdentifier;
-            NewIdentifier = newSpecIdentifier;
-
-            if (null == oldSpecOpenApi || null == newSpecOpenApi)
-                throw new Exception("one of the old or new object is null");
-
-            InitializeFields(extensions);
-        }
-
-        public static ChangedOpenApiBO Compare(OpenApiDocument oldSpecOpenApi, string oldSpecIdentifier, OpenApiDocument newSpecOpenApi, string newSpecIdentifier, IEnumerable<IExtensionDiff> extensions, ILogger logger)
-        {
-            return new OpenApiDiff(oldSpecOpenApi, oldSpecIdentifier, newSpecOpenApi, newSpecIdentifier, extensions, logger).Compare();
+            return new OpenApiDiff(oldSpecOpenApi, oldSpecIdentifier, newSpecOpenApi, newSpecIdentifier, extensions,
+                logger).Compare();
         }
 
         private void InitializeFields(IEnumerable<IExtensionDiff> extensions)
@@ -124,7 +128,6 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     securityRequirements.Distinct().ToList();
                 var paths = openApi.Paths;
                 if (paths != null)
-                {
                     foreach (var openApiPathItem in paths.Values)
                     {
                         var operationsWithSecurity = openApiPathItem
@@ -132,19 +135,14 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                             .Values
                             .Where(x => !x.Security.IsNullOrEmpty());
                         foreach (var openApiOperation in operationsWithSecurity)
-                        {
                             openApiOperation.Security = openApiOperation.Security.Distinct().ToList();
-                        }
                         var operationsWithoutSecurity = openApiPathItem
                             .Operations
                             .Values
                             .Where(x => x.Security.IsNullOrEmpty());
                         foreach (var openApiOperation in operationsWithoutSecurity)
-                        {
                             openApiOperation.Security = distinctSecurityRequirements;
-                        }
                     }
-                }
 
                 openApi.SecurityRequirements = null;
             }

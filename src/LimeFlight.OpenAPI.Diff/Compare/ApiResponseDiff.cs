@@ -25,7 +25,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     .ResponseDiff
                     .Diff(left[responseCode], right[responseCode], context);
 
-                if(diff!= null)
+                if (diff != null)
                     responses.Add(responseCode, diff);
             }
 

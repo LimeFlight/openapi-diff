@@ -1,29 +1,30 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.Enums;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 {
     public class ChangedRequestBodyBO : ComposedChangedBO
     {
-        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.RequestBody;
+        private readonly DiffContextBO _context;
+        private readonly OpenApiRequestBody _newRequestBody;
 
         private readonly OpenApiRequestBody _oldRequestBody;
-        private readonly OpenApiRequestBody _newRequestBody;
-        private readonly DiffContextBO _context;
 
-        public bool ChangeRequired { get; set; }
-        public ChangedMetadataBO Description { get; set; }
-        public ChangedContentBO Content { get; set; }
-        public ChangedExtensionsBO Extensions { get; set; }
-
-        public ChangedRequestBodyBO(OpenApiRequestBody oldRequestBody, OpenApiRequestBody newRequestBody, DiffContextBO context)
+        public ChangedRequestBodyBO(OpenApiRequestBody oldRequestBody, OpenApiRequestBody newRequestBody,
+            DiffContextBO context)
         {
             _oldRequestBody = oldRequestBody;
             _newRequestBody = newRequestBody;
             _context = context;
         }
+
+        public bool ChangeRequired { get; set; }
+        public ChangedMetadataBO Description { get; set; }
+        public ChangedContentBO Content { get; set; }
+        public ChangedExtensionsBO Extensions { get; set; }
+        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.RequestBody;
 
         public override List<(string Identifier, ChangedBO Change)> GetChangedElements()
         {
@@ -38,10 +39,7 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 
         public override DiffResultBO IsCoreChanged()
         {
-            if (!ChangeRequired)
-            {
-                return new DiffResultBO(DiffResultEnum.NoChanges);
-            }
+            if (!ChangeRequired) return new DiffResultBO(DiffResultEnum.NoChanges);
             return new DiffResultBO(DiffResultEnum.Incompatible);
         }
 
@@ -52,7 +50,8 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
             const TypeEnum changeType = TypeEnum.Changed;
 
             if (_oldRequestBody?.Required != _newRequestBody?.Required)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Required", _oldRequestBody?.Required.ToString(), _newRequestBody?.Required.ToString()));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Required",
+                    _oldRequestBody?.Required.ToString(), _newRequestBody?.Required.ToString()));
 
             return returnList;
         }

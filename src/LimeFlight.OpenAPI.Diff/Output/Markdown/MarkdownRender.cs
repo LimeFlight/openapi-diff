@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
 using LimeFlight.OpenAPI.Diff.Enums;
-using Microsoft.Extensions.Logging;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace LimeFlight.OpenAPI.Diff.Output.Markdown
 {
@@ -35,15 +35,15 @@ namespace LimeFlight.OpenAPI.Diff.Output.Markdown
         {
             return $"# {model.Name}\n" +
                    $"Compared Specs: **{model.OldSpecIdentifier}** - **{model.NewSpecIdentifier}**\n" +
-                   $"Report Result: " + 
+                   "Report Result: " +
                    $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={model.ChangeType.DiffResult}&amp;color={GetColorForDiffResult(model.ChangeType.DiffResult)}&amp;\" alt=\"{model.ChangeType.DiffResult}\">\n" +
-                   $"## Added Endpoints\n" +
+                   "## Added Endpoints\n" +
                    $"{GetOperationOverview(model.NewEndpoints)}\n" +
-                   $"## Removed Endpoints\n" +
+                   "## Removed Endpoints\n" +
                    $"{GetOperationOverview(model.MissingEndpoints)}\n" +
-                   $"## Deprecated Endpoints\n" +
+                   "## Deprecated Endpoints\n" +
                    $"{GetOperationOverview(model.DeprecatedEndpoints)}\n" +
-                   $"## Changed Endpoints\n" +
+                   "## Changed Endpoints\n" +
                    $"{GetChangedOperationOverview(model.ChangedEndpoints)}";
         }
 
@@ -51,9 +51,8 @@ namespace LimeFlight.OpenAPI.Diff.Output.Markdown
         {
             var returnString = string.Empty;
             foreach (var endpoint in endpoints)
-            {
-                returnString += $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={endpoint.Method}&amp;color=grey&amp;\" alt=\"{endpoint.Method}\"> **{endpoint.PathUrl}**\n";
-            }
+                returnString +=
+                    $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={endpoint.Method}&amp;color=grey&amp;\" alt=\"{endpoint.Method}\"> **{endpoint.PathUrl}**\n";
             return returnString;
         }
 
@@ -81,36 +80,33 @@ namespace LimeFlight.OpenAPI.Diff.Output.Markdown
             var returnString = string.Empty;
             foreach (var endpoint in endpoints)
             {
-                returnString += $"<details>\n" +
-                                $"  <summary>" +
+                returnString += "<details>\n" +
+                                "  <summary>" +
                                 $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={endpoint.Method}&amp;color=grey&amp;\" alt=\"{endpoint.Method}\"> " +
                                 $"{endpoint.PathUrl} " +
                                 $"<img src=\"https://img.shields.io/static/v1?label=&amp;message={endpoint.ChangeType.DiffResult}&amp;color={GetColorForDiffResult(endpoint.ChangeType.DiffResult)}&amp;\" alt=\"{endpoint.ChangeType.DiffResult}\">" +
-                                $"</summary>\n" +
-                                $"  \n";
+                                "</summary>\n" +
+                                "  \n";
 
                 if (endpoint.ChangeType.IsIncompatible())
-                {
-                    returnString += $"> <details>\n" +
-                                    $">   <summary>Breaking Changes</summary>\n" +
-                                    $">   \n" +
+                    returnString += "> <details>\n" +
+                                    ">   <summary>Breaking Changes</summary>\n" +
+                                    ">   \n" +
                                     $"{GetChangeDetails(endpoint.ChangesByType.Where(x => x.ChangeType.IsIncompatible()))}" +
-                                    $"> </details>\n" +
-                                    $"> \n";
-                }
+                                    "> </details>\n" +
+                                    "> \n";
 
                 if (endpoint.ChangesByType.Any(x => x.ChangeType.IsCompatible()))
-                {
-                    returnString += $"> <details>\n" +
-                                    $">   <summary>Compatible Changes</summary>\n" +
-                                    $">   \n" +
+                    returnString += "> <details>\n" +
+                                    ">   <summary>Compatible Changes</summary>\n" +
+                                    ">   \n" +
                                     $"{GetChangeDetails(endpoint.ChangesByType.Where(x => x.ChangeType.IsCompatible()))}" +
-                                    $"> </details>\n" +
-                                    $"> \n";
-                }
+                                    "> </details>\n" +
+                                    "> \n";
 
-                returnString += $"</details>\n\n";
+                returnString += "</details>\n\n";
             }
+
             return returnString;
         }
 
@@ -126,18 +122,15 @@ namespace LimeFlight.OpenAPI.Diff.Output.Markdown
                     returnString += $">     - {singleChange.ElementType} Modification\n";
 
                     if (singleChange.ChangeType == TypeEnum.Changed)
-                    {
                         returnString += $">       - `{singleChange.ElementType}` changed from " +
                                         $"`{(!singleChange.OldValue.IsNullOrEmpty() ? singleChange.OldValue : " ")}` to " +
                                         $"`{(!singleChange.NewValue.IsNullOrEmpty() ? singleChange.NewValue : " ")}`\n";
-                    }
                     else
-                    {
                         returnString += $">       - {singleChange.ChangeType} `{singleChange.FieldName}`\n";
-                    }
                 }
             }
-            returnString += $">   \n";
+
+            returnString += ">   \n";
             return returnString;
         }
     }

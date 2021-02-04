@@ -10,7 +10,9 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class RequestBodyDiff : ReferenceDiffCache<OpenApiRequestBody, ChangedRequestBodyBO>
     {
-        private static readonly RefPointer<OpenApiRequestBody> RefPointer = new RefPointer<OpenApiRequestBody>(RefTypeEnum.RequestBodies);
+        private static readonly RefPointer<OpenApiRequestBody> RefPointer =
+            new RefPointer<OpenApiRequestBody>(RefTypeEnum.RequestBodies);
+
         private readonly OpenApiDiff _openApiDiff;
 
         public RequestBodyDiff(OpenApiDiff openApiDiff)
@@ -31,7 +33,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             return CachedDiff(new HashSet<string>(), left, right, leftRef, rightRef, context);
         }
 
-        protected override ChangedRequestBodyBO ComputeDiff(HashSet<string> refSet, OpenApiRequestBody left, OpenApiRequestBody right,
+        protected override ChangedRequestBodyBO ComputeDiff(HashSet<string> refSet, OpenApiRequestBody left,
+            OpenApiRequestBody right,
             DiffContextBO context)
         {
             Dictionary<string, OpenApiMediaType> oldRequestContent = null;
@@ -44,20 +47,18 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     RefPointer.ResolveRef(
                         _openApiDiff.OldSpecOpenApi.Components, left, left.Reference?.ReferenceV3);
                 if (oldRequestBody.Content != null)
-                {
                     oldRequestContent = (Dictionary<string, OpenApiMediaType>) oldRequestBody.Content;
-                }
             }
+
             if (right != null)
             {
                 newRequestBody =
                     RefPointer.ResolveRef(
                         _openApiDiff.NewSpecOpenApi.Components, right, right.Reference?.ReferenceV3);
                 if (newRequestBody.Content != null)
-                {
                     newRequestContent = (Dictionary<string, OpenApiMediaType>) newRequestBody.Content;
-                }
             }
+
             var leftRequired =
                 oldRequestBody != null && oldRequestBody.Required;
             var rightRequired =

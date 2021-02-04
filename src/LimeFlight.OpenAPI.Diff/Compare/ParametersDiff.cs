@@ -9,10 +9,12 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class ParametersDiff
     {
+        private static readonly RefPointer<OpenApiParameter> RefPointer =
+            new RefPointer<OpenApiParameter>(RefTypeEnum.Parameters);
+
         private readonly OpenApiComponents _leftComponents;
-        private readonly OpenApiComponents _rightComponents;
         private readonly OpenApiDiff _openApiDiff;
-        private static readonly RefPointer<OpenApiParameter> RefPointer = new RefPointer<OpenApiParameter>(RefTypeEnum.Parameters);
+        private readonly OpenApiComponents _rightComponents;
 
         public ParametersDiff(OpenApiDiff openApiDiff)
         {
@@ -21,7 +23,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             _rightComponents = openApiDiff.NewSpecOpenApi?.Components;
         }
 
-        public static OpenApiParameter Contains(OpenApiComponents components, List<OpenApiParameter> parameters, OpenApiParameter parameter)
+        public static OpenApiParameter Contains(OpenApiComponents components, List<OpenApiParameter> parameters,
+            OpenApiParameter parameter)
         {
             return parameters
                 .FirstOrDefault(x =>
@@ -54,7 +57,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                 else
                 {
                     right.Remove(rightParam);
-                    
+
                     var diff = _openApiDiff.ParameterDiff
                         .Diff(leftPara, rightParam, context);
                     if (diff != null)

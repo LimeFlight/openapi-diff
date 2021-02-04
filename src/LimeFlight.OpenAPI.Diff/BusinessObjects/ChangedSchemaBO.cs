@@ -1,14 +1,19 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using LimeFlight.OpenAPI.Diff.Enums;
 using LimeFlight.OpenAPI.Diff.Extensions;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.BusinessObjects
 {
     public class ChangedSchemaBO : ComposedChangedBO
     {
-        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.Schema;
+        public ChangedSchemaBO()
+        {
+            IncreasedProperties = new Dictionary<string, OpenApiSchema>();
+            MissingProperties = new Dictionary<string, OpenApiSchema>();
+            ChangedProperties = new Dictionary<string, ChangedSchemaBO>();
+        }
 
         public DiffContextBO Context { get; set; }
         public OpenApiSchema OldSchema { get; set; }
@@ -33,19 +38,13 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
         public ChangedOneOfSchemaBO OneOfSchema { get; set; }
         public ChangedSchemaBO AddProp { get; set; }
         public ChangedExtensionsBO Extensions { get; set; }
-
-        public ChangedSchemaBO() 
-        {
-            IncreasedProperties = new Dictionary<string, OpenApiSchema>();
-            MissingProperties = new Dictionary<string, OpenApiSchema>();
-            ChangedProperties = new Dictionary<string, ChangedSchemaBO>();
-        }
+        protected override ChangedElementTypeEnum GetElementType() => ChangedElementTypeEnum.Schema;
 
         public override List<(string Identifier, ChangedBO Change)> GetChangedElements()
         {
             return new List<(string Identifier, ChangedBO Change)>(
-                        ChangedProperties.Select(x => (x.Key, (ChangedBO)x.Value))
-                    )
+                    ChangedProperties.Select(x => (x.Key, (ChangedBO) x.Value))
+                )
                 {
                     ("Description", Description),
                     ("ReadOnly", ReadOnly),
@@ -71,7 +70,7 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
                 && MissingProperties.Count == 0
                 && ChangedProperties.Values.Count == 0
                 && !IsChangeDeprecated
-                && ! DiscriminatorPropertyChanged
+                && !DiscriminatorPropertyChanged
             )
                 return new DiffResultBO(DiffResultEnum.NoChanges);
 
@@ -83,15 +82,14 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
                  || Context.IsResponse && compatibleForResponse)
                 && !IsChangedType
                 && !DiscriminatorPropertyChanged)
-            {
                 return new DiffResultBO(DiffResultEnum.Compatible);
-            }
             return new DiffResultBO(DiffResultEnum.Incompatible);
         }
 
         protected override List<ChangedInfoBO> GetCoreChanges()
         {
-            var returnList = GetCoreChangeInfosOfComposed(IncreasedProperties.Keys.ToList(), MissingProperties.Keys.ToList(), x => x);
+            var returnList = GetCoreChangeInfosOfComposed(IncreasedProperties.Keys.ToList(),
+                MissingProperties.Keys.ToList(), x => x);
             var elementType = GetElementType();
             const TypeEnum changeType = TypeEnum.Changed;
 
@@ -99,19 +97,23 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
                 returnList.Add(new ChangedInfoBO(elementType, changeType, "Type", OldSchema?.Type, NewSchema?.Type));
 
             if (IsChangeDefault)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Default", OldSchema?.Default.ToString(), NewSchema?.Default.ToString()));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Default", OldSchema?.Default.ToString(),
+                    NewSchema?.Default.ToString()));
 
             if (IsChangeDeprecated)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Deprecation", OldSchema?.Deprecated.ToString(), NewSchema?.Deprecated.ToString()));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Deprecation",
+                    OldSchema?.Deprecated.ToString(), NewSchema?.Deprecated.ToString()));
 
             if (IsChangeFormat)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Format", OldSchema?.Format, NewSchema?.Format));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Format", OldSchema?.Format,
+                    NewSchema?.Format));
 
             if (IsChangeTitle)
                 returnList.Add(new ChangedInfoBO(elementType, changeType, "Title", OldSchema?.Title, NewSchema?.Title));
 
             if (DiscriminatorPropertyChanged)
-                returnList.Add(new ChangedInfoBO(elementType, changeType, "Discriminator Property", OldSchema?.Discriminator?.PropertyName, NewSchema?.Discriminator?.PropertyName));
+                returnList.Add(new ChangedInfoBO(elementType, changeType, "Discriminator Property",
+                    OldSchema?.Discriminator?.PropertyName, NewSchema?.Discriminator?.PropertyName));
 
             return returnList;
         }

@@ -1,17 +1,19 @@
-﻿using Microsoft.OpenApi.Models;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using LimeFlight.OpenAPI.Diff.BusinessObjects;
 using LimeFlight.OpenAPI.Diff.Enums;
 using LimeFlight.OpenAPI.Diff.Utils;
+using Microsoft.OpenApi.Models;
 
 namespace LimeFlight.OpenAPI.Diff.Compare
 {
     public class ParameterDiff : ReferenceDiffCache<OpenApiParameter, ChangedParameterBO>
     {
-        private static readonly RefPointer<OpenApiParameter> RefPointer = new RefPointer<OpenApiParameter>(RefTypeEnum.Parameters);
+        private static readonly RefPointer<OpenApiParameter> RefPointer =
+            new RefPointer<OpenApiParameter>(RefTypeEnum.Parameters);
+
         private readonly OpenApiComponents _leftComponents;
-        private readonly OpenApiComponents _rightComponents;
         private readonly OpenApiDiff _openApiDiff;
+        private readonly OpenApiComponents _rightComponents;
 
         public ParameterDiff(OpenApiDiff openApiDiff)
         {
@@ -22,10 +24,12 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 
         public ChangedParameterBO Diff(OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
         {
-            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3, right.Reference?.ReferenceV3, context);
+            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3,
+                right.Reference?.ReferenceV3, context);
         }
 
-        protected override ChangedParameterBO ComputeDiff(HashSet<string> refSet, OpenApiParameter left, OpenApiParameter right, DiffContextBO context)
+        protected override ChangedParameterBO ComputeDiff(HashSet<string> refSet, OpenApiParameter left,
+            OpenApiParameter right, DiffContextBO context)
         {
             left = RefPointer.ResolveRef(_leftComponents, left, left.Reference?.ReferenceV3);
             right = RefPointer.ResolveRef(_rightComponents, right, right.Reference?.ReferenceV3);

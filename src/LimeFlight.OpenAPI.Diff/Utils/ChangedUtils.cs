@@ -15,7 +15,7 @@ namespace LimeFlight.OpenAPI.Diff.Utils
         }
 
         public static T IsChanged<T>(T changed)
-        where T : ChangedBO
+            where T : ChangedBO
         {
             return IsUnchanged(changed) ? null : changed;
         }

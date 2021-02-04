@@ -7,6 +7,8 @@ namespace LimeFlight.OpenAPI.Diff
     public interface IOpenAPICompare
     {
         ChangedOpenApiBO FromLocations(string oldLocation, string newLocation, OpenApiReaderSettings settings = null);
-        ChangedOpenApiBO FromSpecifications(OpenApiDocument oldSpec, string oldSpecIdentifier, OpenApiDocument newSpec, string newSpecIdentifier);
+
+        ChangedOpenApiBO FromSpecifications(OpenApiDocument oldSpec, string oldSpecIdentifier, OpenApiDocument newSpec,
+            string newSpecIdentifier);
     }
 }

@@ -7,6 +7,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
     public class OAuthFlowsDiff
     {
         private readonly OpenApiDiff _openApiDiff;
+
         public OAuthFlowsDiff(OpenApiDiff openApiDiff)
         {
             _openApiDiff = openApiDiff;

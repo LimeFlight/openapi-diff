@@ -16,6 +16,7 @@ namespace LimeFlight.OpenAPI.Diff.Utils
                 var endpoint = ConvertToEndpoint<T>(pathUrl, key, value);
                 endpoints.Add(endpoint);
             }
+
             return endpoints;
         }
 
@@ -54,8 +55,8 @@ namespace LimeFlight.OpenAPI.Diff.Utils
                     endpoints.Add(endpoint);
                 }
             }
+
             return endpoints;
         }
     }
-
 }

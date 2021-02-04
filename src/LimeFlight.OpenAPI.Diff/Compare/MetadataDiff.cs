@@ -7,8 +7,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare
     public class MetadataDiff
     {
         private OpenApiComponents _leftComponents;
-        private OpenApiComponents _rightComponents;
         private OpenApiDiff _openApiDiff;
+        private OpenApiComponents _rightComponents;
 
         public MetadataDiff(OpenApiDiff openApiDiff)
         {
