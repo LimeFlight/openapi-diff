@@ -26,4 +26,4 @@ jobs:
       - name: Publish the package
         run: |
           until dotnet nuget push *.nupkg --skip-duplicate --source GPR; do echo "Retrying"; sleep 1; done
-        working-directory: ./src/yaos.OpenAPI.Diff/nupkg
+        working-directory: ./src/LimeFlight.OpenAPI.Diff/nupkg

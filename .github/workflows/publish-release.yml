@@ -23,7 +23,7 @@ jobs:
       - name: Publish the package to GPR
         run: |
           until dotnet nuget push *.nupkg --skip-duplicate --source GPR; do echo "Retrying"; sleep 1; done
-        working-directory: ./src/yaos.OpenAPI.Diff/nupkg
+        working-directory: ./src/LimeFlight.OpenAPI.Diff/nupkg
       - name: Publish the package to NuGet
         run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_LIB}}
-        working-directory: ./src/yaos.OpenAPI.Diff/nupkg
+        working-directory: ./src/LimeFlight.OpenAPI.Diff/nupkg

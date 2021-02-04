@@ -3,16 +3,16 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30002.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "yaos.OpenAPI.Diff", "src\yaos.OpenAPI.Diff\yaos.OpenAPI.Diff.csproj", "{A90BD73B-DF5F-4DBA-8859-8A366DBC3012}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "yaos.OpenApi.Diff.Tests", "test\yaos.OpenApi.Diff.Test\yaos.OpenApi.Diff.Tests.csproj", "{A4D30B6C-3BA1-48CB-A252-07CDBDD713BC}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "yaos.OpenAPI.Diff.CLI", "src\yaos.OpenAPI.Diff.CLI\yaos.OpenAPI.Diff.CLI.csproj", "{071866EA-5687-4E47-8B10-3FE98046218E}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{3A898522-4E40-4175-A611-2DE850EA2580}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimeFlight.OpenAPI.Diff", "src\LimeFlight.OpenAPI.Diff\LimeFlight.OpenAPI.Diff.csproj", "{5BC2C0B6-2D6F-4858-9DD7-29329C053D67}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimeFlight.OpenAPI.Diff.CLI", "src\LimeFlight.OpenAPI.Diff.CLI\LimeFlight.OpenAPI.Diff.CLI.csproj", "{B6374519-F73B-4B01-AB7A-25E83375D17C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimeFlight.OpenApi.Diff.Tests", "test\LimeFlight.OpenApi.Diff.Test\LimeFlight.OpenApi.Diff.Tests.csproj", "{811C42D7-DBB9-43AE-92BA-694EF840A6DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,18 +20,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A90BD73B-DF5F-4DBA-8859-8A366DBC3012}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A90BD73B-DF5F-4DBA-8859-8A366DBC3012}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A90BD73B-DF5F-4DBA-8859-8A366DBC3012}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A90BD73B-DF5F-4DBA-8859-8A366DBC3012}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A4D30B6C-3BA1-48CB-A252-07CDBDD713BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A4D30B6C-3BA1-48CB-A252-07CDBDD713BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A4D30B6C-3BA1-48CB-A252-07CDBDD713BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A4D30B6C-3BA1-48CB-A252-07CDBDD713BC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{071866EA-5687-4E47-8B10-3FE98046218E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{071866EA-5687-4E47-8B10-3FE98046218E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{071866EA-5687-4E47-8B10-3FE98046218E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{071866EA-5687-4E47-8B10-3FE98046218E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5BC2C0B6-2D6F-4858-9DD7-29329C053D67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5BC2C0B6-2D6F-4858-9DD7-29329C053D67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5BC2C0B6-2D6F-4858-9DD7-29329C053D67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5BC2C0B6-2D6F-4858-9DD7-29329C053D67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6374519-F73B-4B01-AB7A-25E83375D17C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6374519-F73B-4B01-AB7A-25E83375D17C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6374519-F73B-4B01-AB7A-25E83375D17C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6374519-F73B-4B01-AB7A-25E83375D17C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
