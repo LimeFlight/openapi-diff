@@ -48,40 +48,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                     throw new ArgumentOutOfRangeException();
             }
         }
-
-        protected static OpenApiSchema ResolveComposedSchema(OpenApiComponents components, OpenApiSchema schema)
-        {
-            if (schema != null && schema.GetSchemaType() == SchemaTypeEnum.ComposedSchema)
-            {
-                var allOfSchemaList = schema.AllOf;
-                if (!allOfSchemaList.IsNullOrEmpty())
-                {
-                    var refName = "allOfCombined-";
-                    allOfSchemaList
-                        .ToList()
-                        .ForEach(x => refName += x.Reference?.ReferenceV3);
-                    if (components.Schemas.ContainsKey(refName))
-                        return components.Schemas[refName];
-                    components.Schemas.Add(refName, new OpenApiSchema());
-
-                    var allOfCombinedSchema = new OpenApiSchema();
-                    allOfCombinedSchema = AddSchema(allOfCombinedSchema, schema);
-                    foreach (var t in allOfSchemaList)
-                    {
-                        var allOfSchema = t;
-                        allOfSchema =
-                            RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference?.ReferenceV3);
-                        allOfSchema = ResolveComposedSchema(components, allOfSchema);
-                        allOfCombinedSchema = AddSchema(allOfCombinedSchema, allOfSchema);
-                    }
-
-                    return allOfCombinedSchema;
-                }
-            }
-
-            return schema;
-        }
-
+        
         protected static OpenApiSchema AddSchema(OpenApiSchema schema, OpenApiSchema fromSchema)
         {
             if (fromSchema.Properties != null)
@@ -201,16 +168,79 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             return schema;
         }
 
+        private static KeyValuePair<string, OpenApiSchema> ResolveComposedSchema(OpenApiComponents components, OpenApiSchema schema)
+        {
+            var allOfSchemaList = schema.AllOf.ToList();
+
+            if (!allOfSchemaList.Any())
+                return new KeyValuePair<string, OpenApiSchema>(string.Empty, null);
+
+            // Get combined schema name
+            var refName = "allOfCombined-";
+            allOfSchemaList
+                .ForEach(x => refName += x.Reference?.ReferenceV3);
+
+            // If the same refName was already created before 
+            if (components.Schemas.TryGetValue(refName, out var composedSchema))
+                return new KeyValuePair<string, OpenApiSchema>(refName, composedSchema);
+
+            //// Add combined schema name with empty schema
+            //components.Schemas.Add(refName, new OpenApiSchema());
+
+            // Construct combined schema
+            var allOfCombinedSchema = new OpenApiSchema();
+            allOfCombinedSchema = AddSchema(allOfCombinedSchema, schema);
+            foreach (var t in allOfSchemaList)
+            {
+                var allOfSchema = t;
+                allOfSchema =
+                    RefPointer.ResolveRef(components, allOfSchema, allOfSchema.Reference?.ReferenceV3);
+
+                var result = ResolveComposedSchema(components, allOfSchema);
+
+                if (result.Value != null)
+                {
+                    allOfSchema = result.Value;
+                }
+
+                allOfCombinedSchema = AddSchema(allOfCombinedSchema, allOfSchema);
+            }
+
+            // Set correct combined schema
+            components.Schemas[refName] = allOfCombinedSchema;
+
+            return new KeyValuePair<string, OpenApiSchema>(refName, allOfCombinedSchema);
+        }
+
+
         private static string GetSchemaRef(OpenApiSchema schema)
         {
             return schema?.Reference?.ReferenceV3;
         }
 
-        public ChangedSchemaBO Diff(HashSet<string> refSet, OpenApiSchema left, OpenApiSchema right,
+        public ChangedSchemaBO Diff(OpenApiSchema left, OpenApiSchema right,
             DiffContextBO context)
         {
             if (left == null && right == null) return null;
-            return CachedDiff(refSet, left, right, GetSchemaRef(left), GetSchemaRef(right), context);
+
+            var leftRef = GetSchemaRef(left);
+            var rightRef = GetSchemaRef(right);
+
+            if (left != null && left.AllOf.Any())
+            {
+                var result = ResolveComposedSchema(_leftComponents, left);
+                leftRef = result.Key;
+                left = result.Value;
+            }
+
+            if (right != null && right.AllOf.Any())
+            {
+                var result = ResolveComposedSchema(_rightComponents, right);
+                rightRef = result.Key;
+                right = result.Value;
+            }
+
+            return CachedDiff(left, right, leftRef, rightRef, context);
         }
 
         public ChangedSchemaBO GetTypeChangedSchema(
@@ -225,14 +255,13 @@ namespace LimeFlight.OpenAPI.Diff.Compare
             return schemaDiffResult.ChangedSchema;
         }
 
-        protected override ChangedSchemaBO ComputeDiff(
-            HashSet<string> refSet, OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
+        protected override ChangedSchemaBO ComputeDiff(OpenApiSchema left, OpenApiSchema right, DiffContextBO context)
         {
+            var leftRef = GetSchemaRef(left);
+            var rightRef = GetSchemaRef(right);
+
             left = RefPointer.ResolveRef(_leftComponents, left, GetSchemaRef(left));
             right = RefPointer.ResolveRef(_rightComponents, right, GetSchemaRef(right));
-
-            left = ResolveComposedSchema(_leftComponents, left);
-            right = ResolveComposedSchema(_rightComponents, right);
 
             // If type of schemas are different, just set old & new schema, set changedType to true in
             // SchemaDiffResult and
@@ -244,7 +273,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 
             // If schema type is same then get specific SchemaDiffResult and compare the properties
             var result = GetSchemaDiffResult(right, _openApiDiff);
-            return result.Diff(refSet, _leftComponents, _rightComponents, left, right, context);
+            return result.Diff(_leftComponents, _rightComponents, left, right, context);
         }
     }
 }

@@ -96,13 +96,19 @@ namespace LimeFlight.OpenAPI.Diff.Output.Markdown
                                     "> </details>\n" +
                                     "> \n";
 
-                if (endpoint.ChangesByType.Any(x => x.ChangeType.IsCompatible()))
-                    returnString += "> <details>\n" +
-                                    ">   <summary>Compatible Changes</summary>\n" +
-                                    ">   \n" +
-                                    $"{GetChangeDetails(endpoint.ChangesByType.Where(x => x.ChangeType.IsCompatible()))}" +
-                                    "> </details>\n" +
-                                    "> \n";
+                var allChangesToDisplay = endpoint.ChangesByType
+                    .Where(x => x.ChangeType.IsCompatible() &&
+                                x.Changes.Any()).ToList();
+
+                if (allChangesToDisplay.Any())
+                {
+                    returnString += $"> <details>\n" +
+                                    $">   <summary>Compatible Changes</summary>\n" +
+                                    $">   \n" +
+                                    $"{GetChangeDetails(allChangesToDisplay)}" +
+                                    $"> </details>\n" +
+                                    $"> \n";
+                }
 
                 returnString += "</details>\n\n";
             }

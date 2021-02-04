@@ -1,6 +1,6 @@
 ﻿@inherits RazorLight.TemplatePage<LimeFlight.OpenAPI.Diff.Output.RenderViewModel>
 @using LimeFlight.OpenAPI.Diff.Extensions
-@model yaos.OpenAPI.Diff.Output.RenderViewModel
+@model LimeFlight.OpenAPI.Diff.Output.RenderViewModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -156,12 +156,16 @@
                     </dl>
                 }
 
-                @if (changedOperation.ChangesByType.Any(x => x.ChangeType.IsCompatible()))
+                var allChangesToDisplay = changedOperation.ChangesByType
+                    .Where(x => x.ChangeType.IsCompatible() &&
+                                x.Changes.Any()).ToList();
+
+                @if (allChangesToDisplay.Any())
                 {
                     <h4>Compatible Changes</h4>
-                    <hr class="m-0"/>
+                    <hr class="m-0" />
                     <dl>
-                        @{ await IncludeAsync("Views.ChangeDetail", changedOperation.ChangesByType.Where(x => x.ChangeType.IsCompatible()).ToList()); }
+                        @{ await IncludeAsync("Views.ChangeDetail", allChangesToDisplay); }
                     </dl>
                 }
             }

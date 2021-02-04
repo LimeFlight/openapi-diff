@@ -27,7 +27,6 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
         public OpenApiDiff OpenApiDiff { get; set; }
 
         public virtual ChangedSchemaBO Diff<T>(
-            HashSet<string> refSet,
             OpenApiComponents leftComponents,
             OpenApiComponents rightComponents,
             T left,
@@ -72,13 +71,13 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             {
                 var diff = OpenApiDiff
                     .SchemaDiff
-                    .Diff(refSet, leftProperties[s], rightProperties[s], Required(context, s, right.Required));
+                    .Diff(leftProperties[s], rightProperties[s], Required(context, s, right.Required));
 
                 if (diff != null)
                     ChangedSchema.ChangedProperties.Add(s, diff);
             }
 
-            CompareAdditionalProperties(refSet, left, right, context);
+            CompareAdditionalProperties(left, right, context);
 
             var allIncreasedProperties = FilterProperties(TypeEnum.Added, propertyDiff.Increased, context);
             foreach (var (key, value) in allIncreasedProperties) ChangedSchema.IncreasedProperties.Add(key, value);
@@ -93,7 +92,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             return context.CopyWithRequired(required != null && required.Contains(key));
         }
 
-        private void CompareAdditionalProperties(HashSet<string> refSet, OpenApiSchema leftSchema,
+        private void CompareAdditionalProperties(OpenApiSchema leftSchema,
             OpenApiSchema rightSchema, DiffContextBO context)
         {
             var left = leftSchema.AdditionalProperties;
@@ -111,7 +110,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                     var addPropChangedSchemaOp =
                         OpenApiDiff
                             .SchemaDiff
-                            .Diff(refSet, left, right, context.CopyWithRequired(false));
+                            .Diff(left, right, context.CopyWithRequired(false));
                     apChangedSchema = addPropChangedSchemaOp ?? apChangedSchema;
                 }
 
