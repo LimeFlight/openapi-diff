@@ -12,7 +12,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
         {
         }
 
-        public override ChangedSchemaBO Diff<T>(HashSet<string> refSet, OpenApiComponents leftComponents,
+        public override ChangedSchemaBO Diff<T>(OpenApiComponents leftComponents,
             OpenApiComponents rightComponents, T left,
             T right, DiffContextBO context)
         {
@@ -20,12 +20,11 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                 || right.GetSchemaType() != SchemaTypeEnum.ArraySchema)
                 return null;
 
-            base.Diff(refSet, leftComponents, rightComponents, left, right, context);
+            base.Diff(leftComponents, rightComponents, left, right, context);
 
             var diff = OpenApiDiff
                 .SchemaDiff
                 .Diff(
-                    refSet,
                     left.Items,
                     right.Items,
                     context.CopyWithRequired(true));

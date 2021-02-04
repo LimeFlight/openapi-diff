@@ -40,7 +40,6 @@ namespace LimeFlight.OpenAPI.Diff.Compare
                         Schema = _openApiDiff
                             .SchemaDiff
                             .Diff(
-                                new HashSet<string>(),
                                 oldMediaType?.Schema,
                                 newMediaType?.Schema,
                                 context.CopyWithRequired(true))

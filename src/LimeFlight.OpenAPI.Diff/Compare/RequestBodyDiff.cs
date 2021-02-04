@@ -30,10 +30,10 @@ namespace LimeFlight.OpenAPI.Diff.Compare
         {
             var leftRef = left.Reference?.ReferenceV3;
             var rightRef = right.Reference?.ReferenceV3;
-            return CachedDiff(new HashSet<string>(), left, right, leftRef, rightRef, context);
+            return CachedDiff(left, right, leftRef, rightRef, context);
         }
 
-        protected override ChangedRequestBodyBO ComputeDiff(HashSet<string> refSet, OpenApiRequestBody left,
+        protected override ChangedRequestBodyBO ComputeDiff(OpenApiRequestBody left,
             OpenApiRequestBody right,
             DiffContextBO context)
         {

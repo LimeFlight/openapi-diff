@@ -24,11 +24,11 @@ namespace LimeFlight.OpenAPI.Diff.Compare
 
         public ChangedResponseBO Diff(OpenApiResponse left, OpenApiResponse right, DiffContextBO context)
         {
-            return CachedDiff(new HashSet<string>(), left, right, left.Reference?.ReferenceV3,
+            return CachedDiff(left, right, left.Reference?.ReferenceV3,
                 right.Reference?.ReferenceV3, context);
         }
 
-        protected override ChangedResponseBO ComputeDiff(HashSet<string> refSet, OpenApiResponse left,
+        protected override ChangedResponseBO ComputeDiff(OpenApiResponse left,
             OpenApiResponse right, DiffContextBO context)
         {
             left = RefPointer.ResolveRef(_leftComponents, left, left.Reference?.ReferenceV3);
