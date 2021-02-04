@@ -16,7 +16,7 @@ jobs:
         with:
           dotnet-version: "3.1.201" # SDK Version to use.
       - name: Setup nbgv
-        uses: aarnott/nbgv@v0.3
+        uses: dotnet/nbgv@master
       - name: Pack
         run: dotnet pack --configuration Release
   xunit-test:
