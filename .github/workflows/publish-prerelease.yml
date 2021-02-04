@@ -18,7 +18,7 @@ jobs:
         with:
           fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
       - name: Setup nbgv
-        uses: aarnott/nbgv@v0.3
+        uses: dotnet/nbgv@master
       - name: Create the package
         run: dotnet pack --configuration Release
       - name: Add GPR Source
