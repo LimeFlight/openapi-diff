@@ -7,7 +7,7 @@ on:
 jobs:
   publish-lib:
     runs-on: ubuntu-latest
-    name: Publish OpenAPI Diff Action tool to nuget
+    name: Publish OpenAPI Diff Action release packages to Github and NuGet
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
       - name: Setup nbgv
         uses: dotnet/nbgv@master
       - name: Create the package
-        run: dotnet pack --configuration Release --output /nupkgs /p:PublicRelease=true
+        run: dotnet pack --configuration Release --output ./nupkgs /p:PublicRelease=true
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:

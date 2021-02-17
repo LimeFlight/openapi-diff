@@ -11,7 +11,7 @@ on:
 jobs:
   publish-lib:
     runs-on: ubuntu-latest
-    name: Publish OpenAPI Diff Action tool to nuget
+    name: Publish OpenAPI Diff Action pre-release packages to Github
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
