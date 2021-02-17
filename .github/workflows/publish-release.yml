@@ -17,18 +17,18 @@ jobs:
       - name: Setup nbgv
         uses: dotnet/nbgv@master
       - name: Create the package
-        run: dotnet pack --configuration Release /p:PublicRelease=true
+        run: dotnet pack --configuration Release --output /nupkgs /p:PublicRelease=true
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
           name: nupkgs
-          path: ./src/LimeFlight.OpenAPI.Diff/nupkg/
+          path: ./nupkgs
       - name: Add GPR Source
         run: dotnet nuget add source https://nuget.pkg.github.com/yaos/index.json --name GPR --username fabich --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
       - name: Publish the package to GPR
         run: |
           until dotnet nuget push *.nupkg --skip-duplicate --source GPR; do echo "Retrying"; sleep 1; done
-        working-directory: ./src/LimeFlight.OpenAPI.Diff/nupkg
+        working-directory: ./nupkgs
       - name: Publish the package to NuGet
         run: dotnet nuget push *.nupkg --skip-duplicate --source https://api.nuget.org/v3/index.json --api-key ${{secrets.NUGET_AUTH_TOKEN_LIB}}
         working-directory: ./src/LimeFlight.OpenAPI.Diff/nupkg
