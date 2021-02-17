@@ -14,6 +14,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimeFlight.OpenAPI.Diff.CLI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LimeFlight.OpenApi.Diff.Tests", "test\LimeFlight.OpenApi.Diff.Test\LimeFlight.OpenApi.Diff.Tests.csproj", "{811C42D7-DBB9-43AE-92BA-694EF840A6DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LimeFlight.OpenAPI.Diff.Action", "src\LimeFlight.OpenAPI.Diff.Action\LimeFlight.OpenAPI.Diff.Action.csproj", "{7125B82A-E49A-48AF-8C1E-E91DD0BEB607}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{811C42D7-DBB9-43AE-92BA-694EF840A6DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7125B82A-E49A-48AF-8C1E-E91DD0BEB607}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7125B82A-E49A-48AF-8C1E-E91DD0BEB607}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7125B82A-E49A-48AF-8C1E-E91DD0BEB607}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7125B82A-E49A-48AF-8C1E-E91DD0BEB607}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
