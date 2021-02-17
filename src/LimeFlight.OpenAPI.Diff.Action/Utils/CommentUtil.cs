@@ -57,7 +57,7 @@ namespace LimeFlight.OpenAPI.Diff.Action.Utils
             var title = $"## OpenAPI Diff Report for {fileName}";
             var badge = $"![]({GetBadge(diffResult)})";
             const string footer = "---\n" +
-                                  "<a href=\"https://github.com/yaos/openapi-diff-action\"><img src=\"https://img.shields.io/static/v1?label=GitHub%20Actions&message=OpenAPI%20Diff%20In%20PR&color=green&logo=github\" /></a>";
+                                  "<a href=\"https://github.com/LimeFlight/openapi-diff-action\"><img src=\"https://img.shields.io/static/v1?label=GitHub%20Actions&message=OpenAPI%20Diff%20In%20PR&color=green&logo=github\" /></a>";
             return $"{identifier}\n{changeLevel}\n{title}\n{badge}\n{markdown}\n{footer}";
         }
 
