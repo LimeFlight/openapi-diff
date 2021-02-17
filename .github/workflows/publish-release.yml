@@ -18,6 +18,11 @@ jobs:
         uses: dotnet/nbgv@master
       - name: Create the package
         run: dotnet pack --configuration Release /p:PublicRelease=true
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: nupkgs
+          path: ./src/LimeFlight.OpenAPI.Diff/nupkg/
       - name: Add GPR Source
         run: dotnet nuget add source https://nuget.pkg.github.com/yaos/index.json --name GPR --username fabich --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
       - name: Publish the package to GPR
