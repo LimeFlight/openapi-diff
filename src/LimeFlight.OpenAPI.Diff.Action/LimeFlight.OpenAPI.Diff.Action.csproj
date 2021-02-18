@@ -8,6 +8,7 @@
     <Authors>LimeFlight</Authors>
     <Company>LimeFlight</Company>
     <PackAsTool>true</PackAsTool>
+    <ToolCommandName>openapi-diff-action</ToolCommandName>
     <PackageOutputPath>./nupkg</PackageOutputPath>
     <RepositoryUrl>https://github.com/LimeFlight/openapi-diff</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/LimeFlight/openapi-diff/blob/master/LICENSE</PackageLicenseUrl>
