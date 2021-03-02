@@ -41,7 +41,7 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
         {
             if (Increased.IsNullOrEmpty() && Missing.IsNullOrEmpty()) return new DiffResultBO(DiffResultEnum.NoChanges);
 
-            if (Increased.Any(x => x.Required) && Missing.IsNullOrEmpty())
+            if (!Increased.Any(x => x.Required) && Missing.IsNullOrEmpty())
                 return new DiffResultBO(DiffResultEnum.Compatible);
 
             return new DiffResultBO(DiffResultEnum.Incompatible);
