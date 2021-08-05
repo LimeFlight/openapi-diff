@@ -46,7 +46,6 @@ paths:
             type: array
             items:
               type: string
-              maxLength: 50
       responses:
         "200":
           description: successful operation
@@ -59,6 +58,9 @@ paths:
                     type: array
                     items:
                       $ref: "#/components/schemas/Dog"
+                  testprop:
+                    type: string
+                    minLength: 10
         "400":
           description: Invalid status value
       security:

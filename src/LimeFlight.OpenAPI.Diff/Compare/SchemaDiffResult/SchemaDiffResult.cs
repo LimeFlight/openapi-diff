@@ -54,6 +54,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             ChangedSchema.IsChangeFormat = left.Format != right.Format;
             ChangedSchema.ReadOnly = new ChangedReadOnlyBO(left.ReadOnly, right.ReadOnly, context);
             ChangedSchema.WriteOnly = new ChangedWriteOnlyBO(left.WriteOnly, right.WriteOnly, context);
+            ChangedSchema.MinLength = new ChangedMinLengthBO(left.MinLength, right.MinLength, context);
             ChangedSchema.MaxLength = new ChangedMaxLengthBO(left.MaxLength, right.MaxLength, context);
 
             var extendedDiff = OpenApiDiff.ExtensionsDiff.Diff(left.Extensions, right.Extensions, context);
