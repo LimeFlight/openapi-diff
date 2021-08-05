@@ -60,7 +60,7 @@ paths:
                       $ref: "#/components/schemas/Dog"
                   testprop:
                     type: string
-                    minLength: 1
+                    minLength: 2
         "400":
           description: Invalid status value
       security:
