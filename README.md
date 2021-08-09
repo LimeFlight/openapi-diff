@@ -55,7 +55,7 @@
 
 
 In order to identify any breaking API change of our B2B SaaS solution we created this project to outline the changes in the OpenAPI document.
-We are using this together with GitHub Actions to highlight changes in every Pull Request.
+We are using this together with GitHub Actions ([https://github.com/LimeFlight/openapi-diff-action](https://github.com/LimeFlight/openapi-diff-action)) to highlight changes in every Pull Request.
 
 
 <!-- GETTING STARTED -->
