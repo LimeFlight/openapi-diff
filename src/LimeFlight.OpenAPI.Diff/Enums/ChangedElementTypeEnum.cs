@@ -23,6 +23,7 @@
         MediaType,
         WriteOnly,
         ReadOnly,
+        MinLength,
         MaxLength,
         Required,
         Extension,

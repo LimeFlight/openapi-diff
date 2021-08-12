@@ -32,6 +32,7 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
         public ChangedReadOnlyBO ReadOnly { get; set; }
         public ChangedWriteOnlyBO WriteOnly { get; set; }
         public bool IsChangedType { get; set; }
+        public ChangedMinLengthBO MinLength { get; set; }
         public ChangedMaxLengthBO MaxLength { get; set; }
         public bool DiscriminatorPropertyChanged { get; set; }
         public ChangedSchemaBO Items { get; set; }
@@ -54,6 +55,7 @@ namespace LimeFlight.OpenAPI.Diff.BusinessObjects
                     ("AddProp", AddProp),
                     ("Enumeration", Enumeration),
                     ("Required", Required),
+                    ("MinLength", MinLength),
                     ("MaxLength", MaxLength),
                     (null, Extensions)
                 }

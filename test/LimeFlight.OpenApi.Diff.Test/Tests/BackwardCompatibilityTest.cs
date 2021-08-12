@@ -10,6 +10,9 @@ namespace LimeFlight.OpenAPI.Diff.Tests.Tests
         private const string OpenAPIDoc3 = "Resources/backwardCompatibility/bc_3.yaml";
         private const string OpenAPIDoc4 = "Resources/backwardCompatibility/bc_4.yaml";
         private const string OpenAPIDoc5 = "Resources/backwardCompatibility/bc_5.yaml";
+        private const string OpenAPIDoc6 = "Resources/backwardCompatibility/bc_6.yaml";
+        private const string OpenAPIDoc7 = "Resources/backwardCompatibility/bc_7.yaml";
+        private const string OpenAPIDoc8 = "Resources/backwardCompatibility/bc_8.yaml";
 
         [Fact]
         public void TestNoChange()
@@ -51,6 +54,30 @@ namespace LimeFlight.OpenAPI.Diff.Tests.Tests
         public void TestAPIReadWriteOnlyPropertiesChanged()
         {
             TestUtils.AssertOpenAPIBackwardCompatible(OpenAPIDoc1, OpenAPIDoc5, true);
+        }
+
+        [Fact]
+        public void TestAPIMaxLengthPropertyInRequestDecreasedInvalid()
+        {
+            TestUtils.AssertOpenAPIBackwardIncompatible(OpenAPIDoc5, OpenAPIDoc6);
+        }
+
+        [Fact]
+        public void TestAPIMaxLengthPropertyInRequestIncreasedValid()
+        {
+            TestUtils.AssertOpenAPIBackwardCompatible(OpenAPIDoc6, OpenAPIDoc5, true);
+        }
+
+        [Fact]
+        public void TestAPIMinLengthPropertyInResponseIncreasedInvalid()
+        {
+            TestUtils.AssertOpenAPIBackwardIncompatible(OpenAPIDoc7, OpenAPIDoc8);
+        }
+
+        [Fact]
+        public void TestAPIMinLengthPropertyInRequestDecreasedValid()
+        {
+            TestUtils.AssertOpenAPIBackwardCompatible(OpenAPIDoc8, OpenAPIDoc7, true);
         }
     }
 }
