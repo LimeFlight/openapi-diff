@@ -9,6 +9,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using LimeFlight.OpenAPI.Diff.Output.Html;
 
 namespace LimeFlight.OpenAPI.Diff.Action
 {
@@ -16,7 +17,7 @@ namespace LimeFlight.OpenAPI.Diff.Action
     {
         static async Task<int> Main(string[] args)
         {
-            if (args.Length != 7)
+            if (args.Length != 8)
                 throw new ArgumentException("Number of arguments does not match expected amount.");
 
             var token = args[0];
@@ -35,21 +36,26 @@ namespace LimeFlight.OpenAPI.Diff.Action
             var excludeLabels = false;
             if (args.GetValue(6) != null && !bool.TryParse(args[6], out excludeLabels))
                 throw new ArgumentException("Error casting type");
+            if (!PathUtil.TryGetAbsoluteUri(args[7], out var outputPath))
+                throw new ArgumentException("Error casting type");
 
             var serviceProvider = Startup.Build();
             var openAPICompare = serviceProvider.GetService<IOpenAPICompare>();
-            var renderer = serviceProvider.GetService<IMarkdownRender>();
+            var markdownRenderer = serviceProvider.GetService<IMarkdownRender>();
+            var htmlRenderer = serviceProvider.GetService<IHtmlRender>();
 
             var fileName = Path.GetFileNameWithoutExtension(oldFile.LocalPath);
             Console.WriteLine($"Running OpenAPI Diff for {fileName}");
 
             string markdown;
+            string html;
             DiffResultEnum diffResult;
             try
             {
                 var openAPIDiff = openAPICompare.FromLocations(oldFile.LocalPath, newFile.LocalPath);
                 diffResult = openAPIDiff.IsChanged().DiffResult;
-                markdown = await renderer.Render(openAPIDiff);
+                markdown = await markdownRenderer.Render(openAPIDiff);
+                html = await htmlRenderer.Render(openAPIDiff);
             }
             catch (Exception e)
             {
@@ -59,6 +65,15 @@ namespace LimeFlight.OpenAPI.Diff.Action
             }
 
             Console.WriteLine($"Completed OpenAPI DIff with Result {diffResult}");
+
+
+            Console.WriteLine($"Create HTML output");
+            var finalOutputFilePath = Path.Combine(outputPath.AbsolutePath, $"{fileName}.html");
+            Console.WriteLine($"Writing html report to: {finalOutputFilePath}");
+            await File.WriteAllTextAsync(finalOutputFilePath, html);
+
+
+            Console.WriteLine($"Create markdown comment in GitHub");
 
             var commentMarkdown = CommentUtil.GetCommentMarkdown(fileName, diffResult, markdown);
 
