@@ -17,7 +17,7 @@ namespace LimeFlight.OpenAPI.Diff.Action
     {
         static async Task<int> Main(string[] args)
         {
-            if (args.Length != 7)
+            if (args.Length != 8)
                 throw new ArgumentException("Number of arguments does not match expected amount.");
 
             var token = args[0];
@@ -35,6 +35,8 @@ namespace LimeFlight.OpenAPI.Diff.Action
                 throw new ArgumentException("Error casting type");
             var excludeLabels = false;
             if (args.GetValue(6) != null && !bool.TryParse(args[6], out excludeLabels))
+                throw new ArgumentException("Error casting type");
+            if (!PathUtil.TryGetAbsoluteUri(args[7], out var outputPath))
                 throw new ArgumentException("Error casting type");
 
             var serviceProvider = Startup.Build();
@@ -66,7 +68,9 @@ namespace LimeFlight.OpenAPI.Diff.Action
 
 
             Console.WriteLine($"Create HTML output");
-            await File.WriteAllTextAsync($"{fileName}.html", html);
+            var finalOutputFilePath = Path.Combine(outputPath.AbsolutePath, $"{fileName}.html");
+            Console.WriteLine($"Writing html report to: {finalOutputFilePath}");
+            await File.WriteAllTextAsync(finalOutputFilePath, html);
 
 
             Console.WriteLine($"Create markdown comment in GitHub");
