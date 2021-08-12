@@ -58,7 +58,16 @@ namespace LimeFlight.OpenAPI.Diff.Action.Utils
             var badge = $"![]({GetBadge(diffResult)})";
             const string footer = "---\n" +
                                   "<a href=\"https://github.com/LimeFlight/openapi-diff-action\"><img src=\"https://img.shields.io/static/v1?label=GitHub%20Actions&message=OpenAPI%20Diff%20In%20PR&color=green&logo=github\" /></a>";
-            return $"{identifier}\n{changeLevel}\n{title}\n{badge}\n{markdown}\n{footer}";
+            var returnValue =  $"{identifier}\n{changeLevel}\n{title}\n{badge}\n{markdown}\n{footer}";
+            
+            if (returnValue.Length > 65536)
+            {
+                Console.WriteLine("Comment length greater than GitHub maximum comment length");
+                var notification = "OpenAPI Diff report is too long. Please check artifacts for the detailed html report.";
+                returnValue = $"{identifier}\n{changeLevel}\n{title}\n{badge}\n{notification}\n{footer}";
+            }
+
+            return returnValue;
         }
 
         private static string GetBadge(DiffResultEnum diffResult)
