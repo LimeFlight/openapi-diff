@@ -42,17 +42,17 @@ namespace LimeFlight.OpenAPI.Diff.Output.Html
             Console.WriteLine($"Added metadata: {coreMetaDataPath}");
             Console.WriteLine($"Added metadata: {myDirMetaDataPath}");
 
-            // Enumerate all assemblies referenced by this executing assembly
-            // and provide them as references to the build script we're about to
-            // compile.
-            var referencedAssemblies = Assembly.GetEntryAssembly().GetReferencedAssemblies();
-            foreach (var referencedAssembly in referencedAssemblies)
-            {
-                var loadedAssembly = Assembly.Load(referencedAssembly);
-                var loadedAssemblyPath = loadedAssembly.Location;
-                Console.WriteLine($"Added metadata: {loadedAssemblyPath}");
-                builder.AddMetadataReferences(MetadataReference.CreateFromFile(loadedAssemblyPath));
-            }
+            //// Enumerate all assemblies referenced by this executing assembly
+            //// and provide them as references to the build script we're about to
+            //// compile.
+            //var referencedAssemblies = Assembly.GetEntryAssembly().GetReferencedAssemblies();
+            //foreach (var referencedAssembly in referencedAssemblies)
+            //{
+            //    var loadedAssembly = Assembly.Load(referencedAssembly);
+            //    var loadedAssemblyPath = loadedAssembly.Location;
+            //    Console.WriteLine($"Added metadata: {loadedAssemblyPath}");
+            //    builder.AddMetadataReferences(MetadataReference.CreateFromFile(loadedAssemblyPath));
+            //}
 
             _engine = builder
                 .Build();
