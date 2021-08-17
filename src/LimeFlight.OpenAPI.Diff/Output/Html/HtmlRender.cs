@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -17,27 +18,34 @@ namespace LimeFlight.OpenAPI.Diff.Output.Html
 
         public HtmlRender()
         {
-            // Get the directory of a core assembly. We need this directory to
-            // build out our platform specific reference to mscorlib. mscorlib
-            // and the private mscorlib must be supplied as references for
-            // compilation to succeed. Of these two assemblies, only the private
-            // mscorlib is discovered via enumerataing assemblies referenced by
-            // this executing binary.
-            var dd = typeof(Enumerable).GetTypeInfo().Assembly.Location;
-            var coreDir = Directory.GetParent(dd);
-
-            var metadataReference = new List<MetadataReference>
-            {   
-                // Here we get the path to the mscorlib and private mscorlib
-                // libraries that are required for compilation to succeed.
-                MetadataReference.CreateFromFile(coreDir.FullName + Path.DirectorySeparatorChar + "mscorlib.dll"),
-                MetadataReference.CreateFromFile(typeof(object).GetTypeInfo().Assembly.Location)
-            };
-
-            _engine = new RazorLightEngineBuilder()
+            var builder = new RazorLightEngineBuilder()
                 .UseEmbeddedResourcesProject(typeof(HtmlRender))
-                .UseMemoryCachingProvider()
-                .AddMetadataReferences(metadataReference.ToArray())
+                .UseMemoryCachingProvider();
+
+            // workaround to be able to compile Razor templates in self-contained deployments 
+            Console.WriteLine($"Start metadata workaround");
+
+            var coreDir = Directory.GetParent(typeof(Enumerable).GetTypeInfo().Assembly.Location);
+            var myDir = Directory.GetParent(GetType().GetTypeInfo().Assembly.Location);
+
+            Console.WriteLine($"Core dir path: {coreDir}");
+            Console.WriteLine($"My dir path: {myDir}");
+
+            if (coreDir.FullName == myDir.FullName)
+            {
+                Console.WriteLine($"Add metadata");
+                var coreMetaDataPath = coreDir.FullName + Path.DirectorySeparatorChar + "mscorlib.dll";
+                var myDirMetaDataPath = typeof(object).GetTypeInfo().Assembly.Location;
+
+                builder.AddMetadataReferences(
+                    MetadataReference.CreateFromFile(coreMetaDataPath),
+                    MetadataReference.CreateFromFile(myDirMetaDataPath));
+
+                Console.WriteLine($"Added metadata: {coreMetaDataPath}");
+                Console.WriteLine($"Added metadata: {myDirMetaDataPath}");
+            }
+
+            _engine = builder
                 .Build();
         }
 

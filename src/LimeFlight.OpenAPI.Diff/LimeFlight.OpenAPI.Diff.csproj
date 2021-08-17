@@ -10,6 +10,7 @@
     <RepositoryUrl>https://github.com/LimeFlight/openapi-diff</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/LimeFlight/openapi-diff/blob/master/LICENSE</PackageLicenseUrl>
     <PreserveCompilationContext>true</PreserveCompilationContext>
+    <PreserveCompilationReferences>true</PreserveCompilationReferences>
     <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
   </PropertyGroup>
 
