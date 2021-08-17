@@ -31,18 +31,27 @@ namespace LimeFlight.OpenAPI.Diff.Output.Html
             Console.WriteLine($"Core dir path: {coreDir}");
             Console.WriteLine($"My dir path: {myDir}");
 
-            if (coreDir.FullName == myDir.FullName)
+            Console.WriteLine($"Add metadata");
+            var coreMetaDataPath = coreDir.FullName + Path.DirectorySeparatorChar + "mscorlib.dll";
+            var myDirMetaDataPath = typeof(object).GetTypeInfo().Assembly.Location;
+
+            builder.AddMetadataReferences(
+                MetadataReference.CreateFromFile(coreMetaDataPath),
+                MetadataReference.CreateFromFile(myDirMetaDataPath));
+
+            Console.WriteLine($"Added metadata: {coreMetaDataPath}");
+            Console.WriteLine($"Added metadata: {myDirMetaDataPath}");
+
+            // Enumerate all assemblies referenced by this executing assembly
+            // and provide them as references to the build script we're about to
+            // compile.
+            var referencedAssemblies = Assembly.GetEntryAssembly().GetReferencedAssemblies();
+            foreach (var referencedAssembly in referencedAssemblies)
             {
-                Console.WriteLine($"Add metadata");
-                var coreMetaDataPath = coreDir.FullName + Path.DirectorySeparatorChar + "mscorlib.dll";
-                var myDirMetaDataPath = typeof(object).GetTypeInfo().Assembly.Location;
-
-                builder.AddMetadataReferences(
-                    MetadataReference.CreateFromFile(coreMetaDataPath),
-                    MetadataReference.CreateFromFile(myDirMetaDataPath));
-
-                Console.WriteLine($"Added metadata: {coreMetaDataPath}");
-                Console.WriteLine($"Added metadata: {myDirMetaDataPath}");
+                var loadedAssembly = Assembly.Load(referencedAssembly);
+                var loadedAssemblyPath = loadedAssembly.Location;
+                Console.WriteLine($"Added metadata: {loadedAssemblyPath}");
+                builder.AddMetadataReferences(MetadataReference.CreateFromFile(loadedAssemblyPath));
             }
 
             _engine = builder
