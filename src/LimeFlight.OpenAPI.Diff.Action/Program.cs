@@ -53,9 +53,24 @@ namespace LimeFlight.OpenAPI.Diff.Action
             try
             {
                 var openAPIDiff = openAPICompare.FromLocations(oldFile.LocalPath, newFile.LocalPath);
+
+                Console.WriteLine($"Creating Diff Result");
                 diffResult = openAPIDiff.IsChanged().DiffResult;
+                Console.WriteLine($"Completed OpenAPI DIff with Result {diffResult}");
+
+                Console.WriteLine($"Generate Markdown");
                 markdown = await markdownRenderer.Render(openAPIDiff);
+
+                Console.WriteLine($"Generate HTML");
                 html = await htmlRenderer.Render(openAPIDiff);
+
+
+                var finalOutputFilePath = Path.Combine(outputPath.AbsolutePath, $"{fileName}.html");
+                var file = new FileInfo(finalOutputFilePath);
+                file.Directory?.Create(); // If the directory already exists, this method does nothing.
+
+                Console.WriteLine($"Writing html report to: {finalOutputFilePath}");
+                await File.WriteAllTextAsync(finalOutputFilePath, html);
             }
             catch (Exception e)
             {
@@ -63,14 +78,6 @@ namespace LimeFlight.OpenAPI.Diff.Action
                 Environment.ExitCode = 1;
                 throw;
             }
-
-            Console.WriteLine($"Completed OpenAPI DIff with Result {diffResult}");
-
-
-            Console.WriteLine($"Create HTML output");
-            var finalOutputFilePath = Path.Combine(outputPath.AbsolutePath, $"{fileName}.html");
-            Console.WriteLine($"Writing html report to: {finalOutputFilePath}");
-            await File.WriteAllTextAsync(finalOutputFilePath, html);
 
 
             Console.WriteLine($"Create markdown comment in GitHub");

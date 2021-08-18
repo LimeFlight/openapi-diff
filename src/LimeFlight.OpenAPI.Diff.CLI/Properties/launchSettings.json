@@ -2,7 +2,7 @@
   "profiles": {
     "LimeFlight.OpenAPI.Diff.CLI": {
       "commandName": "Project",
-      "commandLineArgs": "--old \"../../../../../test/LimeFlight.OpenApi.Diff.Test/Resources/petstore_v2_1.yaml\" --new \"../../../../../test/LimeFlight.OpenApi.Diff.Test/Resources/petstore_v2_2.yaml\" --html \"./output.html\""
+      "commandLineArgs": "--old \"../../../../../test/LimeFlight.OpenApi.Diff.Test/Resources/petstore_v2_1.yaml\" --new \"../../../../../test/LimeFlight.OpenApi.Diff.Test/Resources/petstore_v2_2.yaml\" --html \"./customFolder/output.html\""
     }
   }
 }

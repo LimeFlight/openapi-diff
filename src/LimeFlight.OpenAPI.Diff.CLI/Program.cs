@@ -100,6 +100,10 @@ namespace LimeFlight.OpenAPI.Diff.CLI
         {
             try
             {
+                var file = new FileInfo(path);
+                file.Directory?.Create(); // If the directory already exists, this method does nothing.
+
+                Console.WriteLine($"Writing html report to: {path}");
                 File.WriteAllText(path, renderedResult);
             }
             catch (Exception e)
