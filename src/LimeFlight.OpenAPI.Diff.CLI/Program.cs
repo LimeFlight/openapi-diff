@@ -26,13 +26,13 @@ namespace LimeFlight.OpenAPI.Diff.CLI
         [Option(CommandOptionType.SingleValue, ShortName = "e", LongName = "exit", Description = "Define exit behavior. Default: Fail only if API changes broke backward compatibility")]
         public ExitTypeEnum? ExitType { get; }
 
-        [Option(CommandOptionType.SingleValue, Description = "Export diff as markdown in given file")]
+        [Option(CommandOptionType.SingleValue, ShortName = "m", LongName = "markdown", Description = "Export diff as markdown in given file")]
         public string Markdown { get; }
 
         [Option(CommandOptionType.NoValue, ShortName = "c", LongName = "console", Description = "Export diff in console")]
         public bool ToConsole { get; }
 
-        [Option(CommandOptionType.SingleValue, Description = "Export diff as html in given file")]
+        [Option(CommandOptionType.SingleValue, ShortName = "h", LongName = "html", Description = "Export diff as html in given file")]
         public string HTML { get; }
 
         static int Main(string[] args)
