@@ -78,6 +78,37 @@ Coming soon.
 
 Coming soon.
 
+### CLI
+
+Install globally:
+
+```shell
+dotnet tool install --global LimeFlight.OpenAPI.Diff.CLI --version 3.0.9
+```
+
+Invoke:
+
+```
+openapi-diff --help
+```
+```
+Options:
+  -o|--old <OLD_PATH>       Path to old OpenAPI Specification file
+  -n|--new <NEW_PATH>       Path to new OpenAPI Specification file
+  -e|--exit <EXIT_TYPE>     Define exit behavior. Default: Fail only if API changes broke backward compatibility
+                            Allowed values are: PrintState, FailOnChanged.
+  -m|--markdown <MARKDOWN>  Export diff as markdown in given file
+  -c|--console              Export diff in console
+  -h|--html <HTML>          Export diff as html in given file
+  -?|--help                 Show help information.
+```
+
+**Example:**
+
+```shell
+directory="test/LimeFlight.OpenApi.Diff.Test/Resources";
+openapi-diff -o $directory/petstore_v2_1.yaml -n $directory/security_diff_1.yaml -m difflog.md
+```
 
 <!-- CONTRIBUTING -->
 ## Contributing
