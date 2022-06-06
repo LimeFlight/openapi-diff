@@ -12,7 +12,9 @@ namespace LimeFlight.OpenAPI.Diff.Tests.Tests
         private const string OpenAPIDoc5 = "Resources/composed_schema_2.yaml";
         private const string OpenAPIDoc6 = "Resources/oneOf_discriminator-changed_1.yaml";
         private const string OpenAPIDoc7 = "Resources/oneOf_discriminator-changed_2.yaml";
-
+        private const string OpenAPIDoc8 = "Resources/oneOf_discriminator-missing_1.yaml";
+        private const string OpenAPIDoc9 = "Resources/oneOf_discriminator-missing_2.yaml";
+        
         [Fact]
         public void TestDiffSame()
         {
@@ -42,6 +44,16 @@ namespace LimeFlight.OpenAPI.Diff.Tests.Tests
         {
             // The oneOf 'discriminator' changed: 'realtype' -> 'othertype':
             TestUtils.AssertOpenAPIBackwardIncompatible(OpenAPIDoc6, OpenAPIDoc7);
+        }
+        
+        [Fact]
+        public void TestOneOfDiscrimitatorMissingSameOrder() {
+            TestUtils.AssertOpenAPIAreEquals(OpenAPIDoc8, OpenAPIDoc8);
+        }
+
+        [Fact]
+        public void TestOneOfDiscrimitatorMissingDifferentOrder() {
+            TestUtils.AssertOpenAPIAreEquals(OpenAPIDoc8, OpenAPIDoc9);
         }
     }
 }

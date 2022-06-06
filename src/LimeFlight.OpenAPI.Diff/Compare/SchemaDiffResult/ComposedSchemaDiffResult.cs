@@ -42,7 +42,7 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                 reverseMapping.Add(schemaRef, schemaName);
             }
 
-            if (!composedSchema.Discriminator.Mapping.IsNullOrEmpty())
+            if (composedSchema.Discriminator != null && !composedSchema.Discriminator.Mapping.IsNullOrEmpty())
                 foreach (var (key, value) in composedSchema.Discriminator.Mapping)
                     if (!reverseMapping.TryAdd(value, key))
                         reverseMapping[value] = key;
@@ -60,16 +60,15 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
                 {
                     var leftDis = left.Discriminator;
                     var rightDis = right.Discriminator;
-                    if (leftDis == null
-                        || rightDis == null
-                        || leftDis.PropertyName == null
-                        || rightDis.PropertyName == null)
-                        throw new ArgumentException(
-                            "discriminator or property not found for oneOf schema");
-
-                    if (leftDis.PropertyName != rightDis.PropertyName
-                        || left.OneOf.IsNullOrEmpty()
-                        || right.OneOf.IsNullOrEmpty())
+                    
+                    if ((leftDis == null && rightDis != null)
+                        || (leftDis != null && rightDis == null)
+                        || (leftDis != null
+                            && ((leftDis.PropertyName == null && rightDis.PropertyName != null)
+                                || (leftDis.PropertyName != null && rightDis.PropertyName == null)
+                                || (leftDis.PropertyName != null
+                                    && rightDis.PropertyName != null
+                                    && !leftDis.PropertyName.Equals(rightDis.PropertyName)))))
                     {
                         ChangedSchema.OldSchema = left;
                         ChangedSchema.NewSchema = right;
