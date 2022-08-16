@@ -36,8 +36,8 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
         {
             var leftEnumStrings = left.Enum.Select(x => ((IOpenApiPrimitive) x)?.GetValueString()).ToList();
             var rightEnumStrings = right.Enum.Select(x => ((IOpenApiPrimitive) x)?.GetValueString()).ToList();
-            var leftDefault = (IOpenApiPrimitive) left.Default;
-            var rightDefault = (IOpenApiPrimitive) right.Default;
+            var leftDefault = left.Default as IOpenApiPrimitive;
+            var rightDefault = right.Default as IOpenApiPrimitive;
 
             var changedEnum =
                 ListDiff.Diff(new ChangedEnumBO(leftEnumStrings, rightEnumStrings, context));
@@ -49,7 +49,9 @@ namespace LimeFlight.OpenAPI.Diff.Compare.SchemaDiffResult
             ChangedSchema.IsChangeTitle = left.Title != right.Title;
             ChangedSchema.Required =
                 ListDiff.Diff(new ChangedRequiredBO(left.Required.ToList(), right.Required.ToList(), context));
-            ChangedSchema.IsChangeDefault = leftDefault?.GetValueString() != rightDefault?.GetValueString();
+            ChangedSchema.IsChangeDefault = null == leftDefault || null == rightDefault ?
+                left.Default?.GetValueString() != right.Default?.GetValueString() :
+                leftDefault.GetValueString() != rightDefault.GetValueString();
             ChangedSchema.Enumeration = changedEnum;
             ChangedSchema.IsChangeFormat = left.Format != right.Format;
             ChangedSchema.ReadOnly = new ChangedReadOnlyBO(left.ReadOnly, right.ReadOnly, context);
