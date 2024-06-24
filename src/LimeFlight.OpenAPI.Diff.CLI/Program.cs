@@ -62,7 +62,7 @@ namespace LimeFlight.OpenAPI.Diff.CLI
             if (ToConsole)
             {
                 var renderer = serviceProvider.GetService<IConsoleRender>();
-                var renderedResult = renderer.Render(result);
+                var renderedResult = await renderer.Render(result);
                 Console.WriteLine(renderedResult);
             }
             if (HTML != null && Uri.IsWellFormedUriString(HTML, UriKind.RelativeOrAbsolute))
